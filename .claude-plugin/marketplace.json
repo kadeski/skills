@@ -9,10 +9,7 @@
   "plugins": [
     {
       "name": "tutor",
-      "source": {
-        "source": "github",
-        "repo": "kadeski/tutor"
-      }
+      "source": "./plugins/tutor"
     }
   ]
 }
