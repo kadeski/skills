@@ -1,0 +1,18 @@
+{
+  "name": "kadeski",
+  "owner": {
+    "name": "Kaden Staker"
+  },
+  "metadata": {
+    "description": "Claude Code plugins by Kaden Staker."
+  },
+  "plugins": [
+    {
+      "name": "tutor",
+      "source": {
+        "source": "github",
+        "repo": "kadeski/tutor"
+      }
+    }
+  ]
+}
