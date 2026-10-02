@@ -1,0 +1,19 @@
+{
+  "name": "kadeski",
+  "interface": {
+    "displayName": "kadeski"
+  },
+  "plugins": [
+    {
+      "name": "kadeski-skills",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

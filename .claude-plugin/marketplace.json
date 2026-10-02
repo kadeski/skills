@@ -4,12 +4,12 @@
     "name": "Kaden Staker"
   },
   "metadata": {
-    "description": "Claude Code plugins by Kaden Staker."
+    "description": "Agent skills by Kaden Staker."
   },
   "plugins": [
     {
-      "name": "tutor",
-      "source": "./plugins/tutor"
+      "name": "kadeski-skills",
+      "source": "./"
     }
   ]
 }
