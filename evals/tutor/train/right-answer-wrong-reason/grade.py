@@ -24,4 +24,4 @@ def grade(r):
     r.claim("break", "The feedback on Q2 shows where 'the mean is always bigger than the median' parts from reality, with a small picture or a two-line trace on a list where the mean comes out at or below the median (for example one with a low outlier), and does not itself explain why the mean is bigger for these houses (the 720 pulling it up).")
     r.claim("one-question", "The feedback on Q2 asks the learner exactly one question. A question with two parts joined by 'and' counts as two. A closing instruction such as 'redo Q2' is not a question.")
     r.claim("log", "The new Misconceptions line in goal.md states the learner's wrong idea in plain words (that the mean is always bigger than the median), not the fix.")
-    r.claim("cites", "The feedback on Q1 and Q3 says the answer is right and cites at least one point of the notes by its number, such as '(notes 3)'.")
+    r.check("Q1 and Q3 called right, citing the notes", all(lib.right_and_cited(lib.item_block(t, q)) for q in ("Q1", "Q3")))

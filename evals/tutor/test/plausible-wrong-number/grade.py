@@ -23,4 +23,4 @@ def grade(r):
     r.check("final reply names Q2", "Q2" in r.final, r.final[:200])
     r.claim("points", "The feedback on Q2 makes clear that 'the 26th' is not the right term, and points the learner at what their count left out (the first term, 18, comes before any step of 7), without saying which term 200 is.")
     r.claim("one-question", "The feedback on Q2 asks the learner exactly one question. A question with two parts joined by 'and' counts as two. A closing instruction such as 'redo Q2' is not a question.")
-    r.claim("cites", "The feedback on Q1 and Q3 says the answer is right and cites at least one point of the notes by its number, such as '(notes 3)'.")
+    r.check("Q1 and Q3 called right, citing the notes", all(lib.right_and_cited(lib.item_block(t, q)) for q in ("Q1", "Q3")))
