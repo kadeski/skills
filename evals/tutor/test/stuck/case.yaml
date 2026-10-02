@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: stuck
+description: "Hard: stuck asks for a hint, not grading or the answer. The tutor must add one Hint line under Q2, raise Help, and leave the rest alone."
+tags: [tutor-test]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor stuck on Q2"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

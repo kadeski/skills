@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: placement-gap
+description: "Hard: lesson 01 is special. A wrong model gets feedback with no question and is logged, Help rises to 3, 01 still passes, and 02 must open by testing the misconception again."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

@@ -13,4 +13,6 @@ Each agent has its own manifest at the root:
 
 Before committing, run `scripts/check.sh`.
 
+Eval cases for a skill live in `evals/<skill>/`; see `evals/README.md`. `/hillclimb <skill>` improves a skill against them.
+
 Writing style for skills and docs: simple terms, plain dashes (never em dashes), no filler.

@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: pass-review-due
+description: "Hard: one pass sets off five bookkeeping steps at once: first-try status, You can now line, new rule dated pass+2, Help down after two first tries, and a due rule pulled into the new drill as review."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
