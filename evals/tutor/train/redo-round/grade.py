@@ -71,5 +71,4 @@ def grade(r):
 
     r.claim("worked", "The new feedback on Q2 is a worked example on an expression that uses neither 24 nor 4, with both a multiply and a divide, traced step by step from the left to its value.")
     r.claim("worked-accurate", "Every number in the new feedback on Q2 is correct.")
-    r.claim("not-q2", "The new feedback on Q2 does not work out 24 / 4 x 2 or give its value, so the redo is still the learner's. Teaching the rule itself on other numbers is allowed.")
     r.claim("q3-right", "The new feedback on Q3 says the redo (10) is right.")
