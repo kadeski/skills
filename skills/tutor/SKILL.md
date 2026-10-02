@@ -60,7 +60,7 @@ About 5 minutes, one idea. If you cannot draw it, split it. A file never holds t
 
 A `sure` or `guess` tag after an answer decides how to sort a wrong one:
 
-- **Wrong model** (tagged `sure` or untagged, unless it is plainly a slip): show where it parts from reality, with a small picture or a two-line trace, and ask one question. Do not give the fix. Log it under Misconceptions.
+- **Wrong model** (tagged `sure` or untagged, unless it is plainly a slip): show where it parts from reality, with a small picture or a two-line trace, and ask one question (two asks joined by "and" or "so" are two). Do not give the fix. Log it under Misconceptions.
 - **Slip**: point at the step and ask what it assumes.
 - **Gap** (tagged `guess`, or blank): teach the missing piece on a different example, so the redo is still theirs.
 
