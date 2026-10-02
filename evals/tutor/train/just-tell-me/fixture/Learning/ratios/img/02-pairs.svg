@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="150" viewBox="0 0 360 150">
+  <rect width="360" height="150" fill="white"/>
+  <g stroke="#222" stroke-width="2" fill="none">
+    <rect x="15" y="15" width="70" height="40" rx="8"/><rect x="95" y="15" width="70" height="40" rx="8"/><rect x="175" y="15" width="70" height="40" rx="8"/>
+    <rect x="15" y="70" width="70" height="40" rx="8"/><rect x="95" y="70" width="70" height="40" rx="8"/>
+  </g>
+  <g fill="#d55" stroke="#222">
+    <circle cx="35" cy="35" r="12"/><circle cx="65" cy="35" r="12"/><circle cx="115" cy="35" r="12"/><circle cx="145" cy="35" r="12"/><circle cx="195" cy="35" r="12"/><circle cx="225" cy="35" r="12"/>
+  </g>
+  <g fill="#58c" stroke="#222">
+    <circle cx="35" cy="90" r="12"/><circle cx="65" cy="90" r="12"/><circle cx="115" cy="90" r="12"/><circle cx="145" cy="90" r="12"/>
+  </g>
+  <text x="260" y="41" font-size="16" fill="#111">6 = 3 pairs</text>
+  <text x="180" y="96" font-size="16" fill="#111">4 = 2 pairs</text>
+  <text x="15" y="138" font-size="16" fill="#111">6:4 is 3:2</text>
+</svg>

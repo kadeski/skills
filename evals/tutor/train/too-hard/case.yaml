@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: too-hard
+description: "Hard: too hard on a fresh lesson with every answer blank tempts the tutor to help by grading the blanks as gaps, giving the answers, or writing an easier new lesson. SKILL.md grades only on done or when every answer is in, and too hard only moves Help up one (2 to 3), so nothing is graded, passed, logged or written as a new lesson. SKILL.md is silent on rewriting the current lesson at the new level, so that is left unchecked."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor too hard"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

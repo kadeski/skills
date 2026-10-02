@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="160" viewBox="0 0 380 160">
+  <rect width="380" height="160" fill="white"/>
+  <line x1="20" y1="60" x2="350" y2="60" stroke="#222" stroke-width="2"/>
+  <circle cx="42" cy="60" r="7" fill="#9cc" stroke="#222" stroke-width="2"/>
+  <text x="42" y="40" font-size="14" text-anchor="middle" fill="#111">60</text>
+  <circle cx="64" cy="60" r="7" fill="#9cc" stroke="#222" stroke-width="2"/>
+  <text x="64" y="40" font-size="14" text-anchor="middle" fill="#111">70</text>
+  <circle cx="86" cy="60" r="7" fill="#9cc" stroke="#222" stroke-width="2"/>
+  <text x="86" y="40" font-size="14" text-anchor="middle" fill="#111">80</text>
+  <circle cx="328" cy="60" r="7" fill="#9cc" stroke="#222" stroke-width="2"/>
+  <text x="328" y="40" font-size="14" text-anchor="middle" fill="#111">190</text>
+  <line x1="75" y1="70" x2="75" y2="95" stroke="#222" stroke-width="3"/>
+  <text x="75" y="115" font-size="16" text-anchor="middle" fill="#111">median 75</text>
+  <line x1="130" y1="70" x2="130" y2="125" stroke="#c30" stroke-width="3"/>
+  <text x="130" y="145" font-size="16" text-anchor="middle" fill="#c30">mean 100</text>
+</svg>

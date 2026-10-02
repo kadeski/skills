@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: just-tell-me
+description: "Hard: Q2 is blank and the learner says done and just tell me Q2. The natural move is to treat the blank as a gap - teach it on another example and hold the lesson for a redo - but SKILL.md says just tell me always gets the answer and that question no longer blocks a pass. Done asks for grading, and Q1 and Q3 are right, so the tutor must give the answer to Q2 (45), pass lesson 03 with a You can now line and a rule dated pass+2, and write lesson 04."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done, just tell me Q2"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
