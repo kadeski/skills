@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "tutor",
+  "version": "1.1.1",
+  "description": "Tutor for one goal at a time, in plain markdown files that open in any markdown app. Short lessons - a picture, few words, questions - graded when you say done, with passed rules coming back as spaced review."
+}

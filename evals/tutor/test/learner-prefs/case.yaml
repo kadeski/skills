@@ -6,7 +6,7 @@ execution:
   max_turns: 60
   timeout_seconds: 900
   allowed_tools: [Read, Glob, Grep, Skill]
-  prompt: "/kadeski-skills:tutor done. Also, my e-reader cuts off wide tables, so keep any table to 2 columns."
+  prompt: "/tutor:tutor done. Also, my e-reader cuts off wide tables, so keep any table to 2 columns."
 context:
   scaffold_script: setup.sh
 graders:

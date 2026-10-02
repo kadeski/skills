@@ -6,7 +6,7 @@ execution:
   max_turns: 60
   timeout_seconds: 900
   allowed_tools: [Read, Glob, Grep, Skill]
-  prompt: "/kadeski-skills:tutor done"
+  prompt: "/tutor:tutor done"
 context:
   scaffold_script: setup.sh
 graders:

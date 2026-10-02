@@ -16,8 +16,8 @@ A full tutor run is 24 cases x 3 runs, about 25 minutes and roughly $9 on sonnet
 
 ## How a run works
 
-1. `claude plugin eval` starts each run in a clean temporary home: no personal CLAUDE.md, memory or other plugins, so nothing outside the skill shapes the result. The case's `setup.sh` seeds the home from `fixture/`.
-2. The agent gets the case's prompt, for example `/kadeski-skills:tutor done`, with Read, Write, Edit and Bash.
+1. `run.py` copies the skill's plugin folder to a temporary folder and adds `evals/<skill>/` to it, since `claude plugin eval` reads cases from below the plugin and evals do not ship in `plugins/`. `claude plugin eval` then starts each run in a clean temporary home: no personal CLAUDE.md, memory or other plugins, so nothing outside the skill shapes the result. The case's `setup.sh` seeds the home from `fixture/`.
+2. The agent gets the case's prompt, for example `/tutor:tutor done`, with Read, Write, Edit and Bash.
 3. `run.py` copies what the run left in the home, plus its trace, to `evals/results/<skill>-<time>/<split>/<case>/run<n>/`, then deletes the temporary folder.
 4. The case's `grade.py` runs programmatic checks on those files and writes claims. A judge model rules on each claim, seeing the learner's message, the final reply, and every file the run created or changed.
 5. A run's score is the share of checks and claims that pass. A case's score is the mean of its runs. The suite score is the mean of the cases, shown with a 95% band for run-to-run noise.
