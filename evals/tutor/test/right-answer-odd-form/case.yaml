@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: right-answer-odd-form
+description: "Hard: every answer is right, but Q2 gives 14/24 for 3/4 - 1/6, using 24 as the common bottom where the lesson used the least one, 12. The natural move is to mark it wrong or ask for 7/12, but the question never asks for lowest terms and 14/24 is the same number, so SKILL.md's pass rule (every lesson question right) applies: passed, first try (no guess tag on a Q answer), a You can now line, the rule dated pass+2, and lesson 04 written."
+tags: [tutor-test]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

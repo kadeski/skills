@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="180" viewBox="0 0 360 180">
+  <rect width="360" height="180" fill="white"/>
+  <g stroke="#222" stroke-width="3">
+    <line x1="20" y1="140" x2="340" y2="140"/>
+    <line x1="180" y1="140" x2="283" y2="17"/>
+  </g>
+  <g font-family="sans-serif" font-size="18" fill="#111">
+    <text x="90" y="120">130</text><text x="250" y="125">50</text>
+    <text x="70" y="170">130 + 50 = 180</text>
+  </g>
+</svg>

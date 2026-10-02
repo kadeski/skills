@@ -17,5 +17,5 @@ def grade(r):
     r.check("every review answer gets feedback", all(lib.feedback_count(lib.item_block(t, f"R{i}")) == 1 for i in (1, 2, 3)))
     r.check("no new lesson or review file", not lib.new_lessons(r, S), lib.new_lessons(r, S))
     r.claim("r2-feedback", "The feedback on R2 quotes the learner's reasoning in quotation marks and shows why a series circuit cannot carry different currents (one path), without simply announcing that c) is right.")
-    r.claim("cites", "The feedback on R1 and R3 says the answer is right and cites the notes by point number.")
+    r.check("R1 and R3 called right, citing the notes", all(lib.right_and_cited(lib.item_block(t, q)) for q in ("R1", "R3")))
     r.claim("reply", "The tutor's final reply says what was graded and when the next review is due or what to open next.")

@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: first-review-past-exam
+description: "Hard: lesson 03 passes the day before the exam, so each new rule's usual first review at pass + 2 days lands after the exam. The natural move is to write next = today + 2, but SKILL.md says a review that would land after the exam moves to the day before it, which is today, and a due rule comes back in the first lesson file written on or after its due date, so lesson 04, written now, opens with it as review. The older rule, due on the exam day itself, is not after the exam and stays put."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

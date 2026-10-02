@@ -99,6 +99,13 @@ def feedback_count(text):
     return len(re.findall(r"^> \*\*Feedback:\*\*", text or "", re.M))
 
 
+def right_and_cited(block):
+    """The item's feedback calls the answer right and cites the notes by point, like "(notes 3)"."""
+    fb = feedback(block)
+    return bool(re.match(r"> \*\*Feedback:\*\*\s*\**(Right|Correct)\b", fb)
+                and re.search(r"\([^)\n]*notes[^)\n]*\d[^)\n]*\)", fb, re.I))
+
+
 def strip_code(text):
     text = re.sub(r"^(```|~~~).*?^\1", "", text, flags=re.M | re.S)
     return re.sub(r"`[^`\n]*`", "", text)

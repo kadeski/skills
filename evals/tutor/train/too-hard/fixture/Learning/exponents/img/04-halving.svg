@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="250" viewBox="0 0 320 250">
+  <rect width="320" height="250" fill="white"/>
+  <g font-size="16" fill="#111">
+    <text x="20" y="30">2 to the 3</text><text x="140" y="30">8</text>
+    <text x="20" y="70">2 to the 2</text><text x="140" y="70">4</text>
+    <text x="20" y="110">2 to the 1</text><text x="140" y="110">2</text>
+    <text x="20" y="150">2 to the 0</text><text x="140" y="150">1</text>
+    <text x="20" y="190">2 to the -1</text><text x="140" y="190">1/2</text>
+    <text x="20" y="230">2 to the -2</text><text x="140" y="230">1/4</text>
+    <text x="200" y="50">divide by 2</text><text x="200" y="90">divide by 2</text>
+    <text x="200" y="130">divide by 2</text><text x="200" y="170">divide by 2</text>
+    <text x="200" y="210">divide by 2</text>
+  </g>
+</svg>

@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: last-lesson-review
+description: "Hard: 07, the last lesson in the plan, passes, and the run has to grade, update and then pick review rules in the right order. Grading: Q1 to Q3 are right with no guess tag, so 07 is passed, first try, and with 06 also first try Help drops 2 to 1; R1 (angles at a point make 180) is a wrong model tagged sure, which never blocks a pass but gets feedback that shows where it breaks, asks one question and does not give 255, a Misconceptions line, and r03 back to 1 day. Writing: with no next lesson and rules due, SKILL.md says the run writes review-<date>.md, at most 3 mc or number questions, one per due rule on a new case. Four rules are due today or earlier in the fixture (r03 to r06), but r03 was just answered and moved to tomorrow, r02 is learned and r07 is new (due in 2 days), so the file must hold exactly r04, r05 and r06. Adds over train/review-grading and train/pass-review-due: the review file is written, not graded, and which rules go in it depends on grading done earlier in the same run."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
