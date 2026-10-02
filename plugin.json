@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "kadeski-skills",
+  "version": "1.1.0",
+  "description": "Agent skills by Kaden Staker: tutor teaches one goal at a time in plain markdown files, with short graded lessons and spaced review."
+}
