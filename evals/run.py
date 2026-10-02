@@ -256,10 +256,29 @@ def stats(case_scores):
     return {"mean": sum(means) / n, "se": math.sqrt(var) / n, "n_cases": n}
 
 
+def skill_dir(skill):
+    """The skill's folder, plugins/<plugin>/skills/<skill>."""
+    found = sorted(ROOT.glob(f"plugins/*/skills/{skill}/SKILL.md"))
+    if len(found) != 1:
+        sys.exit(f"expected one plugins/*/skills/{skill}/SKILL.md, found {len(found)}")
+    return found[0].parent
+
+
+def stage_plugin(skill, dest):
+    """Copy the skill's plugin into dest with evals/ added, since `claude plugin eval`
+    reads cases from below the plugin and evals/ does not ship in plugins/."""
+    plugin = skill_dir(skill).parent.parent
+    shutil.copytree(plugin, dest)
+    shutil.copytree(EVALS / skill, dest / "evals" / skill, ignore=shutil.ignore_patterns("__pycache__"))
+    shutil.copy(EVALS / "seed.py", dest / "evals" / "seed.py")
+    return dest
+
+
 def skill_fingerprint(skill):
-    text = (ROOT / "skills" / skill / "SKILL.md").read_bytes()
+    sdir = skill_dir(skill)
+    text = (sdir / "SKILL.md").read_bytes()
     rev = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
-    dirty = subprocess.run(["git", "status", "--porcelain", f"skills/{skill}"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    dirty = subprocess.run(["git", "status", "--porcelain", str(sdir.relative_to(ROOT))], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     return {"commit": rev, "skill_dirty": bool(dirty), "skill_sha256": hashlib.sha256(text).hexdigest()[:12]}
 
 
@@ -283,7 +302,9 @@ def cmd_run(a):
     split_of = {c.name: s for s, cs in cases.items() for c in cs}
     dirs = {c.name: c for cs in cases.values() for c in cs}
 
-    cmd = ["claude", "plugin", "eval", str(ROOT), "--scaffold", "--keep-temp", "--trust-plugin",
+    staged = Path(tempfile.mkdtemp(prefix=f"{a.skill}-plugin-")) / "plugin"
+    stage_plugin(a.skill, staged)
+    cmd = ["claude", "plugin", "eval", str(staged), "--scaffold", "--keep-temp", "--trust-plugin",
            "--ablation", "none", "--no-publish", "--model", a.model, "--runs", str(a.runs),
            "-j", str(a.concurrency), "--allow-tools", "Write(~/**)", "Edit(~/**)", "Bash",
            "--output-dir", str(out / "plugin-eval"), "--json", str(out / "plugin-eval.json")]
@@ -293,7 +314,10 @@ def cmd_run(a):
     if a.max_cost:
         cmd += ["--max-cost-usd", str(a.max_cost)]
     print(f"Running {len(dirs)} case(s) x {a.runs} on {a.model} -> {out.relative_to(ROOT)}", flush=True)
-    proc = subprocess.run(cmd, cwd=ROOT, stdout=subprocess.DEVNULL if a.quiet else None)
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, stdout=subprocess.DEVNULL if a.quiet else None)
+    finally:
+        shutil.rmtree(staged.parent)
     if not (out / "plugin-eval.json").exists():
         sys.exit(f"claude plugin eval failed (exit {proc.returncode}) and wrote no result")
     result = json.loads((out / "plugin-eval.json").read_text())

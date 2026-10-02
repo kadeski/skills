@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "kadeski-skills",
+      "name": "tutor",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/tutor"
       },
       "policy": {
         "installation": "AVAILABLE"

@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "tutor",
-      "source": "./plugins/tutor"
+      "source": "plugins/tutor"
     }
   ]
 }

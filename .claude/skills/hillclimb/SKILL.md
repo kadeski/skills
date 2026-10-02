@@ -6,7 +6,7 @@ argument-hint: "<skill> [goal: score | cost] [rounds: N]"
 
 # Hillclimb
 
-Improve `skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.md` first for how runs and grading work.
+Improve `plugins/<plugin>/skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.md` first for how runs and grading work.
 
 ## Rules that keep the score honest
 
@@ -32,11 +32,11 @@ Improve `skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.m
 2. Name the root cause in one sentence, as a gap or ambiguity in SKILL.md, not as a fact about a case.
 3. Make one edit to SKILL.md.
 4. `evals/run.py run <skill>`, then `evals/run.py compare <previous kept run> <new run>`.
-5. Keep the edit if compare says Keep. If it says Unclear, keep only when the edit is plainly general; three Unclear keeps in a row is overfitting: revert to the last clear Keep. Otherwise `git checkout skills/<skill>/SKILL.md`.
+5. Keep the edit if compare says Keep. If it says Unclear, keep only when the edit is plainly general; three Unclear keeps in a row is overfitting: revert to the last clear Keep. Otherwise `git checkout plugins/<plugin>/skills/<skill>/SKILL.md`.
 6. Add an entry to `evals/<skill>/hillclimb-log.md`: date, root cause, the edit in one line, train and test before and after with bands, kept or reverted.
 
 Stop after the round limit (default 5), or after 3 rounds in a row with nothing kept. On a stall, edit nothing: sort each remaining train miss into skill gap, bad case, bad grader or noise, with the evidence, and report.
 
 ## Finish
 
-Report the start and end scores for train and test with their bands, and each kept edit. Recommend merging only if test rose beyond noise. Merging a SKILL.md change means bumping the version in all four plugin manifests and running `scripts/check.sh`. Do not commit unless asked.
+Report the start and end scores for train and test with their bands, and each kept edit. Recommend merging only if test rose beyond noise. Merging a SKILL.md change means bumping the version in all three of the plugin's manifests and running `scripts/check.sh`. Do not commit unless asked.
