@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: start-goal
+description: "Hard: lesson 01 must probe what lesson 02 needs without teaching anything or testing the goal itself, and the guess must come before any teaching."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor Ohm's law for series circuits, source: ~/notes/ohms-law.md. I want to work out the current and every voltage drop in a series circuit."
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

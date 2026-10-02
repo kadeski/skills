@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200">
+  <rect width="320" height="200" fill="white"/>
+  <text x="20" y="24" font-size="16" fill="#111">j = 0 to 3 across, i = 0 to 2 down</text>
+  <g fill="#9cc" stroke="#222">
+    <rect x="40" y="40" width="40" height="40"/><rect x="90" y="40" width="40" height="40"/><rect x="140" y="40" width="40" height="40"/><rect x="190" y="40" width="40" height="40"/>
+    <rect x="40" y="90" width="40" height="40"/><rect x="90" y="90" width="40" height="40"/><rect x="140" y="90" width="40" height="40"/><rect x="190" y="90" width="40" height="40"/>
+    <rect x="40" y="140" width="40" height="40"/><rect x="90" y="140" width="40" height="40"/><rect x="140" y="140" width="40" height="40"/><rect x="190" y="140" width="40" height="40"/>
+  </g>
+  <text x="245" y="115" font-size="16" fill="#111">3 x 4 = 12</text>
+</svg>
