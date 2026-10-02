@@ -271,7 +271,14 @@ def cmd_run(a):
         sys.exit("no cases matched")
     stamp = dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
     out = EVALS / "results" / f"{a.skill}-{stamp}"
-    out.mkdir(parents=True)
+    n = 1
+    while True:  # two runs started in the same second get -2, -3, ...
+        try:
+            out.mkdir(parents=True)
+            break
+        except FileExistsError:
+            n += 1
+            out = EVALS / "results" / f"{a.skill}-{stamp}-{n}"
     fingerprint = skill_fingerprint(a.skill)  # before the run, in case the skill changes during it
     split_of = {c.name: s for s, cs in cases.items() for c in cs}
     dirs = {c.name: c for cs in cases.values() for c in cs}
