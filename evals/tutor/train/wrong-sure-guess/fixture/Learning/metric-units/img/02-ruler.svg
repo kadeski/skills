@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="160" viewBox="0 0 380 160">
+  <rect width="380" height="160" fill="white"/>
+  <rect x="20" y="40" width="340" height="30" fill="#9cc" stroke="#222"/>
+  <text x="20" y="28" font-size="16" fill="#111">1 m = 100 cm</text>
+  <rect x="20" y="100" width="120" height="30" fill="#fc9" stroke="#222"/>
+  <text x="150" y="121" font-size="16" fill="#111">1 cm = 10 mm</text>
+  <text x="20" y="152" font-size="16" fill="#111">100 x 10 = 1000 mm in 1 m</text>
+</svg>

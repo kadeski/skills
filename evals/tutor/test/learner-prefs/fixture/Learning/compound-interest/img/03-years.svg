@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="200" viewBox="0 0 380 200">
+  <rect width="380" height="200" fill="white"/>
+  <text x="20" y="28" font-size="16" fill="#111">400 at 10% a year, compound</text>
+  <rect x="30" y="120" width="70" height="40" fill="#9cc" stroke="#222"/>
+  <text x="45" y="185" font-size="16" fill="#111">400</text>
+  <rect x="140" y="110" width="70" height="50" fill="#9cc" stroke="#222"/>
+  <text x="155" y="185" font-size="16" fill="#111">440</text>
+  <rect x="250" y="100" width="70" height="60" fill="#9cc" stroke="#222"/>
+  <text x="265" y="185" font-size="16" fill="#111">484</text>
+  <text x="100" y="80" font-size="16" fill="#111">+40</text>
+  <text x="215" y="80" font-size="16" fill="#111">+44</text>
+</svg>

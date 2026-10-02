@@ -12,7 +12,7 @@ evals/run.py rejudge evals/results/<run>     judge the same outputs again and co
 evals/run.py compare evals/results/<old> evals/results/<new>
 ```
 
-A full tutor run is 18 cases x 3 runs, about 20 minutes and several dollars. `--model` sets the model the skill runs on, `--judge-model` the judge (both default to sonnet). Compare only runs made with the same models.
+A full tutor run is 24 cases x 3 runs, about 25 minutes and roughly $9 on sonnet or $18 on opus. `--model` sets the model the skill runs on, `--judge-model` the judge (both default to sonnet). Compare only runs made with the same models.
 
 ## How a run works
 

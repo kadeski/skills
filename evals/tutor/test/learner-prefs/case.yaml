@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: learner-prefs
+description: "Hard: lesson 03 passes and lesson 04, a concept lesson, must be written under Learner.md preferences the learner added after lessons 01 to 03 used pictures, $$ math and the × sign: no pictures and no math blocks (an e-reader), times written as x, and never the word principal, though the notes use it. The prompt adds a fourth preference, tables of at most 2 columns, which SKILL.md says goes into Learner.md (add to it when they say how they like to learn) and must already hold for 04's table. SKILL.md says Learner.md wins over the defaults (a picture before prose is one) and a worked table counts as a picture for procedures, so 04 uses a table and no img/ file, and every word the run writes (feedback, rule, lesson) obeys the preferences. On top: the concept-lesson rules (reveal under Your guess, under 120 words of prose that opens with the problem, 2 or 3 questions on a new case, one in the learner's own words, never yes/no, a guess at 05 since 05 teaches a new idea), r02 due today so 04 opens with one review item on a new case, the 03 guess not revealed in 03, and Help kept at 2 because 02 was not a first try. Nearest case is too-easy (pass, then a concept lesson); this one adds learner preferences that override the lesson defaults and fight the earlier files' style."
+tags: [tutor-test]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/kadeski-skills:tutor done. Also, my e-reader cuts off wide tables, so keep any table to 2 columns."
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
