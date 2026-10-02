@@ -1,6 +1,6 @@
 {
   "name": "kadeski-skills",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Agent skills by Kaden Staker: tutor teaches one goal at a time in plain markdown files, with short graded lessons and spaced review.",
   "author": {
     "name": "Kaden Staker"
