@@ -1,6 +1,6 @@
 import lib
 
-F = "cwd/percent-change/01-where-youre-at.md"
+F = "cwd/percent-change/01-where-youre-at.html"
 
 
 def grade(r):
@@ -11,7 +11,7 @@ def grade(r):
     r.check("no new lesson file", not lib.new_lessons(r, "percent-change"), lib.new_lessons(r, "percent-change"))
     r.check("01 now has 5 questions", lib.items(t) == ["1", "2", "3", "4", "5"], lib.items(t))
     r.check("Q1 to Q3 get feedback", all(lib.feedback_count(lib.item_block(t, f"Q{i}")) == 1 for i in (1, 2, 3)))
-    r.check("new questions are unanswered", all("Answer:" in (lib.item_block(t, f"Q{i}") or "") and lib.feedback_count(lib.item_block(t, f"Q{i}")) == 0 for i in (4, 5)))
+    r.check("new questions are unanswered", all(lib.item_block(t, f"Q{i}") is not None and not lib.history(lib.item_block(t, f"Q{i}")) for i in (4, 5)))
     r.check("01 not marked passed yet", "passed" not in (g.status("01") or ""), g.status("01"))
     r.check("Help stays 2", g.help == 2, g.help)
     r.claim("harder", "The two new questions in lesson 01 (Q4 and Q5) are clearly harder than Q1 to Q3, for example multi-step or with less friendly numbers.")

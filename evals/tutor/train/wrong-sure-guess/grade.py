@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "metric-units"
-F03 = f"cwd/{S}/03-converting-lengths.md"
+F03 = f"cwd/{S}/03-converting-lengths.html"
 GUESS = "Guess for next time (not graded)"
 
 AUX = {"is", "are", "was", "were", "do", "does", "did", "can", "could", "will", "would", "should",
@@ -12,7 +12,7 @@ AUX = {"is", "are", "was", "were", "do", "does", "did", "can", "could", "will", 
 
 def yes_no(block):
     """Question sentences in an item that a yes or a no would answer."""
-    text = lib.strip_code(re.sub(r"^Answer:.*$", "", block or "", flags=re.M))
+    text = lib.text(lib.strip_code(block))
     hits = []
     for s in re.split(r"(?<=[.!?:])\s+|\n", text):
         s = s.strip().strip("*_ ").strip()
@@ -25,31 +25,23 @@ def yes_no(block):
     return hits
 
 
-def sections(text):
-    """[(heading, body)] for each `## ` section."""
-    parts = re.split(r"^## +(.*)$", text or "", flags=re.M)
-    return [(parts[i].strip(), parts[i + 1]) for i in range(1, len(parts) - 1, 2)]
-
-
 def prose_words(text):
-    """Words in the sections between `## Your guess` and `## Questions`, without
-    tables, math blocks, code or image lines. None if there is no such section."""
-    secs = sections(text)
+    """Words in the sections between Your guess and Questions, without
+    tables, code or pictures. None if there is no such section."""
+    secs = lib.sections(text)[1:]
     names = [h.lower() for h, _ in secs]
     if "your guess" not in names or "questions" not in names:
         return None
     mid = secs[names.index("your guess") + 1:names.index("questions")]
     if not mid:
         return None
-    body = "\n".join(b for _, b in mid)
-    body = re.sub(r"^\$\$$.*?^\$\$$", "", body, flags=re.M | re.S)
-    body = lib.strip_code(body)
-    lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith(("|", "!["))]
+    body = "\n".join(lib.text(lib.strip_code(b)) for _, b in mid)
+    lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith("|")]
     return len(re.findall(r"\S+", "\n".join(lines)))
 
 
-def options(text):
-    return re.findall(r"^\s*(?:[-*] )?\**\(?([a-h])\)", text or "", re.M)
+def options(block):
+    return re.findall(r"^\s*(?:[-*] )?\**\(?([a-h])\)", lib.text(block), re.M)
 
 
 def grade(r):
@@ -61,12 +53,12 @@ def grade(r):
 
     # 03: graded and passed; the guess is not graded and does not block
     r.check("03 marked passed, first try", "passed, first try" in st and "redo" not in st, st)
-    r.check("You can now line in 03", re.search(r"^You can now ", t03, re.M))
+    r.check("You can now line in 03", any(p.startswith("You can now ") for p in lib.passes(t03)))
     r.check("every 03 answer gets one feedback", all(lib.feedback_count(lib.item_block(t03, f"Q{i}")) == 1 for i in (1, 2, 3)))
     r.check("each 03 feedback cites the notes by point",
             all(re.search(r"\(notes \d", lib.feedback(lib.item_block(t03, f"Q{i}"))) for i in (1, 2, 3)))
-    before_guess = set((lib.section(r.read_before(F03), GUESS) or "").splitlines())
-    added_guess = [ln for ln in (lib.section(t03, GUESS) or "").splitlines() if ln not in before_guess and not ln.startswith("You can now")]
+    before_guess = set(lib.text(lib.section(r.read_before(F03), GUESS)).splitlines())
+    added_guess = [ln for ln in lib.text(lib.section(t03, GUESS)).splitlines() if ln not in before_guess and not ln.startswith("You can now")]
     r.check("03 does not reveal its own guess", not re.search(r"\bb\)|10,000|10000|10 000", " ".join(added_guess), re.I), added_guess)
 
     # goal.md bookkeeping
@@ -82,13 +74,13 @@ def grade(r):
     if not new:
         return
     t04 = r.read(new[0]) or ""
-    heads = [h for h, _ in sections(t04)]
-    head = t04.split("\n## ", 1)[0]
+    heads = [h for h, _ in lib.sections(t04) if h]
+    head = lib.text(lib.sections(t04)[0][1])
     r.check("04 mentions Help before its first section", re.search(r"\bhelp\b", head, re.I), head[:300])
     r.check("04 has no Review section (r02 not due)", "Review" not in heads, heads)
     reveal = lib.section(t04, "Your guess")
-    r.check("04 reveals 10,000 under Your guess", reveal is not None and re.search(r"10,000|10000|10 000", reveal), heads)
-    r.check("04 has a picture in img/ numbered 04", re.search(r"!\[[^\]]*\]\(img/04-[^)]*\.svg\)", t04))
+    r.check("04 reveals 10,000 under Your guess", reveal is not None and re.search(r"10,000|10000|10 000", lib.text(reveal)), heads)
+    r.check("04 has a picture in img/ numbered 04", any(re.fullmatch(r"img/04-[^/]*\.svg", s) for s in lib.images(t04)), lib.images(t04))
     n = prose_words(t04)
     r.check("prose between the reveal and the questions is under 120 words", n is not None and 0 < n < 120, n)
     qs = lib.items(lib.section(t04, "Questions"))
@@ -97,9 +89,9 @@ def grade(r):
     r.check("no yes/no question", not any(yn.values()), {k: v for k, v in yn.items() if v})
     last = heads[-1] if heads else ""
     r.check("04 ends with a guess for next time (05 teaches a new idea)", last.lower().startswith("guess for next time"), heads)
-    guess = lib.section(t04, last) or ""
+    guess = lib.section(t04, last)
     r.check("the guess, if mc, has 4 options", len(options(guess)) in (0, 4), options(guess))
-    before = "\n".join(b for _, b in sections(t04)[:-1]) if last.lower().startswith("guess") else t04
+    before = lib.text("".join(b for _, b in lib.sections(t04)[:-1]) if last.lower().startswith("guess") else t04)
     vol = re.findall(r".{0,30}(?:³|\^3|cubic|cube|litre|liter|\bml\b|\b[cm]?m3\b).{0,30}", before, re.I)
     r.check("no volume taught or tested before the guess", not vol, vol[:3])
 

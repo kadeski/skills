@@ -267,13 +267,25 @@ def item_block(text, label):
     return None if n is None else text[n.inner:n.inner_end]
 
 
+def history(block):
+    """An item's answers and feedback quotes in page order, as ("answer",
+    the learner's words) and ("feedback", text)."""
+    out = []
+    for n in _elements(_parse(block or "")):
+        if n.tag == "pre" and n.has_class("answer"):
+            out.append(("answer", _raw(n).strip()))
+        elif n.tag == "blockquote" and n.has_class("feedback"):
+            out.append(("feedback", _text(n)))
+    return out
+
+
 def answers(block):
     """The learner's answers, word for word, in order."""
-    return [_raw(n).strip("\n") for n in _find(block, "pre", "answer")]
+    return [t for kind, t in history(block) if kind == "answer"]
 
 
 def feedbacks(block):
-    return [_text(n) for n in _find(block, "blockquote", "feedback")]
+    return [t for kind, t in history(block) if kind == "feedback"]
 
 
 def feedback(block):
@@ -282,8 +294,10 @@ def feedback(block):
 
 
 def last_feedback(block):
-    fb = feedbacks(block)
-    return fb[-1] if fb else ""
+    """The last feedback quote and whatever follows it in the block, such as
+    a picture or table placed right after the quote, as text."""
+    fb = _find(block, "blockquote", "feedback")
+    return text(block[fb[-1].start:]) if fb else ""
 
 
 def feedback_count(text):

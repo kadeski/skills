@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "sequences"
-F = f"cwd/{S}/03-counting-terms.md"
+F = f"cwd/{S}/03-counting-terms.html"
 
 
 def grade(r):
@@ -15,7 +15,7 @@ def grade(r):
     r.check("no new lesson file", not lib.new_lessons(r, S), lib.new_lessons(r, S))
     r.check("plan says redo Q2 only", "Q2" in st and "Q1" not in st and "Q3" not in st and "passed" not in st, st)
     r.check("every answer gets feedback", all(lib.feedback_count(lib.item_block(t, f"Q{i}")) == 1 for i in (1, 2, 3)))
-    r.check("Q2 feedback does not call it right", q2 and not re.match(r"> \*\*Feedback:\*\*\s*\**(Right|Correct)\b", q2), q2[:300])
+    r.check("Q2 feedback does not call it right", q2 and not re.match(r"(Right|Correct)\b", q2), q2[:300])
     r.check("Q2 feedback does not give 27", not re.search(r"\b27(th)?\b", q2), q2[:300])
     r.check("Q2 feedback quotes the learner's answer", re.search(r'"[^"\n]*26[^"\n]*"|“[^”\n]*26[^”\n]*”', q2), q2[:300])
     r.check("no rule added for 03", set(g.rules) == {"r02"}, list(g.rules))

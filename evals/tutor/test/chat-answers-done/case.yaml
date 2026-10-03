@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: chat-answers-done
-description: "Hard: every answer of lesson 02 comes in the chat, out of order, with done, and the file has only blank Answer lines. SKILL.md says to copy each answer under its Answer line word for word with its tag as written (`17 sure` stays `17 sure`, not `17 (sure)`), never fixing it, and then grade. The pull is to grade from the chat and leave the file blank, to tidy the wording or tags, or to fix Q3, which is a wrong model tagged sure: it needs feedback with one question and no fix, a Misconceptions line and redo Q3 in the plan, so no lesson 03 is written. The guess `g: a guess` is copied too but not graded."
+description: "Hard: every answer of lesson 02 comes in the chat, out of order, with done, and the file has no answers yet. SKILL.md says to copy each answer into its question's section word for word with its tag as written (`17 sure` stays `17 sure`, not `17 (sure)`), never fixing it, and then grade. The pull is to grade from the chat and leave the file blank, to tidy the wording or tags, or to fix Q3, which is a wrong model tagged sure: it needs feedback with one question and no fix, a Misconceptions line and redo Q3 in the plan, so no lesson 03 is written. The guess `g: a guess` is copied too but not graded."
 tags: [tutor-test]
 execution:
   max_turns: 60

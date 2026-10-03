@@ -1,18 +1,12 @@
-import re
 import lib
 
 S = "percent-change"
-F = f"cwd/{S}/02-percent-of-a-number.md"
+F = f"cwd/{S}/02-percent-of-a-number.html"
 ANSWERS = {
     "Q1": "17 sure",
     "Q2": "5% of 60 is 0.05 x 60 and 60% of 5 is 0.6 x 5, both come to 3 because you can swap the order you multiply in",
     "Q3": "Sam is right, a percent can't go over 100 since 100% is the whole thing (sure)",
 }
-
-
-def answer_line(block):
-    m = re.search(r"^Answer: *(.*)$", block or "", re.M)
-    return m.group(1).strip() if m else ""
 
 
 def grade(r):
@@ -22,10 +16,10 @@ def grade(r):
     t = r.read(F) or ""
     blocks = {q: lib.item_block(t, q) or "" for q in ANSWERS}
     for q, a in ANSWERS.items():
-        r.check(f"{q} answer copied word for word with its tag", answer_line(blocks[q]) == a, answer_line(blocks[q]))
-    guess = lib.section(t, "Guess for next time (not graded)") or ""
-    r.check("guess answer copied as written", answer_line(guess) == "a guess", answer_line(guess))
-    r.check("guess not graded", "**Feedback:**" not in guess, guess[-200:])
+        r.check(f"{q} answer copied word for word with its tag", lib.answers(blocks[q]) == [a], lib.answers(blocks[q]))
+    guess = lib.section(t, "Guess for next time (not graded)")
+    r.check("guess answer copied as written", lib.answers(guess) == ["a guess"], lib.answers(guess))
+    r.check("guess not graded", not lib.feedback_count(guess), lib.feedbacks(guess))
     r.check("Q1, Q2 and Q3 each get one feedback quote",
             all(lib.feedback_count(b) == 1 for b in blocks.values()),
             {q: lib.feedback_count(b) for q, b in blocks.items()})

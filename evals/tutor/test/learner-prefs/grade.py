@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "compound-interest"
-F03 = f"cwd/{S}/03-compounding-year-by-year.md"
+F03 = f"cwd/{S}/03-compounding-year-by-year.html"
 
 AUX = {"is", "are", "was", "were", "do", "does", "did", "can", "could", "will", "would", "should",
        "has", "have", "had", "must", "may", "might", "shall", "isn't", "aren't", "doesn't", "don't",
@@ -11,7 +11,7 @@ AUX = {"is", "are", "was", "were", "do", "does", "did", "can", "could", "will", 
 
 def yes_no(block):
     """Question sentences in an item that a yes or a no would answer."""
-    text = lib.strip_code(re.sub(r"^Answer:.*$", "", block or "", flags=re.M))
+    text = lib.text(lib.strip_code(block))
     hits = []
     for s in re.split(r"(?<=[.!?:])\s+|\n", text):
         s = s.strip().strip("*_ ").strip()
@@ -24,31 +24,23 @@ def yes_no(block):
     return hits
 
 
-def sections(text):
-    """[(heading, body)] for each `## ` section."""
-    parts = re.split(r"^## +(.*)$", text or "", flags=re.M)
-    return [(parts[i].strip(), parts[i + 1]) for i in range(1, len(parts) - 1, 2)]
-
-
 def prose_words(text):
-    """Words in the sections between `## Your guess` and `## Questions`, without
-    tables, math blocks, code or image lines. None if there is no such section."""
-    secs = sections(text)
+    """Words in the sections between Your guess and Questions, without
+    tables, code or pictures. None if there is no such section."""
+    secs = lib.sections(text)[1:]
     names = [h.lower() for h, _ in secs]
     if "your guess" not in names or "questions" not in names:
         return None
     mid = secs[names.index("your guess") + 1:names.index("questions")]
     if not mid:
         return None
-    body = "\n".join(b for _, b in mid)
-    body = re.sub(r"^\$\$$.*?^\$\$$", "", body, flags=re.M | re.S)
-    body = lib.strip_code(body)
-    lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith(("|", "!["))]
+    body = "\n".join(lib.text(lib.strip_code(b)) for _, b in mid)
+    lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith("|")]
     return len(re.findall(r"\S+", "\n".join(lines)))
 
 
-def options(text):
-    return re.findall(r"^\s*(?:[-*] )?\**\(?([a-h])\)", text or "", re.M)
+def options(block):
+    return re.findall(r"^\s*(?:[-*] )?\**\(?([a-h])\)", lib.text(block), re.M)
 
 
 def grade(r):
@@ -62,7 +54,7 @@ def grade(r):
 
     # Grading and bookkeeping for 03
     r.check("03 marked passed, first try", "passed, first try" in st and "redo" not in st, st)
-    r.check("You can now line in 03", re.search(r"^You can now ", t03, re.M))
+    r.check("You can now line in 03", any(p.startswith("You can now ") for p in lib.passes(t03)))
     r.check("every 03 answer gets one feedback", all(lib.feedback_count(lib.item_block(t03, f"Q{i}")) == 1 for i in (1, 2, 3)))
     r.check("each 03 feedback cites the notes by point", all(re.search(r"\(notes \d", fb[i]) for i in (1, 2, 3)),
             {i: fb[i][:120] for i in (1, 2, 3)})
@@ -72,23 +64,25 @@ def grade(r):
     lm, lm0 = r.read("cwd/Learner.md") or "", r.read_before("cwd/Learner.md")
     r.check("Learner.md gains the 2-column table preference, old lines kept",
             re.search(r"\b(2|two)[ -]columns?\b", lm, re.I) and all(ln in lm for ln in lm0.splitlines() if ln.strip()), lm)
-    before_guess = set((lib.section(r.read_before(F03), "Guess for next time (not graded)") or "").splitlines())
-    added_guess = [ln for ln in (lib.section(t03, "Guess for next time (not graded)") or "").splitlines() if ln not in before_guess and not ln.startswith("You can now")]
+    before_guess = set(lib.text(lib.section(r.read_before(F03), "Guess for next time (not graded)")).splitlines())
+    added_guess = [ln for ln in lib.text(lib.section(t03, "Guess for next time (not graded)")).splitlines() if ln not in before_guess and not ln.startswith("You can now")]
     r.check("03 does not reveal its own guess", not re.search(r"\bb\)|864|1\.728|1\.2\^3|1\.2³", " ".join(added_guess), re.I), added_guess)
 
     new = lib.new_lessons(r, S)
     r.check("lesson 04 written and linked", len(new) == 1 and "/04-" in new[0] and "](04-" in (g.plan.get("04") or [""])[0], new)
     t04 = r.read(new[0]) if new else ""
+    t03_before = r.read_before(F03)
 
     # Learner.md preferences, on everything the run wrote
-    written = "\n".join([t04, *fb.values(), g.rules.get("r03") or "",
-                         *re.findall(r"^You can now .*$", t03, re.M)])
+    written = "\n".join([lib.text(t04), *fb.values(), g.rules.get("r03") or "", *lib.passes(t03)])
+    tables = lib.tables(t04) + [x for x in lib.tables(t03) if x not in lib.tables(t03_before)]
     # Each needs lesson 04 to exist, so a run that writes nothing gets no credit.
     pics = [f for f in r.new_files() if f.endswith((".svg", ".png"))]
     r.check("no new picture files", new and not pics, pics or "no lesson 04")
-    r.check("no image link in what the run wrote", new and "![" not in written, "no lesson 04" if not new else "")
-    r.check("04 has a table in place of a picture", len(re.findall(r"^\|.*\|\s*$", t04, re.M)) >= 3)
-    wide = [ln for ln in re.findall(r"^\|.*\|\s*$", written, re.M) if len(ln.strip().strip("|").split("|")) > 2]
+    imgs = lib.images(t04) + [x for x in lib.images(t03) if x not in lib.images(t03_before)]
+    r.check("no image link in what the run wrote", new and not imgs, imgs or "no lesson 04")
+    r.check("04 has a table in place of a picture", any(len(x) >= 2 for x in lib.tables(t04)))
+    wide = [row for x in tables for row in x if len(row) > 2]
     r.check("every table the run wrote has at most 2 columns", new and not wide, wide[:2] or "no lesson 04")
     r.check("no $ math in what the run wrote", new and "$" not in written, "no lesson 04" if not new else "")
     times = re.findall(r"×|\\times|\\cdot|·|\d ?\* ?\d", written)
@@ -99,7 +93,7 @@ def grade(r):
         return
 
     # Concept lesson rules for 04
-    heads = [h for h, _ in sections(t04)]
+    heads = [h for h, _ in lib.sections(t04) if h]
     r.check("04 opens with a Review section (r02 is due)", heads[:1] == ["Review"], heads)
     rev = lib.section(t04, "Review")
     r.check("Review holds one R item", rev is not None and lib.items(rev, "R") == ["1"], lib.items(rev or "", "R"))
@@ -114,7 +108,7 @@ def grade(r):
     r.check("no yes/no question", not any(yn.values()), {k: v for k, v in yn.items() if v})
     last = heads[-1] if heads else ""
     r.check("04 ends with a guess for next time (05 teaches a new idea)", last.lower().startswith("guess for next time"), heads)
-    guess = lib.section(t04, last) or ""
+    guess = lib.section(t04, last)
     r.check("the guess, if mc, has 4 options", len(options(guess)) in (0, 4), options(guess))
 
     r.claim("reveal", "Lesson 04's Your guess section says the answer is b) 500 x 1.2^3 (864) and shows where the learner's a) 500 x 1.6 goes wrong: it adds the three 20%s instead of applying the factor 1.2 three times.")

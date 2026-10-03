@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "density"
-F03 = f"cwd/{S}/03-density.md"
+F03 = f"cwd/{S}/03-density.html"
 
 
 def grade(r):
@@ -11,13 +11,13 @@ def grade(r):
     g = lib.goal(r, S)
     t03 = r.read(F03)
     r.check("03 marked passed, first try", "passed, first try" in (g.status("03") or ""), g.status("03"))
-    r.check("You can now line in 03", re.search(r"^You can now ", t03, re.M))
+    r.check("You can now line in 03", any(p.startswith("You can now ") for p in lib.passes(t03)))
     r.check("every answer gets feedback", all(lib.feedback_count(lib.item_block(t03, f"Q{i}")) == 1 for i in (1, 2, 3)))
     r.check("Help stays 2 (02 was not a first try)", g.help == 2, g.help)
     r.check("Exam date unchanged", re.search(rf"^- Exam: {r.d(1)}$", g.text, re.M))
     # Lesson 03 may yield one rule or two (D = m / V, and size does not change it), under any id.
-    before = set(lib.section(r.read_before(f"cwd/{S}/goal.md"), "Rules").splitlines())
-    added = [x for x in (lib.section(g.text, "Rules") or "").splitlines() if x.startswith("- ") and x not in before and not x.startswith("- r02")]
+    before = set(lib.md_section(r.read_before(f"cwd/{S}/goal.md"), "Rules").splitlines())
+    added = [x for x in (lib.md_section(g.text, "Rules") or "").splitlines() if x.startswith("- ") and x not in before and not x.startswith("- r02")]
     r.check("new rules from 03 have their first review moved to the day before the exam (today)",
             added and all(f"next {r.d(0)}" in x for x in added), added)
     r.check("r02, due on the exam day, unchanged", g.rule_next("r02") == r.d(1) and g.rule_gap("r02") == 2, g.rules.get("r02"))

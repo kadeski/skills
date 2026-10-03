@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "angle-facts"
-F07 = f"cwd/{S}/07-outside-angles.md"
+F07 = f"cwd/{S}/07-outside-angles.html"
 R1_ANSWER = "75, angles at a point make 180 like on a straight line"
 
 # An option line: "- a) 40", "a) 40", "- **b)** 40"
@@ -11,7 +11,7 @@ REASONING = re.compile(r"\b(?:because|since|so|means|as it|which|that is)\b|:", 
 
 
 def options(block):
-    return OPTION.findall(block or "")
+    return OPTION.findall(lib.text(block))
 
 
 def quotes_learner(fb, answer):
@@ -31,7 +31,7 @@ def grade(r):
 
     # grading lesson 07
     r.check("07 marked passed, first try (a wrong review answer never blocks)", "passed, first try" in st, st)
-    r.check("You can now line in 07", re.search(r"^You can now ", t07, re.M))
+    r.check("You can now line in 07", any(p.startswith("You can now ") for p in lib.passes(t07)))
     r.check("Q1 to Q3 and R1 each get one feedback",
             all(lib.feedback_count(lib.item_block(t07, x)) == 1 for x in ("Q1", "Q2", "Q3", "R1")))
     uncited = [x for x in ("Q1", "Q2", "Q3", "R1") if not re.search(r"notes\D{0,12}\d", lib.feedback(lib.item_block(t07, x)))]
@@ -51,9 +51,9 @@ def grade(r):
     r.claim("r1-one-question", "The feedback on R1 in lesson 07 asks exactly one question, not two questions or one question with two parts joined by 'and' or 'so'.")
 
     # the review file
-    rf = f"cwd/{S}/review-{r.d(0)}.md"
+    rf = f"cwd/{S}/review-{r.d(0)}.html"
     new = lib.new_lessons(r, S)
-    r.check("exactly one new file, review-<today>.md, and no new lesson", new == [rf], new)
+    r.check("exactly one new file, review-<today>.html, and no new lesson", new == [rf], new)
     r.check("final reply gives the review file's path", f"review-{r.d(0)}" in (r.final or ""), (r.final or "")[:200])
     if rf not in new:
         return
@@ -61,7 +61,7 @@ def grade(r):
     rev = lib.section(t, "Review")
     rs = lib.items(rev or "", "R")
     r.check("review file has 3 R items under Review (r04, r05, r06)", rs == ["1", "2", "3"], rs)
-    r.check("review file has no Q items and no guess", not lib.items(t) and "Guess for next time" not in t, lib.items(t))
+    r.check("review file has no Q items and no guess", not lib.items(t) and "Guess for next time" not in lib.text(t), lib.items(t))
     labels = [f"R{i}" for i in rs]
     opts = {x: options(lib.item_block(t, x)) for x in labels}
     mc = [x for x in labels if opts[x]]
@@ -69,8 +69,8 @@ def grade(r):
     r.check("every mc item has exactly 4 options, a to d", not bad, bad)
     reasoning = [f"{x}: {o}" for x in mc for _, o in opts[x] if REASONING.search(o)]
     r.check("no option holds reasoning", not reasoning, reasoning[:4])
-    r.check("no item tests r07, which is not due (outside angles)", not re.search(r"outside|exterior|extend", t, re.I),
-            re.findall(r"[^\n]*(?:outside|exterior|extend)[^\n]*", t, re.I)[:2])
+    r.check("no item tests r07, which is not due (outside angles)", not re.search(r"outside|exterior|extend", lib.text(t), re.I),
+            re.findall(r"[^\n]*(?:outside|exterior|extend)[^\n]*", lib.text(t), re.I)[:2])
 
     r.claim("review-r04", "Some R item in the review file tests r04 (where two lines cross, opposite angles are equal) on a case other than lesson 04's 40 and 140 picture and its 65 question.")
     r.claim("review-r05", "Some R item in the review file tests r05 (the angles in a triangle add up to 180) on a case other than lesson 05's 50 and 70, 25 and 110, right angle and 38, or 100 and 90.")

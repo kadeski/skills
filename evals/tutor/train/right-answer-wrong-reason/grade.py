@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "mean-and-median"
-F = f"cwd/{S}/03-what-an-outlier-does.md"
+F = f"cwd/{S}/03-what-an-outlier-does.html"
 
 
 def grade(r):
@@ -16,7 +16,7 @@ def grade(r):
     r.check("plan says redo Q2 only", "Q2" in st and "Q1" not in st and "Q3" not in st and "passed" not in st, st)
     r.check("misconception logged as 03 Q2", any(m.startswith("03 Q2") for m in g.misconceptions), g.misconceptions)
     r.check("every answer gets feedback", all(lib.feedback_count(lib.item_block(t, f"Q{i}")) == 1 for i in (1, 2, 3)))
-    r.check("Q2 feedback does not mark it right", q2 and not re.match(r"> \*\*Feedback:\*\*\s*\**(Right|Correct)\**\s*[:.!]", q2), q2[:300])
+    r.check("Q2 feedback does not mark it right", q2 and not re.match(r"(Right|Correct)\s*[:.!]", q2), q2[:300])
     r.check("Q2 feedback quotes the 'always' line", re.search(r'"[^"\n]*always[^"\n]*"|“[^”\n]*always[^”\n]*”', q2), q2[:300])
     r.check("no rule added for 03", set(g.rules) == {"r02"}, list(g.rules))
     r.check("Help stays 2", g.help == 2, g.help)

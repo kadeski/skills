@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "exponents"
-F = f"cwd/{S}/04-negative-exponents.md"
+F = f"cwd/{S}/04-negative-exponents.html"
 # Q1: 3^-2 = 1/9. Q3: 10^-3 = 1/1000.
 ANSWERS = r"\b1\s*/\s*9\b|\\frac\{1\}\{9\}|0\.1{2,}|one.ninth|\b1\s*/\s*1,?000\b|\\frac\{1\}\{1000\}|0\.001\b|thousandth"
 
@@ -15,9 +15,9 @@ def grade(r):
     t = r.read(F) or ""
     r.check("Help rises one, to 3", g.help == 3, g.help)
     r.check("nothing graded", lib.feedback_count(t) == 0, lib.feedback_count(t))
-    filled = [a.strip() for a in re.findall(r"^Answer:(.*)$", t, re.M) if a.strip()]
+    filled = lib.answers(t)
     r.check("every answer still blank", not filled, filled)
-    qs = lib.section(t, "Questions") or ""
+    qs = lib.text(lib.section(t, "Questions"))
     hit = re.search(ANSWERS, qs, re.I) or re.search(ANSWERS, r.final or "", re.I)
     r.check("Q1 and Q3 answers not given", not hit, hit.group(0) if hit else "")
     r.check("no new lesson or review file", not lib.new_lessons(r, S), lib.new_lessons(r, S))
