@@ -1,0 +1,13 @@
+# Percent Change
+
+- Goal: work out percent increases and decreases, and undo a percent change.
+- Source: my notes, ~/notes/percent.md, points 1 to 5
+- Help: 2
+
+## Plan
+
+- [01 Where you're at](01-where-youre-at.md) - passed
+- [02 Percent of a number](02-percent-of-a-number.md)
+- 03 Percent change
+- 04 Undoing a change
+- 05 Mixed drill

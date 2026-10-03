@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: chat-answers-done
+description: "Hard: every answer of lesson 02 comes in the chat, out of order, with done, and the file has only blank Answer lines. SKILL.md says to copy each answer under its Answer line word for word with its tag as written (`17 sure` stays `17 sure`, not `17 (sure)`), never fixing it, and then grade. The pull is to grade from the chat and leave the file blank, to tidy the wording or tags, or to fix Q3, which is a wrong model tagged sure: it needs feedback with one question and no fix, a Misconceptions line and redo Q3 in the plan, so no lesson 03 is written. The guess `g: a guess` is copied too but not graded."
+tags: [tutor-test]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/tutor:tutor 3: Sam is right, a percent can't go over 100 since 100% is the whole thing (sure)\n1: 17 sure\ng: a guess\n2: 5% of 60 is 0.05 x 60 and 60% of 5 is 0.6 x 5, both come to 3 because you can swap the order you multiply in\ndone"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
