@@ -22,4 +22,4 @@ def grade(r):
     r.check("final reply names Q1 and Q3", "Q1" in r.final and "Q3" in r.final, r.final[:200])
     r.claim("slip", "The learner's Q1 answer has an arithmetic slip: 50 / 250 is 0.2, not 0.25, so the right answer is 20%. The feedback on Q1 catches this and treats it as a slip: it points at the step 50 / 250 and asks the learner to check it, without saying what 50 / 250 is.")
     r.claim("gap", "The feedback on Q3 teaches why the change is measured against the old value using a new example (not 250 to 300 or 800 to 600), and leaves the learner to put the reason in their own words.")
-    r.claim("q2", "The feedback on Q2 says the answer is right and cites the notes.")
+    r.check("Q2 called right, citing the notes", lib.right_and_cited(lib.item_block(t, "Q2")))
