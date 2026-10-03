@@ -148,11 +148,44 @@ def common(r):
         base = f.rsplit("/", 1)[0]
         links += [f"{f} -> {x}" for x in re.findall(r"!\[[^\]]*\]\(([^)\s]+)\)", t) if r.read(f"{base}/{x}") is None]
     rule("broken image link", links)
+    rule("sentence over 25 words", [
+        f"{f}: {s[:60]}..." for f, t in md.items() if re.search(r"/(\d\d-[^/]*|review-[^/]*)\.md$", f)
+        for s in long_sentences(t, r.read_before(f))][:3])
     r.check("format", not broken, "; ".join(broken))
 
     if svg:
         bad = [f"{f.rsplit('/', 1)[-1]}: {why}" for f, t in svg.items() for ok, why in [svg_ok(t)] if not ok]
         r.check("pictures read on a phone", not bad, "; ".join(bad))
+
+
+def long_sentences(text, before=None, limit=25):
+    """Prose sentences over `limit` words in lines a run added. Skips code,
+    math, tables, headings, images, options, the learner's answers and quoted
+    words. STE100 allows 25 words in descriptive text; SKILL.md asks for 20."""
+    old = set((before or "").splitlines())
+    text = re.sub(r"^\$\$$.*?^\$\$$", "", text or "", flags=re.M | re.S)
+    text = re.sub(r"^(```|~~~).*?^\1", "", text, flags=re.M | re.S)
+    paras, cur = [], []
+    for line in text.splitlines():
+        body = re.sub(r"^(>\s?)+", "", line).strip()
+        skip = (line in old or not body or body.startswith(("#", "|", "![", "Answer:"))
+                or re.match(r"([-*] |\d+\. )?\**\(?[a-h]\)", body))
+        item = re.match(r"([-*]|\d+\.) ", body)
+        if skip or item:
+            paras.append(" ".join(cur))
+            cur = []
+        if not skip:
+            cur.append(body)
+    paras.append(" ".join(cur))
+    hits = []
+    for p in paras:
+        p = re.sub(r"`[^`]*`|\$[^$]*\$", "x", p)
+        p = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", p)
+        p = re.sub(r'"[^"]*"|\u201c[^\u201d]*\u201d', "x", p)
+        for s in re.split(r"(?<=[.!?])\s+", p):
+            if len(re.findall(r"[\w\d]+(?:['\u2019.-][\w\d]+)*", s)) > limit:
+                hits.append(s)
+    return hits
 
 
 def svg_ok(t):
