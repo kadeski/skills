@@ -343,6 +343,12 @@ def strip_code(text):
     return re.sub(r"`[^`\n]*`", "", text)
 
 
+def title(page):
+    """The text of the page's `<h1>`, or None."""
+    h1 = _find(page, "h1")
+    return _text(h1[0]) if h1 else None
+
+
 def part_of(page):
     """The page has a `Part of ...` line that links goal.md."""
     return any(_text(p).startswith("Part of")
@@ -387,7 +393,7 @@ def common(r):
         f for f, t in md_lessons.items()
         if not (t.startswith("# ") and re.search(r"^Part of \[[^\]]+\]\(goal\.md\)", t, re.M))])
     rule("page lacks the head.html marker", [f for f, t in pages.items() if MARKER not in t])
-    rule("page lacks h1 or Part-of line", [f for f, t in pages.items() if not (_find(t, "h1") and part_of(t))])
+    rule("page lacks h1 or Part-of line", [f for f, t in pages.items() if not (title(t) and part_of(t))])
     rule("script in page", [f for f, t in pages.items() if _find(t, "script")])
     links = []
     for f, t in {**md, **pages}.items():
