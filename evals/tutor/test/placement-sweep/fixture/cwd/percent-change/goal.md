@@ -6,7 +6,7 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md)
+- [01 Where you're at](01-where-youre-at.html)
 - 02 Percent of a number
 - 03 Percent change
 - 04 Undoing a change

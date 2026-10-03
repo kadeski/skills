@@ -1,39 +1,53 @@
-# 01 Where you're at
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>01 Where you're at</title>
+<h1>01 Where you're at</h1>
+<p>Part of <a href="goal.md">Counting Loop Steps</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [Counting Loop Steps](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> How many times does the body of this loop run?</p>
+<pre><code>for i in range(2, 10):
+    print(i)</code></pre>
+<pre class="answer">8</pre>
+<blockquote class="feedback">Right: <code>range(2, 10)</code> stops before 10, so it gives 10 - 2 = 8 values (notes 1).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> If n is 1000, about how big is n squared?</p>
+<pre class="answer">a million</pre>
+<blockquote class="feedback">Right: 1000 x 1000 = 1,000,000.</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> What values does <code>range(0, 9, 3)</code> give?</p>
+<pre class="answer">0, 3, 6</pre>
+<blockquote class="feedback">Right: it steps by 3 and stops before 9 (notes 2).</blockquote>
+</section>
 
-## Questions
-
-**Q1.** How many times does the body of this loop run?
-
-```python
-for i in range(2, 10):
-    print(i)
-```
-
-Answer: 8
-
-> **Feedback:** Right: `range(2, 10)` stops before 10, so it gives 10 - 2 = 8 values (notes 1).
-
-**Q2.** If n is 1000, about how big is n squared?
-
-Answer: a million
-
-> **Feedback:** Right: 1000 x 1000 = 1,000,000.
-
-**Q3.** What values does `range(0, 9, 3)` give?
-
-Answer: 0, 3, 6
-
-> **Feedback:** Right: it steps by 3 and stops before 9 (notes 2).
-
-## Guess for next time (not graded)
-
-A loop runs its body once for each item in a list of n items, and the body does 3 steps. How many steps in all?
-
-- a) 3
-- b) n
-- c) 3n
-- d) n cubed
-
-Answer: b (guess)
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>A loop runs its body once for each item in a list of n items, and the body does 3 steps. How many steps in all?</p>
+<ul>
+<li>a) 3</li>
+<li>b) n</li>
+<li>c) 3n</li>
+<li>d) n cubed</li>
+</ul>
+<pre class="answer">b (guess)</pre>
+</section>

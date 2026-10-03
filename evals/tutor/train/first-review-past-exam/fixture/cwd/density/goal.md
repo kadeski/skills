@@ -7,9 +7,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Volume of a box](02-volume-of-a-box.md) - passed
-- [03 Density](03-density.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Volume of a box](02-volume-of-a-box.html) - passed
+- [03 Density](03-density.html)
 - 04 Floating and sinking
 - 05 Mixed drill
 

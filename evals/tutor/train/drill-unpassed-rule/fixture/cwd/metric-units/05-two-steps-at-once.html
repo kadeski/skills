@@ -1,49 +1,65 @@
-# 05 Two steps at once
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>05 Two steps at once</title>
+<h1>05 Two steps at once</h1>
+<p>Part of <a href="goal.md">Metric Conversions</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+<p>Help is down to 2, since you passed 03 and 04 first try: an outline and a picture, no worked example.</p>
 
-Part of [Metric Conversions](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Review</h2>
+<section id="R1">
+<p><b>R1.</b> How many centimetres are in 6 m?</p>
+<pre class="answer">6 x 100 = 60 (sure)</pre>
+</section>
+<section id="R2">
+<p><b>R2.</b> How many metres are in 720 cm?</p>
+<pre class="answer">72,000, there are 100 cm in a metre so you times by 100 (sure)</pre>
+</section>
 
-Help is down to 2, since you passed 03 and 04 first try: an outline and a picture, no worked example.
+<h2>Your guess</h2>
+<p>Last time: a run is 2.5 km long. How many centimetres is that? You said <b>a) 2500</b>. It is <b>c) 250,000</b>.</p>
+<img src="img/05-two-steps.svg" alt="2.5 km becomes 2500 m (x 1000), then 250,000 cm (x 100)">
+<ul>
+<li>a) 2500 stops at metres.</li>
+<li>b) 25,000 uses 10 cm in a metre.</li>
+<li>c) 250,000: x 1000 to get metres, then x 100 to get centimetres.</li>
+<li>d) 0.025 divides by 100 instead of multiplying.</li>
+</ul>
 
-## Review
+<h2>The idea</h2>
+<p>Your 2500 is right, but it is in metres. Km to cm crosses two steps, so take both (notes 5):</p>
+<ul>
+<li>2.5 km x 1000 = 2500 m</li>
+<li>2500 m x 100 = 250,000 cm</li>
+</ul>
+<p>Or multiply the factors first: a km holds 1000 x 100 = 100,000 cm, and 2.5 x 100,000 = 250,000.</p>
 
-**R1.** How many centimetres are in 6 m?
-
-Answer: 6 x 100 = 60 (sure)
-
-**R2.** How many metres are in 720 cm?
-
-Answer: 72,000, there are 100 cm in a metre so you times by 100 (sure)
-
-## Your guess
-
-Last time: a run is 2.5 km long. How many centimetres is that? You said **a) 2500**. It is **c) 250,000**.
-
-![2.5 km becomes 2500 m (x 1000), then 250,000 cm (x 100)](img/05-two-steps.svg)
-
-- a) 2500 stops at metres.
-- b) 25,000 uses 10 cm in a metre.
-- c) 250,000: x 1000 to get metres, then x 100 to get centimetres.
-- d) 0.025 divides by 100 instead of multiplying.
-
-## The idea
-
-Your 2500 is right, but it is in metres. Km to cm crosses two steps, so take both (notes 5):
-
-- 2.5 km x 1000 = 2500 m
-- 2500 m x 100 = 250,000 cm
-
-Or multiply the factors first: a km holds 1000 x 100 = 100,000 cm, and 2.5 x 100,000 = 250,000.
-
-## Questions
-
-**Q1.** A path is 0.4 km long. How long is it in centimetres?
-
-Answer: 40,000 (sure)
-
-**Q2.** In your own words: why can you multiply 1000 by 100 and go straight from km to cm?
-
-Answer: each km is 1000 m and each of those metres is 100 cm, so one km is 1000 lots of 100 cm, which is 100,000 cm (guess)
-
-**Q3.** Mia says 60,000 mm is 60 km, since milli and kilo both mean 1000. What is wrong?
-
-Answer: milli is a thousandth of a metre and kilo is 1000 metres, so mm to km is two steps. 60,000 / 1000 = 60 m, then 60 / 1000 = 0.06 km
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> A path is 0.4 km long. How long is it in centimetres?</p>
+<pre class="answer">40,000 (sure)</pre>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In your own words: why can you multiply 1000 by 100 and go straight from km to cm?</p>
+<pre class="answer">each km is 1000 m and each of those metres is 100 cm, so one km is 1000 lots of 100 cm, which is 100,000 cm (guess)</pre>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Mia says 60,000 mm is 60 km, since milli and kilo both mean 1000. What is wrong?</p>
+<pre class="answer">milli is a thousandth of a metre and kilo is 1000 metres, so mm to km is two steps. 60,000 / 1000 = 60 m, then 60 / 1000 = 0.06 km</pre>
+</section>

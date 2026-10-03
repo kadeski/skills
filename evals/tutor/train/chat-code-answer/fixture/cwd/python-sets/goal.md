@@ -6,7 +6,7 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Union and intersection](02-union-and-intersection.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Union and intersection](02-union-and-intersection.html)
 - 03 Difference
 - 04 Mixed drill

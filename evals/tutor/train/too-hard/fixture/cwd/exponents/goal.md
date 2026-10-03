@@ -6,10 +6,10 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Multiplying powers](02-multiplying-powers.md) - passed, first try
-- [03 Power of a power](03-power-of-a-power.md) - passed, first try
-- [04 Negative exponents](04-negative-exponents.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Multiplying powers](02-multiplying-powers.html) - passed, first try
+- [03 Power of a power](03-power-of-a-power.html) - passed, first try
+- [04 Negative exponents](04-negative-exponents.html)
 - 05 Mixed drill
 
 ## Rules

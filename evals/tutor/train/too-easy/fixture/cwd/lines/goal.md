@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Slope as rise over run](02-slope-as-rise-over-run.md) - passed
-- [03 Slope from two points](03-slope-from-two-points.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Slope as rise over run](02-slope-as-rise-over-run.html) - passed
+- [03 Slope from two points](03-slope-from-two-points.html)
 - 04 Finding b
 - 05 Mixed drill
 

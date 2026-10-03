@@ -1,51 +1,65 @@
-# 02 One-step equations
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 One-step equations</title>
+<h1>02 One-step equations</h1>
+<p>Part of <a href="goal.md">Solving Two-Step Equations</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [Solving Two-Step Equations](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Your guess</h2>
+<p>Last time: x + 9 = 15. What is x? You said <b>b) 6</b>, and it is.</p>
+<img src="img/02-balance.svg" alt="a balance with x + 9 on the left and 15 on the right, 9 taken off both pans">
+<ul>
+<li>a) 24 adds the 9 instead of taking it away.</li>
+<li>b) 6: take 9 from both sides, and 15 - 9 = 6.</li>
+<li>c) 9 reads off the number next to x.</li>
+<li>d) 15 reads off the right side.</li>
+</ul>
 
-## Your guess
+<h2>The idea</h2>
+<p>You want x alone, but something has been done to it. An equation is a balance, so whatever you do to one side you must do to the other (notes 1). Pick the step that undoes what was done to x: subtract undoes add, divide undoes multiply (notes 2, 3).</p>
 
-Last time: x + 9 = 15. What is x? You said **b) 6**, and it is.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> x - 4 = 11. What is x?</p>
+<pre class="answer">15 (sure)</pre>
+<blockquote class="feedback">Right: add 4 to both sides, 11 + 4 = 15 (notes 3).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In your own words: why must you do the same step to both sides?</p>
+<pre class="answer">the two sides are equal, like a balance, so if I only change one side they stop being equal</pre>
+<blockquote class="feedback">Right: the balance only stays level if both sides change the same way (notes 1).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Ali says x / 2 = 8 means x = 4, since you halve the 8. What is wrong?</p>
+<pre class="answer">dividing is undone by multiplying, so x = 8 x 2 = 16, and 16 / 2 = 8 checks (sure)</pre>
+<blockquote class="feedback">Right: multiply undoes divide, and your check puts 16 back in (notes 3, 6).</blockquote>
+</section>
+<p class="pass">You can now solve a one-step equation.</p>
 
-![a balance with x + 9 on the left and 15 on the right, 9 taken off both pans](img/02-balance.svg)
-
-- a) 24 adds the 9 instead of taking it away.
-- b) 6: take 9 from both sides, and 15 - 9 = 6.
-- c) 9 reads off the number next to x.
-- d) 15 reads off the right side.
-
-## The idea
-
-You want x alone, but something has been done to it. An equation is a balance, so whatever you do to one side you must do to the other (notes 1). Pick the step that undoes what was done to x: subtract undoes add, divide undoes multiply (notes 2, 3).
-
-## Questions
-
-**Q1.** x - 4 = 11. What is x?
-
-Answer: 15 (sure)
-
-> **Feedback:** Right: add 4 to both sides, 11 + 4 = 15 (notes 3).
-
-**Q2.** In your own words: why must you do the same step to both sides?
-
-Answer: the two sides are equal, like a balance, so if I only change one side they stop being equal
-
-> **Feedback:** Right: the balance only stays level if both sides change the same way (notes 1).
-
-**Q3.** Ali says x / 2 = 8 means x = 4, since you halve the 8. What is wrong?
-
-Answer: dividing is undone by multiplying, so x = 8 x 2 = 16, and 16 / 2 = 8 checks (sure)
-
-> **Feedback:** Right: multiply undoes divide, and your check puts 16 back in (notes 3, 6).
-
-You can now solve a one-step equation.
-
-## Guess for next time (not graded)
-
-3x + 5 = 20. What is x?
-
-- a) 15
-- b) 5
-- c) 25
-- d) 75
-
-Answer: b (guess)
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>3x + 5 = 20. What is x?</p>
+<ul>
+<li>a) 15</li>
+<li>b) 5</li>
+<li>c) 25</li>
+<li>d) 75</li>
+</ul>
+<pre class="answer">b (guess)</pre>
+</section>

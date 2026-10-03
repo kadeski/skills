@@ -6,7 +6,7 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md)
+- [01 Where you're at](01-where-youre-at.html)
 - 02 The right-triangle rule
 - 03 Finding a missing leg
 - 04 Mixed drill

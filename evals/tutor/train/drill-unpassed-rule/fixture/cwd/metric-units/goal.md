@@ -6,11 +6,11 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 To a smaller unit](02-to-a-smaller-unit.md) - passed
-- [03 To a bigger unit](03-to-a-bigger-unit.md) - passed, first try
-- [04 Mass units](04-mass-units.md) - passed, first try
-- [05 Two steps at once](05-two-steps-at-once.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 To a smaller unit](02-to-a-smaller-unit.html) - passed
+- [03 To a bigger unit](03-to-a-bigger-unit.html) - passed, first try
+- [04 Mass units](04-mass-units.html) - passed, first try
+- [05 Two steps at once](05-two-steps-at-once.html)
 - 06 Mixed drill
 - 07 Area units
 

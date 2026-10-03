@@ -1,53 +1,65 @@
-# 03 Reading given
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>03 Reading given</title>
+<h1>03 Reading given</h1>
+<p>Part of <a href="goal.md">Reading Probabilities From Counts</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [Reading Probabilities From Counts](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Your guess</h2>
+<p>Last time: of the 25 music students, what fraction also take art? You said <b>b) 12/25</b>, and it is.</p>
+<img src="img/03-given.svg" alt="the 25 music students, 12 of them also in art">
+<ul>
+<li>a) 12/20 divides by the art students instead.</li>
+<li>b) 12/25: the music students are the group, and 12 of them take art.</li>
+<li>c) 12/50 divides by the whole school.</li>
+<li>d) 25/50 is the share who take music.</li>
+</ul>
 
-## Your guess
+<h2>The idea</h2>
+<p>Often you learn one thing about a person and want to update. "Given music" means: forget everyone else, and treat the 25 music students as the whole (notes 3). Then count how many of them have the other trait:</p>
+<p>P(art given music) = both / music = 12/25</p>
 
-Last time: of the 25 music students, what fraction also take art? You said **b) 12/25**, and it is.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> In a class of 40, 12 play chess. 3 of those 12 also play piano, and 8 students play piano in all. What fraction of the chess players play piano?</p>
+<pre class="answer">3/12 = 1/4 (sure)</pre>
+<blockquote class="feedback">Right: the 12 chess players are the group, and 3 of them play piano (notes 3).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> Same class. What is P(chess given piano)?</p>
+<pre class="answer">3/12, the same as piano given chess (sure)</pre>
+<blockquote class="feedback">You wrote "the same as piano given chess". Both use the 3 who do both, but "given" picks the group you divide by (notes 3). Which group does "given piano" pick, and how many are in it?</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> In your own words: why does P(A given B) divide by the number with B and not by the whole group?</p>
+<pre class="answer">given B means we only look at the B group, so the B group becomes the new whole</pre>
+<blockquote class="feedback">Right: "given B" shrinks the whole to the B group (notes 3).</blockquote>
+</section>
 
-![the 25 music students, 12 of them also in art](img/03-given.svg)
-
-- a) 12/20 divides by the art students instead.
-- b) 12/25: the music students are the group, and 12 of them take art.
-- c) 12/50 divides by the whole school.
-- d) 25/50 is the share who take music.
-
-## The idea
-
-Often you learn one thing about a person and want to update. "Given music" means: forget everyone else, and treat the 25 music students as the whole (notes 3). Then count how many of them have the other trait:
-
-$$
-P(\text{art given music}) = \frac{\text{both}}{\text{music}} = \frac{12}{25}
-$$
-
-## Questions
-
-**Q1.** In a class of 40, 12 play chess. 3 of those 12 also play piano, and 8 students play piano in all. What fraction of the chess players play piano?
-
-Answer: 3/12 = 1/4 (sure)
-
-> **Feedback:** Right: the 12 chess players are the group, and 3 of them play piano (notes 3).
-
-**Q2.** Same class. What is P(chess given piano)?
-
-Answer: still 3/12, both questions are about the same 3 people who do both, so the fraction has to match (sure)
-
-> **Feedback:** You wrote "the same as piano given chess". Both use the 3 who do both, but "given" picks the group you divide by (notes 3). Which group does "given piano" pick, and how many are in it?
-
-**Q3.** In your own words: why does P(A given B) divide by the number with B and not by the whole group?
-
-Answer: given B means we only look at the B group, so the B group becomes the new whole
-
-> **Feedback:** Right: "given B" shrinks the whole to the B group (notes 3).
-
-## Guess for next time (not graded)
-
-1 in 100 people in a town has a rare cold. A test catches 9 in 10 of the people who have it, but also flags 1 in 10 of the people who do not. Of the people the test flags, about what share have the cold?
-
-- a) 90%
-- b) 9%
-- c) 50%
-- d) 1%
-
-Answer: a (guess)
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>1 in 100 people in a town has a rare cold. A test catches 9 in 10 of the people who have it, but also flags 1 in 10 of the people who do not. Of the people the test flags, about what share have the cold?</p>
+<ul>
+<li>a) 90%</li>
+<li>b) 9%</li>
+<li>c) 50%</li>
+<li>d) 1%</li>
+</ul>
+<pre class="answer">a (guess)</pre>
+</section>

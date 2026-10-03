@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Times before plus](02-times-before-plus.md) - passed, first try
-- [03 Left to right](03-left-to-right.md) - redo Q2 and Q3
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Times before plus](02-times-before-plus.html) - passed, first try
+- [03 Left to right](03-left-to-right.html) - redo Q2 and Q3
 - 04 Brackets
 - 05 Mixed drill
 

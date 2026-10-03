@@ -1,61 +1,72 @@
-# 03 Power of a power
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>03 Power of a power</title>
+<h1>03 Power of a power</h1>
+<p>Part of <a href="goal.md">Exponent Rules</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [Exponent Rules](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Your guess</h2>
+<p>Last time: which is (2³)²? You said <b>b) 2⁶</b>, and it is.</p>
+<img src="img/03-groups.svg" alt="two groups of three 2s, six 2s in all">
+<ul>
+<li>a) 2⁵ adds the exponents, as when multiplying powers.</li>
+<li>b) 2⁶: two groups of three 2s make six 2s.</li>
+<li>c) 2⁹ squares the exponent instead of doubling it.</li>
+<li>d) 4³ squares the base instead of the power.</li>
+</ul>
 
-## Your guess
+<h2>The idea</h2>
+<p>A power of a power is copies of copies. (aᵐ)ⁿ is n copies of aᵐ, and each holds m copies of a, so there are m x n copies in all (notes 3):</p>
+<p>(aᵐ)ⁿ = aᵐⁿ</p>
+<p>Worked example: (3²)⁴.</p>
+<ul>
+<li>four copies of 3²</li>
+<li>each holds two 3s</li>
+<li>4 x 2 = 8 threes, so 3⁸</li>
+</ul>
 
-Last time: which is $(2^3)^2$? You said **b) $2^6$**, and it is.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> Write (5²)³ as one power.</p>
+<pre class="answer">5^6</pre>
+<blockquote class="feedback">Right: three copies of two 5s, 3 x 2 = 6 (notes 3).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> Write (x⁴)² as one power.</p>
+<pre class="answer">x^8 (sure)</pre>
+<blockquote class="feedback">Right: two copies of four x's, 2 x 4 = 8 (notes 3).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> In your own words: why is (a²)³ equal to a⁶ and not a⁵?</p>
+<pre class="answer">it is three copies of a^2 multiplied, so 2 + 2 + 2 = 6 a's. You only get 5 when you multiply a^2 by a^3</pre>
+<blockquote class="feedback">Right: three copies of two a's is 6, while a² × a³ is a different sum (notes 2, 3).</blockquote>
+</section>
+<p class="pass">You can now raise a power to a power.</p>
 
-![two groups of three 2s, six 2s in all](img/03-groups.svg)
-
-- a) $2^5$ adds the exponents, as when multiplying powers.
-- b) $2^6$: two groups of three 2s make six 2s.
-- c) $2^9$ squares the exponent instead of doubling it.
-- d) $4^3$ squares the base instead of the power.
-
-## The idea
-
-A power of a power is copies of copies. $(a^m)^n$ is n copies of $a^m$, and each holds m copies of a, so there are m x n copies in all (notes 3):
-
-$$
-(a^m)^n = a^{m \times n}
-$$
-
-Worked example: $(3^2)^4$.
-
-- four copies of $3^2$
-- each holds two 3s
-- 4 x 2 = 8 threes, so $3^8$
-
-## Questions
-
-**Q1.** Write $(5^2)^3$ as one power.
-
-Answer: 5^6
-
-> **Feedback:** Right: three copies of two 5s, 3 x 2 = 6 (notes 3).
-
-**Q2.** Write $(x^4)^2$ as one power.
-
-Answer: x^8 (sure)
-
-> **Feedback:** Right: two copies of four x's, 2 x 4 = 8 (notes 3).
-
-**Q3.** In your own words: why is $(a^2)^3$ equal to $a^6$ and not $a^5$?
-
-Answer: it is three copies of a^2 multiplied, so 2 + 2 + 2 = 6 a's. You only get 5 when you multiply a^2 by a^3
-
-> **Feedback:** Right: three copies of two a's is 6, while $a^2 \times a^3$ is a different sum (notes 2, 3).
-
-You can now raise a power to a power.
-
-## Guess for next time (not graded)
-
-Going down from $2^3 = 8$ to $2^2 = 4$ to $2^1 = 2$, what is $2^0$?
-
-- a) 0
-- b) 1
-- c) 2
-- d) it has no value
-
-Answer: a (sure)
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>Going down from 2³ = 8 to 2² = 4 to 2¹ = 2, what is 2⁰?</p>
+<ul>
+<li>a) 0</li>
+<li>b) 1</li>
+<li>c) 2</li>
+<li>d) it has no value</li>
+</ul>
+<pre class="answer">a (sure)</pre>
+</section>

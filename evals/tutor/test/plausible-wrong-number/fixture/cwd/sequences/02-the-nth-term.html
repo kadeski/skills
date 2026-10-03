@@ -1,55 +1,66 @@
-# 02 The nth term
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 The nth term</title>
+<h1>02 The nth term</h1>
+<p>Part of <a href="goal.md">Arithmetic Sequences</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [Arithmetic Sequences](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Your guess</h2>
+<p>Last time: 4, 7, 10, 13, ... keeps adding 3. What is its 10th term? You said <b>b) 34</b>. It is <b>a) 31</b>.</p>
+<img src="img/02-steps.svg" alt="4, then 9 steps of 3, up to 31">
+<ul>
+<li>a) 31: the first term, 4, plus 9 steps of 3.</li>
+<li>b) 34 adds 10 steps, one for every term, the first one too.</li>
+<li>c) 30 counts 10 steps of 3 and leaves out the first term.</li>
+<li>d) 27 counts 9 steps of 3 and leaves out the first term.</li>
+</ul>
 
-## Your guess
+<h2>The idea</h2>
+<p>To jump to a far term, you do not want to list every term on the way. The first term is there before any step, so the 2nd term has had 1 step, the 3rd has had 2, and the nth has had n - 1 (notes 2):</p>
+<p>a + (n - 1)d</p>
 
-Last time: 4, 7, 10, 13, ... keeps adding 3. What is its 10th term? You said **b) 34**. It is **a) 31**.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> What is the 25th term of 6, 11, 16, ...?</p>
+<pre class="answer">126 (sure)</pre>
+<blockquote class="feedback">Right: 6 plus 24 steps of 5 (notes 2).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> A sequence starts at 50 and takes 3 off each time. What is its 12th term?</p>
+<pre class="answer">17 (sure)</pre>
+<blockquote class="feedback">Right: 11 steps of -3 from 50 (notes 1, 2).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Sam says the 8th term of 2, 5, 8, ... is 2 + 8 x 3 = 26. What is wrong?</p>
+<pre class="answer">the first term is 2 with no step yet, so the 8th term has only had 7 steps: 2 + 7 x 3 = 23 (sure)</pre>
+<blockquote class="feedback">Right: the first term takes no step, so the 8th has n - 1 = 7 (notes 2).</blockquote>
+</section>
+<p class="pass">You can now find any term of an arithmetic sequence.</p>
 
-![4, then 9 steps of 3, up to 31](img/02-steps.svg)
-
-- a) 31: the first term, 4, plus 9 steps of 3.
-- b) 34 adds 10 steps, one for every term, the first one too.
-- c) 30 counts 10 steps of 3 and leaves out the first term.
-- d) 27 counts 9 steps of 3 and leaves out the first term.
-
-## The idea
-
-To jump to a far term, you do not want to list every term on the way. The first term is there before any step, so the 2nd term has had 1 step, the 3rd has had 2, and the nth has had n - 1 (notes 2):
-
-$$
-a + (n - 1)d
-$$
-
-## Questions
-
-**Q1.** What is the 25th term of 6, 11, 16, ...?
-
-Answer: 126 (sure)
-
-> **Feedback:** Right: 6 plus 24 steps of 5 (notes 2).
-
-**Q2.** A sequence starts at 50 and takes 3 off each time. What is its 12th term?
-
-Answer: 17 (sure)
-
-> **Feedback:** Right: 11 steps of -3 from 50 (notes 1, 2).
-
-**Q3.** Sam says the 8th term of 2, 5, 8, ... is 2 + 8 x 3 = 26. What is wrong?
-
-Answer: the first term is 2 with no step yet, so the 8th term has only had 7 steps: 2 + 7 x 3 = 23 (sure)
-
-> **Feedback:** Right: the first term takes no step, so the 8th has n - 1 = 7 (notes 2).
-
-You can now find any term of an arithmetic sequence.
-
-## Guess for next time (not graded)
-
-How many terms are in 3, 7, 11, ..., 43?
-
-- a) 10
-- b) 11
-- c) 40
-- d) 12
-
-Answer: b (guess)
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>How many terms are in 3, 7, 11, ..., 43?</p>
+<ul>
+<li>a) 10</li>
+<li>b) 11</li>
+<li>c) 40</li>
+<li>d) 12</li>
+</ul>
+<pre class="answer">b (guess)</pre>
+</section>

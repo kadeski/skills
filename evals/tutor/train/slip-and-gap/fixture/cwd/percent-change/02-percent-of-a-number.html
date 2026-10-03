@@ -1,51 +1,65 @@
-# 02 Percent of a number
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 Percent of a number</title>
+<h1>02 Percent of a number</h1>
+<p>Part of <a href="goal.md">Percent Change</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [Percent Change](goal.md). Add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Your guess</h2>
+<p>Last time: what is 30% of 50? You said <b>a) 20</b>. It is <b>b) 15</b>.</p>
+<img src="img/02-per-hundred.svg" alt="a bar of 50 with 30 per hundred shaded">
+<ul>
+<li>a) 20 takes 30 away from 50.</li>
+<li>b) 15: 30% is 0.30, and 0.30 x 50 = 15.</li>
+<li>c) 1.5 uses 0.03 in place of 0.30.</li>
+<li>d) 80 adds 30 to 50.</li>
+</ul>
 
-## Your guess
+<h2>The idea</h2>
+<p>You often need a part of an amount, like a tip or a discount. Percent means per hundred, so 30% is 0.30 (notes 1). To take a percent of a number, multiply by that decimal (notes 2).</p>
 
-Last time: what is 30% of 50? You said **a) 20**. It is **b) 15**.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> What is 20% of 85?</p>
+<pre class="answer">17 (sure)</pre>
+<blockquote class="feedback">Right: 0.20 x 85 = 17 (notes 2).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> Why is 5% of 60 the same as 60% of 5?</p>
+<pre class="answer">both are 0.05 x 60 and 0.6 x 5, which are both 3, the order you multiply in does not matter</pre>
+<blockquote class="feedback">Right: each is 5 x 60 / 100 (notes 2).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Sam says 150% of 40 is impossible, since you cannot have more than all of something. What is wrong?</p>
+<pre class="answer">150% is just 1.5 x 40 = 60, a percent can go over 100 (sure)</pre>
+<blockquote class="feedback">Right: 150 per hundred is 1.5 (notes 1).</blockquote>
+</section>
+<p class="pass">You can now find any percent of a number.</p>
 
-![a bar of 50 with 30 per hundred shaded](img/02-per-hundred.svg)
-
-- a) 20 takes 30 away from 50.
-- b) 15: 30% is 0.30, and 0.30 x 50 = 15.
-- c) 1.5 uses 0.03 in place of 0.30.
-- d) 80 adds 30 to 50.
-
-## The idea
-
-You often need a part of an amount, like a tip or a discount. Percent means per hundred, so 30% is 0.30 (notes 1). To take a percent of a number, multiply by that decimal (notes 2).
-
-## Questions
-
-**Q1.** What is 20% of 85?
-
-Answer: 17 (sure)
-
-> **Feedback:** Right: 0.20 x 85 = 17 (notes 2).
-
-**Q2.** Why is 5% of 60 the same as 60% of 5?
-
-Answer: both are 0.05 x 60 and 0.6 x 5, which are both 3, the order you multiply in does not matter
-
-> **Feedback:** Right: each is 5 x 60 / 100 (notes 2).
-
-**Q3.** Sam says 150% of 40 is impossible, since you cannot have more than all of something. What is wrong?
-
-Answer: 150% is just 1.5 x 40 = 60, a percent can go over 100 (sure)
-
-> **Feedback:** Right: 150 per hundred is 1.5 (notes 1).
-
-You can now find any percent of a number.
-
-## Guess for next time (not graded)
-
-A price goes from 80 to 100. By what percent did it rise?
-
-- a) 20%
-- b) 25%
-- c) 80%
-- d) 125%
-
-Answer: a (guess)
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>A price goes from 80 to 100. By what percent did it rise?</p>
+<ul>
+<li>a) 20%</li>
+<li>b) 25%</li>
+<li>c) 80%</li>
+<li>d) 125%</li>
+</ul>
+<pre class="answer">a (guess)</pre>
+</section>

@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Equal fractions](02-equal-fractions.md) - passed
-- [03 Different bottoms](03-different-bottoms.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Equal fractions](02-equal-fractions.html) - passed
+- [03 Different bottoms](03-different-bottoms.html)
 - 04 Mixed numbers
 - 05 Mixed drill
 

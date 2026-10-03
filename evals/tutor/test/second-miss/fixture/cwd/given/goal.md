@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Two-way tables](02-two-way-tables.md) - passed, first try
-- [03 Reading given](03-reading-given.md) - redo Q2
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Two-way tables](02-two-way-tables.html) - passed, first try
+- [03 Reading given](03-reading-given.html) - redo Q2
 - 04 Base rates
 - 05 Mixed drill
 

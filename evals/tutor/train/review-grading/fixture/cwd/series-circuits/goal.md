@@ -7,11 +7,11 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Ohm's law](02-ohms-law.md) - passed
-- [03 One current](03-one-current.md) - passed, first try
-- [04 Adding resistances](04-adding-resistances.md) - passed, first try
-- [05 Sharing the voltage](05-sharing-the-voltage.md) - passed
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Ohm's law](02-ohms-law.html) - passed
+- [03 One current](03-one-current.html) - passed, first try
+- [04 Adding resistances](04-adding-resistances.html) - passed, first try
+- [05 Sharing the voltage](05-sharing-the-voltage.html) - passed
 
 ## Rules
 
