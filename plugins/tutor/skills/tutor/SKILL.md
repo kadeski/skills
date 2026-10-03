@@ -82,7 +82,7 @@ Every fact and definition traces to the source, cited by section, feedback inclu
 
 ## Format
 
-`goal.md` and `Learner.md` are plain markdown: no checkboxes, HTML or frontmatter. Each lesson and review page starts with the text of `head.html` from this skill's folder, then its own `<title>`, so it needs no other file. No scripts. Math is plain Unicode text, like −128·x₇ + 64·x₆ + ⋯ + x₀, never `$...$`. Escape `&` and `<` in text, the learner's answers included.
+`goal.md` and `Learner.md` are plain markdown: no checkboxes, HTML or frontmatter. Each lesson and review page starts with the text of `head.html` from this skill's folder, then its own `<title>`, so it needs no other file. No scripts beyond those in `head.html`. Math is TeX in one element, `$...$` inline and `$$...$$` for display, with any other `$` in `<code>`. Escape `&` and `<` in text, the learner's answers included.
 
 ### goal.md
 
@@ -134,7 +134,7 @@ Every page has an `<h1>` title and the Part-of line. Due review questions come n
 </ul>
 
 <h2>The idea</h2>
-<p>Unsigned, the 8 bits weigh 128, 64 and so on down to 1. Two's complement changes one weight: the top bit, x₇, weighs -128 (CS:APP 2.2.3). To read a number, add the weights of its 1 bits: −128·x₇ + 64·x₆ + ⋯ + 2·x₁ + x₀.</p>
+<p>Unsigned, the 8 bits weigh 128, 64 and so on down to 1. Two's complement changes one weight: the top bit, x₇, weighs -128 (CS:APP 2.2.3). To read a number, add the weights of its 1 bits: $-128x_7 + 64x_6 + \cdots + 2x_1 + x_0$.</p>
 <table>
 <tr><th>Bits</th><th>Unsigned</th><th>Two's complement</th></tr>
 <tr><td><code>00010010</code></td><td>18</td><td>18</td></tr>
