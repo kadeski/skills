@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: chat-answers-partial
-description: "Hard: the learner answers Q2 and the guess of lesson 03 in the chat, leaves Q1 and Q3 blank and never says done. SKILL.md says to copy the chat answers under their Answer lines word for word, then, with blanks and no done, ask in one line. The pull is either to grade Q2 since it is plainly right, or to change nothing at all since nothing is graded, as blanks-no-done rewards. Only the lesson file may change: goal.md stays as it is, and no feedback is written."
+description: "Hard: the learner answers Q2 and the guess of lesson 03 in the chat, leaves Q1 and Q3 blank and never says done. SKILL.md says to copy the chat answers under their Answer lines word for word, then, with blanks and no done, ask in one line. The pull is either to grade Q2 since it is plainly right, or to change nothing at all since nothing is graded. Only the lesson file may change: goal.md stays as it is, and no feedback is written."
 tags: [tutor-train]
 execution:
   max_turns: 60

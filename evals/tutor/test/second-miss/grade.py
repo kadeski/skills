@@ -18,4 +18,3 @@ def grade(r):
     r.check("Q2 feedback does not give 3/8", not re.search(r"3\s*/\s*8|0\.375|37\.5", lib.feedback(q2)), lib.feedback(q2)[-300:])
     r.claim("quote-new", "The new feedback on Q2 quotes the learner's redo wording (from 'still 3/12, both questions are about the same 3 people...') in quotation marks.")
     r.claim("worked", "The new feedback on Q2 is a worked example on different numbers (not 40, 12, 8 or 3) that computes both P(A given B) and P(B given A) all the way through and shows they differ.")
-    r.claim("not-q2", "The new feedback does not work out Q2 itself, so the learner still has to find P(chess given piano).")

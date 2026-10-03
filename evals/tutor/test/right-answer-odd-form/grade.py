@@ -25,4 +25,4 @@ def grade(r):
     if new:
         r.check("04 reveals the guess", lib.section(r.read(new[0]), "Your guess") is not None)
     r.claim("odd-form-right", "The feedback on Q2 says the learner's answer 14/24 is right. It does not call it wrong, partly right or incomplete, and does not ask the learner to simplify or change it. Noting that 14/24 equals 7/12 is allowed.")
-    r.claim("others-right", "The feedback on Q1 and Q3 says each answer is right and cites the notes by point number.")
+    r.check("Q1 and Q3 called right, citing the notes", all(lib.right_and_cited(lib.item_block(t, q)) for q in ("Q1", "Q3")))

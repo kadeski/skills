@@ -7,7 +7,7 @@ Scored test cases for the skills in this repo, and the tools to improve a skill 
 ```
 evals/run.py dry tutor              grade the untouched fixtures: catches grader bugs, costs nothing
 evals/run.py run tutor              every case, 3 runs each, on sonnet
-evals/run.py run tutor --split train --case wrong-model --runs 1
+evals/run.py run tutor --split train --case slip-and-gap --runs 1
 evals/run.py rejudge evals/results/<run>     judge the same outputs again and count flipped verdicts
 evals/run.py compare evals/results/<old> evals/results/<new>
 ```

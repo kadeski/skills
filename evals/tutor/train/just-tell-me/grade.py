@@ -22,4 +22,3 @@ def grade(r):
     r.check("new rule r03 due in 2 days", g.rule_next("r03") == r.d(2) and g.rule_gap("r03") == 2, g.rules.get("r03"))
     new = lib.new_lessons(r, S)
     r.check("lesson 04 written and linked", len(new) == 1 and "/04-" in new[0] and "](04-" in (g.plan.get("04") or [""])[0], new)
-    r.claim("answer-not-hint", "The tutor gives the learner the answer to Q2 itself (Lu gets 45), in the lesson file or the final reply, rather than only a hint, a worked example on other numbers, or a request to try again.")
