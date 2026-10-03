@@ -24,7 +24,7 @@ Defaults: a picture before prose, few words, simple terms, plain dashes (never e
     img/02-<name>.svg       pictures, lesson number first
 ```
 
-The files are the state. Nothing else is written. Before starting a goal in the home folder or a git repo, ask in one line where to put it.
+The files are the state. Nothing else is written. Before starting a goal in the home folder, ask in one line where to put it.
 
 ## Each run
 
