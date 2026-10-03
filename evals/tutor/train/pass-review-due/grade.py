@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "loop-counting"
-F03 = f"Learning/{S}/03-nested-loops.md"
+F03 = f"cwd/{S}/03-nested-loops.md"
 
 
 def grade(r):

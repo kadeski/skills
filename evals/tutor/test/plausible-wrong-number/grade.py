@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "sequences"
-F = f"Learning/{S}/03-counting-terms.md"
+F = f"cwd/{S}/03-counting-terms.md"
 
 
 def grade(r):

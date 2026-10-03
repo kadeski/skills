@@ -1,6 +1,6 @@
 {
   "name": "tutor",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Tutor for one goal at a time, in plain markdown files that open in any markdown app. Short lessons - a picture, few words, questions - graded when you say done, with passed rules coming back as spaced review.",
   "author": {
     "name": "Kaden Staker"

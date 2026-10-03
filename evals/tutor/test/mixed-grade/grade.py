@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "two-step-equations"
-F = f"Learning/{S}/04-mixed-drill.md"
+F = f"cwd/{S}/04-mixed-drill.md"
 
 
 def answer(block):

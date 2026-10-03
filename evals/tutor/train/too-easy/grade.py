@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "lines"
-F03 = f"Learning/{S}/03-slope-from-two-points.md"
+F03 = f"cwd/{S}/03-slope-from-two-points.md"
 
 
 def grade(r):

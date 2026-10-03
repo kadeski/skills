@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "adding-fractions"
-F = f"Learning/{S}/03-different-bottoms.md"
+F = f"cwd/{S}/03-different-bottoms.md"
 
 
 def grade(r):

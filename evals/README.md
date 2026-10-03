@@ -22,7 +22,7 @@ A full tutor run is 24 cases x 3 runs, about 25 minutes and roughly $9 on sonnet
 4. The case's `grade.py` runs programmatic checks on those files and writes claims. A judge model rules on each claim, seeing the learner's message, the final reply, and every file the run created or changed.
 5. A run's score is the share of checks and claims that pass. A case's score is the mean of its runs. The suite score is the mean of the cases, shown with a 95% band for run-to-run noise.
 
-Runs that time out, break, or have a tool call denied by the harness are left out of the score and counted as errors, so infrastructure noise does not read as a skill change. Write and Edit are allowed anywhere in the temporary home, since the skill keeps its files in `~/Learning`.
+Runs that time out, break, or have a tool call denied by the harness are left out of the score and counted as errors, so infrastructure noise does not read as a skill change. Write and Edit are allowed anywhere in the temporary home, since the skill keeps its files in the folder the agent starts in, `~/cwd`.
 
 ## Layout
 

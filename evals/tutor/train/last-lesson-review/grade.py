@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "angle-facts"
-F07 = f"Learning/{S}/07-outside-angles.md"
+F07 = f"cwd/{S}/07-outside-angles.md"
 R1_ANSWER = "75, angles at a point make 180 like on a straight line"
 
 # An option line: "- a) 40", "a) 40", "- **b)** 40"
@@ -51,7 +51,7 @@ def grade(r):
     r.claim("r1-one-question", "The feedback on R1 in lesson 07 asks exactly one question, not two questions or one question with two parts joined by 'and' or 'so'.")
 
     # the review file
-    rf = f"Learning/{S}/review-{r.d(0)}.md"
+    rf = f"cwd/{S}/review-{r.d(0)}.md"
     new = lib.new_lessons(r, S)
     r.check("exactly one new file, review-<today>.md, and no new lesson", new == [rf], new)
     r.check("final reply gives the review file's path", f"review-{r.d(0)}" in (r.final or ""), (r.final or "")[:200])

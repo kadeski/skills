@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "loop-counting"
-F = f"Learning/{S}/02-counting-steps-in-one-loop.md"
+F = f"cwd/{S}/02-counting-steps-in-one-loop.md"
 
 
 def grade(r):

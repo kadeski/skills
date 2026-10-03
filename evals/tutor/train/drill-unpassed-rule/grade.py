@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "metric-units"
-F05 = f"Learning/{S}/05-two-steps-at-once.md"
+F05 = f"cwd/{S}/05-two-steps-at-once.md"
 
 # An option line: "- a) 250 m", "a) 250 m", "- **b)** 2.5"
 OPTION = re.compile(r"^\s*(?:[-*+]\s+)?\**\(?([a-eA-E])[).]\**\s+(.*)$", re.M)

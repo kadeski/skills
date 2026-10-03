@@ -51,20 +51,20 @@ class Goal:
 
 
 def goal(r, slug):
-    return Goal(r.read(f"Learning/{slug}/goal.md"))
+    return Goal(r.read(f"cwd/{slug}/goal.md"))
 
 
 def goal_before(r, slug):
-    return Goal(r.read_before(f"Learning/{slug}/goal.md"))
+    return Goal(r.read_before(f"cwd/{slug}/goal.md"))
 
 
 def lesson_files(r, slug):
     """Lesson and review files in the goal folder, by name."""
-    return sorted(f for f in r.files() if re.match(rf"Learning/{slug}/(\d\d-.*|review-.*)\.md$", f))
+    return sorted(f for f in r.files() if re.match(rf"cwd/{slug}/(\d\d-.*|review-.*)\.md$", f))
 
 
 def new_lessons(r, slug):
-    return [f for f in r.new_files() if re.match(rf"Learning/{slug}/(\d\d-.*|review-.*)\.md$", f)]
+    return [f for f in r.new_files() if re.match(rf"cwd/{slug}/(\d\d-.*|review-.*)\.md$", f)]
 
 
 def section(text, heading):

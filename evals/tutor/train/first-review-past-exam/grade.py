@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "density"
-F03 = f"Learning/{S}/03-density.md"
+F03 = f"cwd/{S}/03-density.md"
 
 
 def grade(r):
@@ -16,7 +16,7 @@ def grade(r):
     r.check("Help stays 2 (02 was not a first try)", g.help == 2, g.help)
     r.check("Exam date unchanged", re.search(rf"^- Exam: {r.d(1)}$", g.text, re.M))
     # Lesson 03 may yield one rule or two (D = m / V, and size does not change it), under any id.
-    before = set(lib.section(r.read_before(f"Learning/{S}/goal.md"), "Rules").splitlines())
+    before = set(lib.section(r.read_before(f"cwd/{S}/goal.md"), "Rules").splitlines())
     added = [x for x in (lib.section(g.text, "Rules") or "").splitlines() if x.startswith("- ") and x not in before and not x.startswith("- r02")]
     r.check("new rules from 03 have their first review moved to the day before the exam (today)",
             added and all(f"next {r.d(0)}" in x for x in added), added)

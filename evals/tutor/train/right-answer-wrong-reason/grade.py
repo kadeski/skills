@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "mean-and-median"
-F = f"Learning/{S}/03-what-an-outlier-does.md"
+F = f"cwd/{S}/03-what-an-outlier-does.md"
 
 
 def grade(r):
