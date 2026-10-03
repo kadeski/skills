@@ -32,7 +32,7 @@ The files are the state. Nothing else is written. An open `.md` lesson from tuto
 2. Record answers given in the chat. The learner can answer in any order, in one message or several: `1: ...` for Q1, `r1: ...` for R1, `g: c` for the guess, `2 again: ...` for a redo. Copy each one into the newest file as a `<pre class="answer">` in its question's section, word for word with its `sure` or `guess` tag, and never fix it. A redo goes under the old feedback as a new answer.
 3. Grade the newest file when the learner says `done`, or when every question but the guess has an answer and none is marked to redo. With blanks and no `done`, ask in one line. A review file has only review answers to grade.
 4. Update `goal.md`. After a pass, write the next lesson.
-5. One line in the terminal: which answers were recorded, what was graded, if anything, and the `file://` path to open or refresh.
+5. One line in the terminal: which answers were recorded, what was graded, if anything, and the page to open or refresh, as `file://` plus its absolute path, like `file:///Users/sam/learn/02-x.html`.
 
 The learner can also say `stuck` (add a `<p class="hint">` to that question's section), `too easy`, `too hard` and `just tell me`.
 
