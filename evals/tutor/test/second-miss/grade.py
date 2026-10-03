@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "given"
-F = f"Learning/{S}/03-reading-given.md"
+F = f"cwd/{S}/03-reading-given.md"
 
 
 def grade(r):

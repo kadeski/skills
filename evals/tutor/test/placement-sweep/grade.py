@@ -1,6 +1,6 @@
 import lib
 
-F = "Learning/percent-change/01-where-youre-at.md"
+F = "cwd/percent-change/01-where-youre-at.md"
 
 
 def grade(r):

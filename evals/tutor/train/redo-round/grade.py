@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "order-of-operations"
-F = f"Learning/{S}/03-left-to-right.md"
+F = f"cwd/{S}/03-left-to-right.md"
 
 
 def answer(block):

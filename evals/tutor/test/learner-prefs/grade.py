@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "compound-interest"
-F03 = f"Learning/{S}/03-compounding-year-by-year.md"
+F03 = f"cwd/{S}/03-compounding-year-by-year.md"
 
 AUX = {"is", "are", "was", "were", "do", "does", "did", "can", "could", "will", "would", "should",
        "has", "have", "had", "must", "may", "might", "shall", "isn't", "aren't", "doesn't", "don't",
@@ -54,7 +54,7 @@ def options(text):
 def grade(r):
     lib.common(r)
     r.show("notes/interest.md")
-    r.show("Learning/Learner.md")
+    r.show("cwd/Learner.md")
     g = lib.goal(r, S)
     t03 = r.read(F03) or ""
     st = g.status("03") or ""
@@ -69,7 +69,7 @@ def grade(r):
     r.check("Help stays 2 (02 was not a first try)", g.help == 2, g.help)
     r.check("new rule r03 due in 2 days", g.rule_next("r03") == r.d(2) and g.rule_gap("r03") == 2, g.rules.get("r03"))
     r.check("r02 not moved before it is answered", g.rule_next("r02") == r.d(0) and g.rule_gap("r02") == 2, g.rules.get("r02"))
-    lm, lm0 = r.read("Learning/Learner.md") or "", r.read_before("Learning/Learner.md")
+    lm, lm0 = r.read("cwd/Learner.md") or "", r.read_before("cwd/Learner.md")
     r.check("Learner.md gains the 2-column table preference, old lines kept",
             re.search(r"\b(2|two)[ -]columns?\b", lm, re.I) and all(ln in lm for ln in lm0.splitlines() if ln.strip()), lm)
     before_guess = set((lib.section(r.read_before(F03), "Guess for next time (not graded)") or "").splitlines())

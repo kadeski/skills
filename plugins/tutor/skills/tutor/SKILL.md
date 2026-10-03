@@ -15,7 +15,7 @@ Defaults: a picture before prose, few words, simple terms, plain dashes (never e
 ## Files
 
 ```
-~/Learning/                 or the folder the learner names
+<learning folder>/          the open folder, or the one the learner names
   Learner.md                preferences (optional)
   <goal-slug>/
     goal.md
@@ -24,7 +24,7 @@ Defaults: a picture before prose, few words, simple terms, plain dashes (never e
     img/02-<name>.svg       pictures, lesson number first
 ```
 
-The files are the state. Nothing else is written.
+The files are the state. Nothing else is written. Before starting a goal in the home folder, ask in one line where to put it.
 
 ## Each run
 

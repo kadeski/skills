@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "metric-units"
-F03 = f"Learning/{S}/03-converting-lengths.md"
+F03 = f"cwd/{S}/03-converting-lengths.md"
 GUESS = "Guess for next time (not graded)"
 
 AUX = {"is", "are", "was", "were", "do", "does", "did", "can", "could", "will", "would", "should",

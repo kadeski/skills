@@ -74,7 +74,7 @@ This copies the skill files into your project, so you can edit them. Update with
 
 In Claude Code the command is `/tutor:tutor`. In other agents, ask for the tutor skill by name.
 
-Open the goal folder in an app that edits the files themselves: Obsidian, VS Code, Typora or iA Writer on a computer; Obsidian, iA Writer or Markor on a phone. Not Bear or Joplin: they import notes into their own library, so your answers never reach the files.
+Start your agent in the folder you want to learn in: each goal gets its own folder there. Open that folder in an app that edits the files themselves: Obsidian, VS Code, Typora or iA Writer on a computer; Obsidian, iA Writer or Markor on a phone. Not Bear or Joplin: they import notes into their own library, so your answers never reach the files.
 
 ## License
 

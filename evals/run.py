@@ -344,7 +344,7 @@ def cmd_run(a):
                 if denied:  # the harness blocked the skill, so the run says nothing about it
                     meta["error"] = meta["error"] or f"{denied} tool call(s) denied by the harness"
                 shutil.copytree(home, run_dir / "home", symlinks=True,
-                                ignore=lambda d, names: [n for n in names if n.startswith(".") or (n == "cwd" and Path(d) == home)])
+                                ignore=lambda d, names: [n for n in names if n.startswith(".")])
                 remove_tree(tmp)
             except Exception as e:  # noqa: BLE001
                 meta["error"] = meta["error"] or f"workspace: {e}"

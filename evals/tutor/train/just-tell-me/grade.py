@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "ratios"
-F = f"Learning/{S}/03-sharing-in-a-ratio.md"
+F = f"cwd/{S}/03-sharing-in-a-ratio.md"
 
 
 def grade(r):

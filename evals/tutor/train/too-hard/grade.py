@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "exponents"
-F = f"Learning/{S}/04-negative-exponents.md"
+F = f"cwd/{S}/04-negative-exponents.md"
 # Q1: 3^-2 = 1/9. Q3: 10^-3 = 1/1000.
 ANSWERS = r"\b1\s*/\s*9\b|\\frac\{1\}\{9\}|0\.1{2,}|one.ninth|\b1\s*/\s*1,?000\b|\\frac\{1\}\{1000\}|0\.001\b|thousandth"
 

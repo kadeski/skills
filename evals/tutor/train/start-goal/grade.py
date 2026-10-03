@@ -5,7 +5,7 @@ import lib
 def grade(r):
     lib.common(r)
     r.show("notes/ohms-law.md")
-    goals = [f for f in r.new_files() if re.match(r"Learning/[^/]+/goal\.md$", f)]
+    goals = [f for f in r.new_files() if re.match(r"cwd/[^/]+/goal\.md$", f)]
     r.check("one goal folder with goal.md", len(goals) == 1, goals)
     if len(goals) != 1:
         return

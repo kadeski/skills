@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "loop-counting"
-F01 = f"Learning/{S}/01-where-youre-at.md"
+F01 = f"cwd/{S}/01-where-youre-at.md"
 
 
 def grade(r):
