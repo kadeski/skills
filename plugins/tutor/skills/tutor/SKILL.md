@@ -29,7 +29,7 @@ The files are the state. Nothing else is written. Before starting a goal in the 
 ## Each run
 
 1. Read `Learner.md` and `goal.md`. For a new goal, go to Start a goal.
-2. Record answers given in the chat. The learner can answer in any order, in one message or several: `1: ...` for Q1, `r1: ...` for R1, `g: c` for the guess, `2 again: ...` for a redo. Copy each one into the newest file under its `Answer:` line, word for word with its `sure` or `guess` tag, and never fix it. A code answer goes in a fenced block. A redo goes under the old feedback as a new `Answer:` line. Answers typed in the file count the same.
+2. Record answers given in the chat. The learner can answer in any order, in one message or several: `1: ...` for Q1, `r1: ...` for R1, `g: c` for the guess, `2 again: ...` for a redo. Copy each one into the newest file under its `Answer:` line, word for word with its `sure` or `guess` tag, and never fix it. A code answer goes in a fenced block. A redo from the chat goes under the old feedback as a new `Answer:` line. Answers typed in the file count the same, and a redo there is the old answer edited in place: add no `Answer:` line for it.
 3. Grade the newest file when the learner says `done`, or when every question but the guess has an answer and none is marked to redo. With blanks and no `done`, ask in one line. A review file has only review answers to grade.
 4. Update `goal.md`. After a pass, write the next lesson.
 5. One line in the terminal: which answers were recorded, what was graded, if anything, and the path to open.
