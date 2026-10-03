@@ -7,6 +7,7 @@ and `item_block` return HTML, so queries compose; `text` turns HTML into plain
 text for regex checks."""
 
 import functools
+import itertools
 import re
 from html.parser import HTMLParser
 from pathlib import Path
@@ -22,6 +23,9 @@ BLOCK = {"address", "article", "aside", "blockquote", "body", "dd", "div", "dl",
          "table", "tbody", "td", "tfoot", "th", "thead", "tr", "ul"}
 HIDDEN = {"style", "script", "title"}
 NOT_PROSE = HIDDEN | {"pre", "table", "h1", "h2", "h3", "h4", "h5", "h6"}
+# KaTeX auto-render's delimiters in head.html's order, and the tags it skips; title is outside body.
+MATH = {"$$": "$$", "$": "$"}
+NOT_MATH = {"script", "noscript", "style", "textarea", "pre", "code", "option", "title"}
 # An open element of the key's tag ends where one of these tags starts.
 CLOSED_BY = {"p": BLOCK, "li": {"li"}, "tr": {"tr"}, "td": {"td", "th", "tr"}, "th": {"td", "th", "tr"},
              "dt": {"dt", "dd"}, "dd": {"dt", "dd"}}
@@ -165,6 +169,9 @@ def _elements(node):
 
 def _find(html, tag, cls=None):
     return [n for n in _elements(_parse(html or "")) if n.tag == tag and (cls is None or n.has_class(cls))]
+
+
+SCRIPTS = [n.attrs for n in _find(HEAD.read_text(), "script")]
 
 
 def _raw(node):
@@ -356,6 +363,37 @@ def part_of(page):
                for p in _find(page, "p"))
 
 
+def _text_runs(node):
+    """Each run of text between tags, as KaTeX auto-render joins them, outside NOT_MATH."""
+    for is_text, run in itertools.groupby(node.children, lambda c: isinstance(c, str)):
+        if is_text:
+            yield "".join(run)
+        else:
+            for c in run:
+                if c.tag not in NOT_MATH:
+                    yield from _text_runs(c)
+
+
+def _math_closes(text):
+    """Every math delimiter in text has its closing one, by auto-render's splitAtDelimiters."""
+    left = re.compile("|".join(map(re.escape, MATH)))
+    at = 0
+    while m := left.search(text, at):
+        right, depth, i = MATH[m.group()], 0, m.end()
+        while i < len(text) and not (depth <= 0 and text.startswith(right, i)):
+            depth += {"{": 1, "}": -1}.get(text[i], 0)
+            i += 2 if text[i] == "\\" else 1
+        if i >= len(text):
+            return False
+        at = i + len(right)
+    return True
+
+
+def unbalanced_math(page):
+    """Some `$` or `$$` in the page's text has no closing one, so the raw TeX shows."""
+    return not all(_math_closes(t) for t in _text_runs(_parse(page or "")))
+
+
 # ---------- checks every run gets ----------
 
 
@@ -394,7 +432,9 @@ def common(r):
         if not (t.startswith("# ") and re.search(r"^Part of \[[^\]]+\]\(goal\.md\)", t, re.M))])
     rule("page lacks the head.html marker", [f for f, t in pages.items() if MARKER not in t])
     rule("page lacks h1 or Part-of line", [f for f, t in pages.items() if not (title(t) and part_of(t))])
-    rule("script in page", [f for f, t in pages.items() if _find(t, "script")])
+    rule("script not from head.html", [
+        f for f, t in pages.items() if any(n.attrs not in SCRIPTS or _raw(n).strip() for n in _find(t, "script"))])
+    rule("unbalanced math", [f for f, t in pages.items() if unbalanced_math(t)])
     links = []
     for f, t in {**md, **pages}.items():
         base = f.rsplit("/", 1)[0]
@@ -437,13 +477,14 @@ def md_long_sentences(text, before=None, limit=25):
         if not skip:
             cur.append(body)
     paras.append(" ".join(cur))
-    return _long([re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", re.sub(r"\$[^$]*\$", "x", p)) for p in paras], limit)
+    return _long([re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", p) for p in paras], limit)
 
 
 def _long(paras, limit):
     hits = []
     for p in paras:
         p = re.sub(r"`[^`]*`", "x", p)
+        p = re.sub(r"\$\$.*?\$\$|\$[^$]*\$", "x", p)
         p = re.sub(r'"[^"]*"|\u201c[^\u201d]*\u201d', "x", p)
         for s in re.split(r"(?<=[.!?])\s+", p):
             if len(re.findall(r"[\w\d]+(?:['\u2019.-][\w\d]+)*", s)) > limit:
