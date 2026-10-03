@@ -9,6 +9,9 @@ text for regex checks."""
 import functools
 import itertools
 import re
+import shutil
+import subprocess
+import tempfile
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -394,13 +397,63 @@ def unbalanced_math(page):
     return not all(_math_closes(t) for t in _text_runs(_parse(page or "")))
 
 
+def controls(page):
+    """The page's script elements that are not head.html's: its control."""
+    return [n for n in _find(page, "script") if n.attrs not in SCRIPTS or _raw(n).strip()]
+
+
+NETWORK = re.compile(r"\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource|sendBeacon|\bimport\s*\(|importScripts|new\s+Image\b")
+
+
+def _network_call(page, scripts):
+    """A control script, or any `on*` attribute on the page, can reach the network."""
+    handlers = (v for n in _elements(_parse(page or "")) for k, v in n.attrs.items() if k.startswith("on"))
+    return any(NETWORK.search(code) for code in [*map(_raw, scripts), *handlers])
+
+
+def _syntax_error(page, scripts):
+    """False if every control script passes `node --check`, else why not."""
+    if not scripts:
+        return False
+    if not shutil.which("node"):
+        return "node was not found on PATH"
+    with tempfile.TemporaryDirectory() as tmp:
+        for i, n in enumerate(scripts):
+            path = Path(tmp) / f"control{i}.js"
+            path.write_text(_raw(n))
+            run = subprocess.run(["node", "--check", str(path)], capture_output=True, text=True, timeout=30)
+            if run.returncode:
+                return run.stderr.strip().splitlines()[-1] if run.stderr.strip() else "node --check failed"
+    return False
+
+
+# (rule name, function of (page, control scripts) that is truthy when the page breaks it)
+PAGE_RULES = [
+    ("unbalanced math", lambda page, scripts: unbalanced_math(page)),
+    ("script outside a concept lesson", lambda page, scripts: bool(scripts) and section(page, "Your guess") is None),
+    ("more than one control script", lambda page, scripts: len(scripts) > 1),
+    ("script with src not from head.html", lambda page, scripts: any("src" in n.attrs for n in scripts)),
+    ("network call in a script", _network_call),
+    ("control without a picture or table", lambda page, scripts: bool(scripts) and not images(page) and not tables(page)),
+    ("script fails node --check", _syntax_error),
+]
+
+
+def control_claims(r, page, name):
+    """Judge claims on a lesson's control, made only when the page has one."""
+    if controls(page):
+        r.claim("control-no-answers", f"The interactive control in {name} cannot be used to read off an answer to any of the lesson's questions.")
+        r.claim("control-own-example", f"The interactive control in {name} works only on the lesson's own example, not on numbers the learner types in.")
+
+
 # ---------- checks every run gets ----------
 
 
 def common(r):
     """Format rules from SKILL.md, applied to every file the run wrote or
-    changed. They count as two items, format and pictures, so a run that does
-    nothing gets little credit for them; the detail names each rule broken."""
+    changed, with the page rules in PAGE_RULES. They count as two items,
+    format and pictures, so a run that does nothing gets little credit for
+    them; the detail names each rule broken."""
     touched = r.new_files() + r.changed_files()
     md = {f: r.read(f) for f in touched if f.endswith(".md")}
     html = {f: r.read(f) for f in touched if f.endswith(".html")}
@@ -432,9 +485,13 @@ def common(r):
         if not (t.startswith("# ") and re.search(r"^Part of \[[^\]]+\]\(goal\.md\)", t, re.M))])
     rule("page lacks the head.html marker", [f for f, t in pages.items() if MARKER not in t])
     rule("page lacks h1 or Part-of line", [f for f, t in pages.items() if not (title(t) and part_of(t))])
-    rule("script not from head.html", [
-        f for f, t in pages.items() if any(n.attrs not in SCRIPTS or _raw(n).strip() for n in _find(t, "script"))])
-    rule("unbalanced math", [f for f, t in pages.items() if unbalanced_math(t)])
+    scripts = {f: controls(t) for f, t in pages.items()}
+    for name, broke in PAGE_RULES:
+        hits = []
+        for f, t in pages.items():
+            if found := broke(t, scripts[f]):
+                hits.append(f if found is True else f"{f} ({found})")
+        rule(name, hits)
     links = []
     for f, t in {**md, **pages}.items():
         base = f.rsplit("/", 1)[0]

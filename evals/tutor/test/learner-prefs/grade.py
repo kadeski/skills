@@ -123,3 +123,4 @@ def grade(r):
     r.claim("guess-shape", "Lesson 04's Guess for next time is a number question, or a multiple-choice question whose 4 options share one shape, none longer or more detailed than the right one, with no reasoning inside an option.")
     r.claim("one-name", "Each term in lesson 04 keeps one name throughout: the lesson never switches to a different word for the same thing.")
     r.claim("accurate", "Every fact in lesson 04 and in the feedback on lesson 03 matches the notes, and every number the lesson, feedback, table or options imply is correct.")
+    lib.control_claims(r, t04, "lesson 04")

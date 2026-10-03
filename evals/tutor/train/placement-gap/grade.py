@@ -31,3 +31,4 @@ def grade(r):
     r.claim("retest", "The first question of the new lesson 02 tests again whether a range stops before its end value, on new numbers.")
     r.claim("help3", "Lesson 02 includes a worked example traced step by step before its questions, and says near the top that the help level went up.")
     r.claim("reveal", "Lesson 02's Your guess section says the learner picked c) 3n and that 3n is right.")
+    lib.control_claims(r, t02, "lesson 02")
