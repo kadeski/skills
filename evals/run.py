@@ -214,9 +214,12 @@ def find_cases(skill, split):
 
 
 def open_kept(trace_path):
-    """`--keep-temp` leaves <tmp>/out/trace.jsonl and seals <tmp>/sealed/home."""
+    """`--keep-temp` leaves <tmp>/out/trace.jsonl and seals <tmp>/sealed/home.
+    Run as root, it cannot seal, and leaves the home at <tmp>/home."""
     tmp = Path(trace_path).parent.parent
     sealed = tmp / "sealed"
+    if not sealed.exists() and os.geteuid() == 0 and (tmp / "home").is_dir():
+        sealed = tmp
     if not sealed.exists():
         raise RuntimeError(f"kept temp layout changed: no {sealed}")
     os.chmod(tmp, 0o700)

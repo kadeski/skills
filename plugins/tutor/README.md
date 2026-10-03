@@ -76,6 +76,8 @@ In Claude Code the command is `/tutor:tutor`. In other agents, ask for the tutor
 
 Start your agent in the folder you want to learn in: each goal gets its own folder there. Open that folder in an app that edits the files themselves: Obsidian, VS Code, Typora or iA Writer on a computer; Obsidian, iA Writer or Markor on a phone. Not Bear or Joplin: they import notes into their own library, so your answers never reach the files.
 
+You can also read a lesson in preview mode and answer in the chat: `1: ...` for Q1, `g: c` for the guess, `2 again: ...` for a redo. Type or dictate, in one message or several. The tutor copies each answer into the lesson file as you wrote it.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
