@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "right-triangles"
-F01 = f"cwd/{S}/01-where-youre-at.md"
+F01 = f"cwd/{S}/01-where-youre-at.html"
 
 
 def find(g, pattern):
@@ -32,7 +32,7 @@ def grade(r):
             [line for line, _ in g.plan.values()])
     new = lib.new_lessons(r, S)
     r.check("one new lesson file, 02, linked from the plan",
-            len(new) == 1 and re.search(r"/02-[^/]+\.md$", new[0])
+            len(new) == 1 and re.search(r"/02-[^/]+\.html$", new[0])
             and f"]({new[0].rsplit('/', 1)[1]})" in (g.plan.get("02") or [""])[0], new)
     if not new:
         return

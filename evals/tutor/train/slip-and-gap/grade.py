@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "percent-change"
-F = f"cwd/{S}/03-percent-change.md"
+F = f"cwd/{S}/03-percent-change.html"
 
 
 def grade(r):

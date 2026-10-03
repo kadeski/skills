@@ -6,7 +6,7 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md)
+- [01 Where you're at](01-where-youre-at.html)
 - 02 Counting steps in one loop
 - 03 Nested loops
 - 04 Mixed drill

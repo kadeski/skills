@@ -2,15 +2,9 @@ import re
 import lib
 
 S = "order-of-operations"
-F = f"cwd/{S}/03-left-to-right.md"
-
-
-def answer(block):
-    """The learner's answer: from `Answer:` up to the first feedback quote."""
-    block = block or ""
-    i = block.find("Answer:")
-    j = block.find("> **Feedback:**")
-    return block[i:j if j > i else len(block)] if i >= 0 else ""
+F = f"cwd/{S}/03-left-to-right.html"
+REDO = {"Q2": "nothing, 4*2 comes first since multiply goes before divide, so it is 24/8 = 3 (sure)",
+        "Q3": "40 / 2 = 20, then 20 / 2 = 10"}
 
 
 def norm(s):
@@ -35,7 +29,7 @@ def grade(r):
     t = r.read(F) or ""
     tb = r.read_before(F) or ""
     q1, q2, q3 = (lib.item_block(t, f"Q{i}") or "" for i in (1, 2, 3))
-    old2, old3 = (lib.feedback(lib.item_block(tb, f"Q{i}")).rstrip() for i in (2, 3))
+    old2, old3 = (lib.feedbacks(lib.item_block(tb, f"Q{i}")) for i in (2, 3))
     # the newest feedback, only once the run has added one
     new2, new3 = (lib.last_feedback(b) if lib.feedback_count(b) > 1 else "" for b in (q2, q3))
     st = g.status("03") or ""
@@ -48,24 +42,24 @@ def grade(r):
     r.check("only Q2 and Q3 get new feedback",
             lib.feedback_count(q1) == 1 and lib.feedback_count(t) == lib.feedback_count(tb) + 2,
             f"Q1 {lib.feedback_count(q1)}, file {lib.feedback_count(tb)} -> {lib.feedback_count(t)}")
+    r.check("Q2 and Q3 redos recorded word for word under the old feedback",
+            all([k for k, _ in lib.history(b)][:3] == ["answer", "feedback", "answer"] and lib.answers(b)[1:2] == [REDO[q]]
+                for q, b in (("Q2", q2), ("Q3", q3))),
+            {q: lib.history(b) for q, b in (("Q2", q2), ("Q3", q3))})
     r.check("Q2 and Q3 keep the old feedback, new quote under it",
-            all(old in b and lib.feedback_count(b) == 2 and b.rfind("> **Feedback:**") > b.find(old)
-                for old, b in ((old2, q2), (old3, q3))),
+            all(lib.feedbacks(b)[:1] == old and lib.feedback_count(b) == 2 for old, b in ((old2, q2), (old3, q3))),
             f"Q2 {lib.feedback_count(q2)}, Q3 {lib.feedback_count(q3)}")
     r.check("learner's answers left as written",
-            all(answer(lib.item_block(tb, f"Q{i}")).strip() in t for i in (1, 2, 3)), "an Answer line was changed")
-    r.check("new Q2 feedback quotes the unchanged answer", quotes_answer(new2, answer(q2)), quotes(new2))
-    r.check("a quote holding * sits in a code span, not in quotation marks",
-            new2 and not any("*" in a + b for a, b in re.findall(r'"([^"\n]+)"|“([^”\n]+)”', new2)),
-            new2[:300])
+            all(lib.answers(b)[:1] == lib.answers(lib.item_block(tb, q)) for q, b in (("Q1", q1), ("Q2", q2), ("Q3", q3))),
+            "an answer was changed")
+    r.check("new Q2 feedback quotes the unchanged answer", quotes_answer(new2, REDO["Q2"]), quotes(new2))
     r.check("new Q3 feedback quotes the redo, not the old answer",
-            quotes_answer(new3, answer(q3), "40 (guess)"), quotes(new3))
+            quotes_answer(new3, REDO["Q3"], "40 (guess)"), quotes(new3))
     r.check("new Q2 feedback does not work out 24 / 4 x 2",
             new2 and not re.search(r"24\s*/\s*4\s*(=|is)\s*6\b|24\s*/\s*4\s*x\s*2\s*(=|is)\s*12\b", new2), new2[:300])
-    after = q2[q2.find(old2) + len(old2):] if old2 in q2 else ""
-    rows = [ln for ln in re.sub(r"^> ?", "", after, flags=re.M).splitlines() if ln.strip().startswith("|")]
+    tables = lib.tables(q2)
     r.check("Learner.md: Q2 worked example is a table with a what happened column, a row per step",
-            rows and "what happened" in rows[0].lower() and len(rows) >= 4, rows[:2])
+            any("what happened" in " ".join(tb[0]).lower() and len(tb) >= 4 for tb in tables), tables[:1])
     r.check("new Q2 and Q3 feedback cite the notes by point",
             all(re.search(r"notes,? (points? )?\d", f) for f in (new2, new3)), (new2[-120:], new3[-120:]))
 

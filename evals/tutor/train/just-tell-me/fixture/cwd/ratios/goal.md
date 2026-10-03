@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Equal ratios](02-equal-ratios.md) - passed
-- [03 Sharing in a ratio](03-sharing-in-a-ratio.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Equal ratios](02-equal-ratios.html) - passed
+- [03 Sharing in a ratio](03-sharing-in-a-ratio.html)
 - 04 Scaling a recipe
 - 05 Mixed drill
 

@@ -7,7 +7,7 @@ def grade(r):
     lib.common(r)
     r.show("notes/ohms-law.md")
     g = lib.goal(r, S)
-    F = f"cwd/{S}/review-{r.d(0)}.md"
+    F = f"cwd/{S}/review-{r.d(0)}.html"
     t = r.read(F) or ""
     r.check("r02 right: doubled gap clamped to the day before the exam", g.rule_next("r02") == r.d(4), g.rules.get("r02"))
     r.check("r03 wrong: back to 1 day", g.rule_next("r03") == r.d(1) and g.rule_gap("r03") == 1, g.rules.get("r03"))

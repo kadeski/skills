@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: chat-code-answer
-description: "Hard: the learner answers all of lesson 02 in the chat and says done, and the Q2 answer is a fenced code block holding *, _ and |. SKILL.md says a code answer goes in a fenced block, word for word. The pull is to escape the markdown characters, fold the code into one line, tidy it, or keep only the first line since it alone answers the question. Both lines are right (notes 2 and 4), so the lesson passes first try: the plan says passed, first try, and lesson 03 is written. A feedback quote of the code holds * or _, so it must sit in a code span."
+description: "Hard: the learner answers all of lesson 02 in the chat and says done, and the Q2 answer is a fenced code block holding *, _ and |. SKILL.md says each chat answer goes into the page as a pre answer, word for word with its tag. The pull is to escape the markdown characters, fold the code into one line, tidy it, or keep only the first line since it alone answers the question. Both lines are right (notes 2 and 4), so the lesson passes first try: the plan says passed, first try, and lesson 03 is written."
 tags: [tutor-train]
 execution:
   max_turns: 60

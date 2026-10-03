@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Mean and median](02-mean-and-median.md) - passed, first try
-- [03 What an outlier does](03-what-an-outlier-does.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Mean and median](02-mean-and-median.html) - passed, first try
+- [03 What an outlier does](03-what-an-outlier-does.html)
 - 04 Choosing a center
 - 05 Mixed drill
 

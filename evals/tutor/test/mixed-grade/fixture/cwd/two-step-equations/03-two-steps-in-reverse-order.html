@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>03 Two steps in reverse order</title>
+<h1>03 Two steps in reverse order</h1>
+<p>Part of <a href="goal.md">Solving Two-Step Equations</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: 3x + 5 = 20. What is x? You said <b>b) 5</b>, and it is.</p>
+<img src="img/03-reverse.svg" alt="x goes through times 3 and plus 5 to make 20, then back through minus 5 and divide by 3">
+<ul>
+<li>a) 15 takes off the 5 but stops before the times 3.</li>
+<li>b) 5: take 5 from both sides to get 3x = 15, then divide by 3.</li>
+<li>c) 25 adds the 5 instead of taking it away.</li>
+<li>d) 75 adds 5, then multiplies by 3.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>Two things were done to x, so you need two undo steps, and the order matters. Like taking off shoes and then socks, you undo the last step first: in 3x + 5 = 20 the + 5 came last, so it goes first (notes 4).</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> 4x + 3 = 27. What is x?</p>
+<pre class="answer">6 (sure)</pre>
+<blockquote class="feedback">Right: 4x = 24, then x = 6 (notes 4).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In your own words: why undo the + 3 before the times 4?</p>
+<pre class="answer">the + 3 was done last, so it is on the outside, and you have to take it off before you can get at the 4x</pre>
+<blockquote class="feedback">Right: undo the last step first (notes 4).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Bo says 2x - 6 = 10 gives x = 2, since 10 - 6 = 4 and 4 / 2 = 2. What is wrong?</p>
+<pre class="answer">the 6 was taken away, so you add it back: 2x = 16, x = 8 (sure)</pre>
+<blockquote class="feedback">Right: add undoes subtract, and 2 x 8 - 6 = 10 checks (notes 2, 6).</blockquote>
+</section>
+<p class="pass">You can now solve ax + b = c by undoing in reverse order.</p>

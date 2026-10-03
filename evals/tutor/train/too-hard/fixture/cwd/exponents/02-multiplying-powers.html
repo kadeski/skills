@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 Multiplying powers</title>
+<h1>02 Multiplying powers</h1>
+<p>Part of <a href="goal.md">Exponent Rules</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+<p>Help is now 3: each lesson traces a worked example before the questions.</p>
+
+<h2>Your guess</h2>
+<p>Last time: which is 2³ × 2²? You said <b>b) 2⁵</b>, and it is.</p>
+<img src="img/02-copies.svg" alt="three 2s next to two 2s, five 2s in all">
+<ul>
+<li>a) 2⁶ multiplies the exponents.</li>
+<li>b) 2⁵: three 2s and two more 2s make five 2s.</li>
+<li>c) 4⁵ adds the exponents but multiplies the bases.</li>
+<li>d) 4⁶ multiplies the bases and the exponents.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>Writing out every copy gets long fast. But a power just counts copies (notes 1), so two powers of the same base side by side just add their counts, and the base stays the same (notes 2):</p>
+<p>aᵐ × aⁿ = aᵐ⁺ⁿ</p>
+<p>Worked example: 5² × 5³.</p>
+<ul>
+<li>5² is two 5s, and 5³ is three 5s</li>
+<li>side by side, that is five 5s</li>
+<li>so 5² × 5³ = 5⁵</li>
+</ul>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> Write 7³ × 7⁴ as one power.</p>
+<pre class="answer">7^7</pre>
+<blockquote class="feedback">Right: 3 + 4 = 7 copies of 7 (notes 2).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In your own words: why does x² × x⁵ add the exponents?</p>
+<pre class="answer">x^2 is two x's and x^5 is five x's, so multiplied together it is seven x's in a row, x^7</pre>
+<blockquote class="feedback">Right: the copies line up, so their counts add (notes 2).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Jo says 3² × 3³ = 9⁵. What is wrong?</p>
+<pre class="answer">the base stays 3, you only add how many 3s there are, so it is 3^5 not 9^5</pre>
+<blockquote class="feedback">Right: only the counts add, the base stays 3 (notes 2).</blockquote>
+</section>
+<p class="pass">You can now multiply powers of the same base.</p>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>Which is (2³)²?</p>
+<ul>
+<li>a) 2⁵</li>
+<li>b) 2⁶</li>
+<li>c) 2⁹</li>
+<li>d) 4³</li>
+</ul>
+<pre class="answer">b (guess)</pre>
+</section>

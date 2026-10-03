@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "adding-fractions"
-F = f"cwd/{S}/03-different-bottoms.md"
+F = f"cwd/{S}/03-different-bottoms.html"
 
 
 def grade(r):
@@ -13,9 +13,9 @@ def grade(r):
     q2 = lib.item_block(t, "Q2") or ""
     st = g.status("03") or ""
     r.check("03 marked passed, first try", "passed, first try" in st and "redo" not in st and "Q2" not in st, st)
-    r.check("You can now line in 03", re.search(r"^You can now ", t, re.M))
+    r.check("You can now line in 03", any(p.startswith("You can now ") for p in lib.passes(t)))
     r.check("every answer gets feedback", all(lib.feedback_count(lib.item_block(t, f"Q{i}")) == 1 for i in (1, 2, 3)))
-    r.check("Q2 answer left as 14/24", re.search(r"^Answer:.*= 14/24 \(sure\)\s*$", q2, re.M), q2[:300])
+    r.check("Q2 answer left as 14/24", any(re.search(r"= 14/24 \(sure\)$", a) for a in lib.answers(q2)), lib.answers(q2))
     r.check("Q2 not logged as a misconception", not any(m.startswith("03 Q2") for m in g.misconceptions), g.misconceptions)
     r.check("Help stays 2", g.help == 2, g.help)
     r.check("new rule r03 due in 2 days", g.rule_next("r03") == r.d(2) and g.rule_gap("r03") == 2, g.rules.get("r03"))

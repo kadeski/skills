@@ -2,7 +2,7 @@ import re
 import lib
 
 S = "metric-units"
-F05 = f"cwd/{S}/05-two-steps-at-once.md"
+F05 = f"cwd/{S}/05-two-steps-at-once.html"
 
 # An option line: "- a) 250 m", "a) 250 m", "- **b)** 2.5"
 OPTION = re.compile(r"^\s*(?:[-*+]\s+)?\**\(?([a-eA-E])[).]\**\s+(.*)$", re.M)
@@ -13,7 +13,7 @@ REASONING = re.compile(r"\b(?:because|since|so|means|as it|which|that is)\b|:", 
 
 
 def options(block):
-    return OPTION.findall(block or "")
+    return OPTION.findall(lib.text(block))
 
 
 def quotes_learner(fb, answer):
@@ -23,9 +23,11 @@ def quotes_learner(fb, answer):
 
 
 def split_guess(text):
-    """The file before `## Guess for next time`, and the guess section."""
-    m = re.search(r"^## Guess for next time.*$", text or "", re.M)
-    return (text, None) if not m else (text[:m.start()], text[m.start():])
+    """The page without its Guess for next time section, and that section."""
+    secs = lib.sections(text)
+    guess = [html for h, html in secs if h.startswith("Guess for next time")]
+    body = "".join(html for h, html in secs if not h.startswith("Guess for next time"))
+    return body, (guess[0] if guess else None)
 
 
 def grade(r):
@@ -40,7 +42,7 @@ def grade(r):
 
     # grading lesson 05
     r.check("05 marked passed, not first try (Q2 tagged guess)", "passed" in st and "first try" not in st and "redo" not in st, st)
-    r.check("You can now line in 05", re.search(r"^You can now ", t05, re.M))
+    r.check("You can now line in 05", any(p.startswith("You can now ") for p in lib.passes(t05)))
     r.check("Q1 to Q3, R1 and R2 each get one feedback",
             all(lib.feedback_count(lib.item_block(t05, x)) == 1 for x in ("Q1", "Q2", "Q3", "R1", "R2")))
     uncited = [x for x in ("Q1", "Q2", "Q3", "R1", "R2") if not re.search(r"notes\D{0,12}\d", lib.feedback(lib.item_block(t05, x)))]
@@ -71,7 +73,7 @@ def grade(r):
     qs = lib.items(body)
     rev = lib.section(t06, "Review")
     rs = lib.items(rev or "", "R")
-    heads = re.findall(r"^## (.+)$", t06, re.M)
+    heads = [h for h, _ in lib.sections(t06) if h]
     r.check("06 opens with its Review section", heads[:1] == ["Review"], heads)
     r.check("06 Review has 1 item (r04; r02 and r03 were just reset, r05 is new)", rs == ["1"], rs)
     r.check("06 has 5 or 6 drill items", len(qs) in (5, 6), qs)
@@ -83,12 +85,12 @@ def grade(r):
     r.check("every mc item has exactly 4 options, a to d", not bad, bad)
     reasoning = [f"{x}: {t}" for x in mc for _, t in opts[x] if REASONING.search(t)]
     r.check("no option holds reasoning", not reasoning, reasoning[:4])
-    q1 = re.sub(r"[$\\{}]", "", blocks.get("Q1", ""))
+    q1 = re.sub(r"[$\\{}]", "", lib.text(blocks.get("Q1")))
     r.check("first drill item reuses lesson 05's 2.5 km run", re.search(r"2\.5\s*(?:km|kilomet)|250[, ]?000\s*(?:cm|centimet)", q1), q1[:200])
-    hits = sorted({m.group(0) for m in AREA.finditer(lib.strip_code(body))})
+    hits = sorted({m.group(0) for m in AREA.finditer(lib.text(lib.strip_code(body)))})
     r.check("nothing before the guess uses area or volume units (no passed lesson taught them)", not hits, hits)
     r.check("06 ends with a guess at area units (07 teaches a new idea)",
-            guess is not None and AREA_WORD.search(guess) and len(options(guess)) in (0, 4), (guess or "")[:200])
+            guess is not None and AREA_WORD.search(lib.text(guess)) and len(options(guess)) in (0, 4), lib.text(guess)[:200])
 
     r.claim("table", "Lesson 06 has a picture or table of the rules from lessons 02 to 05 (multiply to go to a smaller unit; divide to go to a bigger one; 1 kg = 1000 g and 1 g = 1000 mg; multiply the factors across two steps) with none of the drill items worked out.")
     r.claim("review-r04", "R1 in lesson 06 tests r04 (mass units: 1 kg = 1000 g, 1 g = 1000 mg) on a case not used in lesson 04 (1.2 kg to g, 3600 mg to g, 1 kg is not 100 g, milligrams in 1 g).")

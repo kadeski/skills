@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>03 Compounding year by year</title>
+<h1>03 Compounding year by year</h1>
+<p>Part of <a href="goal.md">Compound Interest</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: 400 at 10% a year, each year's interest added before the next. How much after 2 years? You said <b>a) 480</b>. It is <b>b) 484</b>.</p>
+<img src="img/03-years.svg" alt="400 grows to 440, then 440 grows to 484">
+<ul>
+<li>a) 480 adds 40 twice, as simple interest does.</li>
+<li>b) 484: 400 grows to 440, then 10% of 440 is 44.</li>
+<li>c) 440 stops after one year.</li>
+<li>d) 800 doubles the 400.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>In the second year, the 40 you earned is in the account too, so it should earn interest as well. Compound interest works each year out on the amount you have now (notes 2). One year at rate r multiplies the amount by 1 + r (notes 3):</p>
+<p>Aₙₑₓₜ = A × (1 + r)</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> 2000 earns 5% a year, compound. How much is there after 3 years?</p>
+<pre class="answer">2000 x 1.05 = 2100, then 2100 x 1.05 = 2205, then 2205 x 1.05 = 2315.25 (sure)</pre>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In your own words: why does compound interest give more than simple interest at the same rate, once you are past the first year?</p>
+<pre class="answer">from the second year on, the interest is also worked out on the interest you already earned, so every year adds a bit more than the last</pre>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Jo says 1000 at 5% compound for 2 years gives 1100, since 5% twice is 10%. What is wrong?</p>
+<pre class="answer">the second 5% is of 1050, not 1000, so it adds 52.50 and the total is 1102.50</pre>
+</section>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>500 grows 20% a year, compound, for 3 years. Which one line gives the amount at the end?</p>
+<ul>
+<li>a) 500 × 1.6</li>
+<li>b) 500 × 1.2³</li>
+<li>c) 500 × 1.2 × 3</li>
+<li>d) 500 × 0.2³</li>
+</ul>
+<pre class="answer">a (guess)</pre>
+</section>

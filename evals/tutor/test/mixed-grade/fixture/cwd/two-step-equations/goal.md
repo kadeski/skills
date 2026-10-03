@@ -6,10 +6,10 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 One-step equations](02-one-step-equations.md) - passed, first try
-- [03 Two steps in reverse order](03-two-steps-in-reverse-order.md) - passed, first try
-- [04 Mixed drill](04-mixed-drill.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 One-step equations](02-one-step-equations.html) - passed, first try
+- [03 Two steps in reverse order](03-two-steps-in-reverse-order.html) - passed, first try
+- [04 Mixed drill](04-mixed-drill.html)
 
 ## Rules
 

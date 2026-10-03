@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Percent of a number](02-percent-of-a-number.md) - passed, first try
-- [03 Percent change](03-percent-change.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Percent of a number](02-percent-of-a-number.html) - passed, first try
+- [03 Percent change](03-percent-change.html)
 - 04 Undoing a change
 - 05 Mixed drill
 

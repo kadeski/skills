@@ -20,6 +20,7 @@ import importlib.util
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -117,18 +118,24 @@ class Run:
     def evidence(self):
         parts = [f"## Learner's message\n\n{self.prompt}", f"## Tutor's final reply\n\n{self.final}"]
         for f in self.new_files():
-            if f.endswith((".md", ".svg", ".txt")):
-                parts.append(f"## New file: {f}\n\n````\n{self.read(f)}\n````")
+            if f.endswith((".md", ".html", ".svg", ".txt")):
+                parts.append(f"## New file: {f}\n\n````\n{unstyled(f, self.read(f))}\n````")
         for f in self.changed_files():
             parts.append(
-                f"## Changed file: {f}\n\n### Before\n\n````\n{self.read_before(f)}\n````"
-                f"\n\n### After\n\n````\n{self.read(f)}\n````"
+                f"## Changed file: {f}\n\n### Before\n\n````\n{unstyled(f, self.read_before(f))}\n````"
+                f"\n\n### After\n\n````\n{unstyled(f, self.read(f))}\n````"
             )
         if not self.new_files() and not self.changed_files():
             parts.append("## Files\n\nThe run created and changed no files.")
         for f in self.shown:
             parts.append(f"## Reference file (unchanged by the run): {f}\n\n````\n{self.read(f)}\n````")
         return "\n\n".join(parts)
+
+
+def unstyled(path, text):
+    """An HTML page without its <style> block, which every lesson copies from
+    head.html and the judge does not need."""
+    return re.sub(r"<style>.*?</style>\n?", "", text, flags=re.S) if path.endswith(".html") else text
 
 
 def case_prompt(case_dir):
@@ -279,10 +286,12 @@ def stage_plugin(skill, dest):
 
 def skill_fingerprint(skill):
     sdir = skill_dir(skill)
-    text = (sdir / "SKILL.md").read_bytes()
+    h = hashlib.sha256()
+    for p in sorted(p for p in sdir.rglob("*") if p.is_file()):
+        h.update(str(p.relative_to(sdir)).encode() + b"\0" + p.read_bytes() + b"\0")
     rev = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     dirty = subprocess.run(["git", "status", "--porcelain", str(sdir.relative_to(ROOT))], capture_output=True, text=True, cwd=ROOT).stdout.strip()
-    return {"commit": rev, "skill_dirty": bool(dirty), "skill_sha256": hashlib.sha256(text).hexdigest()[:12]}
+    return {"commit": rev, "skill_dirty": bool(dirty), "skill_sha256": h.hexdigest()[:12]}
 
 
 def cmd_run(a):

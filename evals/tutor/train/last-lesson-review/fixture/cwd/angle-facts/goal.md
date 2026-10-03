@@ -6,13 +6,13 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Angles on a line](02-angles-on-a-line.md) - passed
-- [03 Angles at a point](03-angles-at-a-point.md) - passed, first try
-- [04 Crossing lines](04-crossing-lines.md) - passed
-- [05 Angles in a triangle](05-angles-in-a-triangle.md) - passed
-- [06 Isosceles triangles](06-isosceles-triangles.md) - passed, first try
-- [07 Outside angles](07-outside-angles.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Angles on a line](02-angles-on-a-line.html) - passed
+- [03 Angles at a point](03-angles-at-a-point.html) - passed, first try
+- [04 Crossing lines](04-crossing-lines.html) - passed
+- [05 Angles in a triangle](05-angles-in-a-triangle.html) - passed
+- [06 Isosceles triangles](06-isosceles-triangles.html) - passed, first try
+- [07 Outside angles](07-outside-angles.html)
 
 ## Rules
 

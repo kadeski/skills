@@ -2,15 +2,7 @@ import re
 import lib
 
 S = "two-step-equations"
-F = f"cwd/{S}/04-mixed-drill.md"
-
-
-def answer(block):
-    """The learner's answer: from `Answer:` up to the first feedback quote."""
-    block = block or ""
-    i = block.find("Answer:")
-    j = block.find("> **Feedback:**")
-    return block[i:j if j > i else len(block)] if i >= 0 else ""
+F = f"cwd/{S}/04-mixed-drill.html"
 
 
 def norm(s):
@@ -45,7 +37,7 @@ def grade(r):
     r.check("every answer, R1 included, gets one feedback", all(lib.feedback_count(b) == 1 for b in blk.values()),
             {k: lib.feedback_count(b) for k, b in blk.items()})
     r.check("learner's answers left as written",
-            all(answer(lib.item_block(tb, k)).strip() in t for k in blk), "an Answer line was changed")
+            all(lib.answers(b) == lib.answers(lib.item_block(tb, k)) for k, b in blk.items()), "an answer was changed")
     r.check("Help stays 2", g.help == 2, g.help)
     r.check("R1 wrong: r02 back to 1 day", g.rule_next("r02") == r.d(1) and g.rule_gap("r02") == 1, g.rules.get("r02"))
     r.check("r03 not moved", g.rule_next("r03") == r.d(1) and g.rule_gap("r03") == 2, g.rules.get("r03"))
@@ -63,7 +55,7 @@ def grade(r):
             fb["Q4"] and not re.search(r"\b21\b|\b7\s*[x×*]\s*3\b|\b3\s*[x×*]\s*7\b", fb["Q4"]), fb["Q4"][:300])
     r.check("R1 feedback does not give 13", fb["R1"] and not re.search(r"\b13\b", fb["R1"]), fb["R1"][:300])
     r.check("Q2, Q3 and Q4 feedback quote the learner's answer",
-            all(quotes_answer(fb[k], answer(blk[k])) for k in ("Q2", "Q3", "Q4")),
+            all(quotes_answer(fb[k], " ".join(lib.answers(blk[k]))) for k in ("Q2", "Q3", "Q4")),
             {k: quotes(fb[k]) for k in ("Q2", "Q3", "Q4")})
     r.check("Q2 slip feedback asks a question", "?" in fb["Q2"], fb["Q2"][:300])
     r.check("Q1, Q4 and Q5 feedback cite the notes by point",

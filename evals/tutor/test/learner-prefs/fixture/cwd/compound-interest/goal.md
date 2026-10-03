@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Simple interest](02-simple-interest.md) - passed
-- [03 Compounding year by year](03-compounding-year-by-year.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Simple interest](02-simple-interest.html) - passed
+- [03 Compounding year by year](03-compounding-year-by-year.html)
 - 04 The growth factor
 - 05 Adding interest monthly
 - 06 Mixed drill

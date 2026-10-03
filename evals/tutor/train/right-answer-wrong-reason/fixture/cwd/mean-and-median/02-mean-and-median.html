@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 Mean and median</title>
+<h1>02 Mean and median</h1>
+<p>Part of <a href="goal.md">Mean and Median</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: which number is the median of 3, 8, 10 and 12? You said <b>c) 10</b>. It is <b>a) 9</b>.</p>
+<img src="img/02-middle.svg" alt="3, 8, 10, 12 sorted, with the median halfway between 8 and 10">
+<ul>
+<li>a) 9: halfway between the two middle values, 8 and 10.</li>
+<li>b) 8.25 is the mean, the total 33 shared over 4.</li>
+<li>c) 10 takes the upper of the two middle values.</li>
+<li>d) 8 takes the lower of the two middle values.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>A list of numbers is hard to take in at a glance, so we sum it up with one value near its center. The mean shares the total out equally: add the values and divide by how many there are (notes 1). The median is the middle value once the list is sorted, and with an even count it is halfway between the two middle values (notes 2).</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> Find the mean of 14, 9, 22, 11 and 19.</p>
+<pre class="answer">15 (sure)</pre>
+<blockquote class="feedback">Right: the total, 75, shared over 5 (notes 1).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> Find the median of 31, 12, 27, 45, 19 and 40.</p>
+<pre class="answer">29 (sure)</pre>
+<blockquote class="feedback">Right: sorted, the middle two are 27 and 31 (notes 2).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Jo says the median of 6, 2, 9 is 2, since 2 is in the middle. What is wrong?</p>
+<pre class="answer">the median is the middle once the list is sorted. Sorted it is 2, 6, 9, so the median is 6 (sure)</pre>
+<blockquote class="feedback">Right: sort first (notes 2).</blockquote>
+</section>
+<p class="pass">You can now find the mean and the median of a list.</p>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>Scores of 60, 70 and 80 have a mean of 70. A fourth score of 190 joins them. What is the new mean?</p>
+<ul>
+<li>a) 75</li>
+<li>b) 100</li>
+<li>c) 70</li>
+<li>d) 130</li>
+</ul>
+<pre class="answer">a (guess)</pre>
+</section>

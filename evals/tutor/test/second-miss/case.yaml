@@ -1,12 +1,12 @@
 schema_version: "1.1"
 name: second-miss
-description: "Hard: the redo repeats a logged misconception. That is a second miss: a fully worked example on different numbers, the old feedback kept, and Help up one."
+description: "Hard: the redo, sent in the chat, repeats a logged misconception in new words. That is a second miss: the redo recorded under the old feedback, a fully worked example on different numbers, the old answer and feedback kept, and Help up one."
 tags: [tutor-test]
 execution:
   max_turns: 60
   timeout_seconds: 900
   allowed_tools: [Read, Glob, Grep, Skill]
-  prompt: "/tutor:tutor done"
+  prompt: "/tutor:tutor 2 again: still 3/12, both questions are about the same 3 people who do both, so the fraction has to match (sure)\ndone"
 context:
   scaffold_script: setup.sh
 graders:

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="220" viewBox="0 0 360 220">
+  <rect width="360" height="220" fill="white"/>
+  <g stroke="#222" stroke-width="2" fill="none">
+    <polyline points="40,190 110,190 110,100 180,100 180,10"/>
+    <line x1="40" y1="190" x2="180" y2="10" stroke-dasharray="6 4"/>
+  </g>
+  <g font-size="16" fill="#111">
+    <text x="55" y="210">1 right</text>
+    <text x="118" y="150">3 up</text>
+    <text x="125" y="120">1 right</text>
+    <text x="188" y="60">3 up</text>
+    <text x="210" y="150">2 right, 6 up</text>
+    <text x="210" y="175">slope 6 / 2 = 3</text>
+  </g>
+</svg>

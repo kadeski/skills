@@ -6,9 +6,9 @@
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Length units](02-length-units.md) - passed, first try
-- [03 Converting lengths](03-converting-lengths.md)
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Length units](02-length-units.html) - passed, first try
+- [03 Converting lengths](03-converting-lengths.html)
 - 04 Area units
 - 05 Volume units
 - 06 Mixed drill
