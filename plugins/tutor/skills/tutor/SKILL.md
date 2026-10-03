@@ -1,6 +1,6 @@
 ---
 name: tutor
-description: Tutor for one goal at a time, in plain markdown files that open in any markdown app. Short lessons - a picture, few words, questions - graded when the learner says done, with passed rules coming back as spaced review. Use when someone wants to learn or practice a topic over several sessions.
+description: Tutor for one goal at a time, as HTML pages read in any browser. Short lessons - a picture, few words, questions - graded when the learner says done, with passed rules coming back as spaced review. Use when someone wants to learn or practice a topic over several sessions.
 argument-hint: "<topic> [source: path or url]"
 ---
 
@@ -19,22 +19,22 @@ Defaults: a picture before prose, plain dashes (never em dashes), no praise. Wri
   Learner.md                preferences (optional)
   <goal-slug>/
     goal.md
-    01-where-youre-at.md    one file per lesson
-    02-<slug>.md
+    01-where-youre-at.html  one page per lesson
+    02-<slug>.html
     img/02-<name>.svg       pictures, lesson number first
 ```
 
-The files are the state. Nothing else is written. Before starting a goal in the home folder, ask in one line where to put it.
+The files are the state. Nothing else is written. An open `.md` lesson from tutor 1.x is recorded and graded in its own markdown format, and the next lesson is HTML. Before starting a goal in the home folder, ask in one line where to put it.
 
 ## Each run
 
 1. Read `Learner.md` and `goal.md`. For a new goal, go to Start a goal.
-2. Record answers given in the chat. The learner can answer in any order, in one message or several: `1: ...` for Q1, `r1: ...` for R1, `g: c` for the guess, `2 again: ...` for a redo. Copy each one into the newest file under its `Answer:` line, word for word with its `sure` or `guess` tag, and never fix it. A code answer goes in a fenced block. A redo from the chat goes under the old feedback as a new `Answer:` line. Answers typed in the file count the same, and a redo there is the old answer edited in place: add no `Answer:` line for it.
+2. Record answers given in the chat. The learner can answer in any order, in one message or several: `1: ...` for Q1, `r1: ...` for R1, `g: c` for the guess, `2 again: ...` for a redo. Copy each one into the newest file as a `<pre class="answer">` in its question's section, word for word with its `sure` or `guess` tag, and never fix it. A redo goes under the old feedback as a new answer.
 3. Grade the newest file when the learner says `done`, or when every question but the guess has an answer and none is marked to redo. With blanks and no `done`, ask in one line. A review file has only review answers to grade.
 4. Update `goal.md`. After a pass, write the next lesson.
-5. One line in the terminal: which answers were recorded, what was graded, if anything, and the path to open.
+5. One line in the terminal: which answers were recorded, what was graded, if anything, and the `file://` path to open or refresh.
 
-The learner can also say `stuck` (add a `Hint:` line under that question), `too easy`, `too hard` and `just tell me`.
+The learner can also say `stuck` (add a `<p class="hint">` to that question's section), `too easy`, `too hard` and `just tell me`.
 
 ## Start a goal
 
@@ -51,7 +51,7 @@ About 5 minutes, one idea. If you cannot draw it, split it. A file never holds t
 - **Concept lesson.** The reveal, then under 120 words of prose that opens with the problem the idea solves, so each step reads as one the learner could have found, then 2 or 3 questions on a new case or new numbers, never the lesson's own example: explain why it works there, apply it, break a wrong claim. At least one in the learner's own words. Never yes/no.
 - **Drill.** A picture or table of the rules with none of the items worked, then 5 or 6 mc or number items. The first reuses the previous lesson's example. Test only rules from passed lessons.
 
-**Pictures.** An SVG file in `img/`, drawn with the lesson's real numbers. Set width and height equal to the viewBox, width at most 400 and text at least 14 so it reads on a phone, and give it its own white background and dark strokes so it reads in dark themes. Before linking it, render it outside the learning folder (`rsvg-convert -o /tmp/<name>.png img/<name>.svg`), look at the PNG, and fix anything wrong, clipped or hard to read. If `rsvg-convert` is missing, say so in the terminal line. A worked table with a "what happened" column counts as a picture for procedures.
+**Pictures.** An SVG file in `img/`, linked with `<img>`, drawn with the lesson's real numbers. Set width and height equal to the viewBox, width at most 400 and text at least 14 so it reads on a phone, and give it its own white background and dark strokes so it reads in dark themes. Before linking it, render it outside the learning folder (`rsvg-convert -o /tmp/<name>.png img/<name>.svg`), look at the PNG, and fix anything wrong, clipped or hard to read. If `rsvg-convert` is missing, say so in the terminal line. A worked table with a "what happened" column counts as a picture for procedures.
 
 **Multiple choice.** 4 options that cannot be told apart without the material: write the right claim first, then turn it into each wrong option by one real misconception, in the same shape, none longer or more detailed than the right one. No reasoning inside an option. Vary which letter is right.
 
@@ -65,14 +65,14 @@ A `sure` or `guess` tag after an answer decides how to sort a wrong one:
 - **Slip**: point at the step and ask what it assumes.
 - **Gap** (tagged `guess`, or blank): teach the missing piece on a different example, so the redo is still theirs.
 
-A second miss (the same question again, or a misconception already logged): teach it with a worked example on different numbers. Feedback cites their key line in quotation marks (in a code span if it holds `*`, `_` or `$`), so a later run can tell whether a redo changed it.
+A second miss (the same question again, or a misconception already logged): teach it with a worked example on different numbers. Feedback cites their key line in quotation marks, so a later run can tell whether a redo changed it.
 
-- **Passed** (every lesson question right, or fixed in place; review answers never block): end the lesson with a `You can now ...` line, add the rules it taught with a first review date, write the next lesson.
-- **Not passed**: name the answers to redo in place in the plan status and the terminal line, then `done` again. A redo gets a new feedback quote under the old one; an answer left unchanged is a second miss.
+- **Passed** (every lesson question right, or fixed in a redo; review answers never block): end the lesson with a `<p class="pass">You can now ...</p>`, add the rules it taught with a first review date, write the next lesson.
+- **Not passed**: name the answers to redo in the plan status and the terminal line, then `done` again. A redo gets new feedback under the old; a redo that repeats the old answer is a second miss.
 
 ## Review
 
-Each passed rule comes back as one mc or number question in the first lesson file you write on or after its due date, at most 3 per file: the same rule on a new case, never the lesson's own item. After the last lesson, a run with rules due and no review file waiting for answers writes `review-<date>.md`.
+Each passed rule comes back as one mc or number question in the first lesson file you write on or after its due date, at most 3 per file: the same rule on a new case, never the lesson's own item. After the last lesson, a run with rules due and no review file waiting for answers writes `review-<date>.html`.
 
 Spacing: first review 2 days after the pass. Right: double the gap. Wrong: back to 1 day, and log it if it is a wrong model. A review that would land after the exam date moves to the day before it. A rule answered right at a gap of 16 days or more is learned; stop reviewing it.
 
@@ -82,11 +82,7 @@ Every fact and definition traces to the source, cited by section, feedback inclu
 
 ## Format
 
-Plain CommonMark plus tables and `$math$`, so every markdown app shows the same thing: no HTML, callouts, mermaid, wikilinks, frontmatter or checkboxes.
-
-- Math: `$$` on their own lines, never a `$` for money.
-- Tables: no math and no `|` in a cell, not even in code.
-- Lines that must stay apart (options, fields, trace steps) are list items or separate paragraphs: many apps join adjacent lines.
+`goal.md` and `Learner.md` are plain markdown: no checkboxes, HTML or frontmatter. Each lesson and review page starts with the text of `head.html` from this skill's folder, then its own `<title>`, so it needs no other file. No scripts. Math is plain Unicode text, like −128·x₇ + 64·x₆ + ⋯ + x₀, never `$...$`. Escape `&` and `<` in text, the learner's answers included.
 
 ### goal.md
 
@@ -100,10 +96,10 @@ Plain CommonMark plus tables and `$math$`, so every markdown app shows the same 
 
 ## Plan
 
-- [01 Where you're at](01-where-youre-at.md) - passed
-- [02 Reading the bits](02-reading-the-bits.md) - passed
-- [03 Negation](03-negation.md) - passed, first try
-- [04 Adding and overflow](04-adding-and-overflow.md) - redo Q2
+- [01 Where you're at](01-where-youre-at.html) - passed
+- [02 Reading the bits](02-reading-the-bits.html) - passed
+- [03 Negation](03-negation.html) - passed, first try
+- [04 Adding and overflow](04-adding-and-overflow.html) - redo Q2
 - 05 Mixed drill
 
 ## Rules
@@ -118,94 +114,63 @@ Plain CommonMark plus tables and `$math$`, so every markdown app shows the same 
 
 A linked lesson with no status is waiting for answers. A pass with no redo and no `guess` tag on a Q answer adds `, first try`. A learned rule says `learned` in place of its next date. Leave out an empty section.
 
-### A lesson file
+### A lesson page
 
-Every lesson and review file opens with the title and the Part-of line. Due review questions come next, under `## Review`, as **R1.**, **R2.** and so on.
+Every page has an `<h1>` title and the Part-of line. Due review questions come next, under `<h2>Review</h2>`, in sections `R1`, `R2` and so on. Each question is a section: `Q1` and so on, and `G` for the guess. Every graded answer gets a feedback quote after it, a right one too, and a feedback picture goes right after its quote. Here Q1 waits for an answer, and Q2 and Q3 are graded.
 
-````markdown
-# 02 Reading the bits
+```html
+<title>02 Reading the bits</title>
+<h1>02 Reading the bits</h1>
+<p>Part of <a href="goal.md">8-bit Two's Complement</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
 
-Part of [8-bit Two's Complement](goal.md). Answer here or in the chat (`1: ...`, `g: c`), add `sure` or `guess` after any answer, and say `done` when finished.
+<h2>Your guess</h2>
+<p>Last time: in 8-bit two's complement, which number is <code>10000011</code>? You said <b>c) -3</b>. It is <b>b) -125</b>.</p>
+<img src="img/02-weights.svg" alt="10000011 under its weights, -128 then 64 down to 1">
+<ul>
+<li>a) -131 reads the bits unsigned, then adds a minus.</li>
+<li>b) -125: the top bit weighs -128, then add 2 and 1.</li>
+<li>c) -3 reads the top bit as a minus sign on the rest.</li>
+<li>d) 131 reads the top bit as +128, its unsigned weight.</li>
+</ul>
 
-## Your guess
+<h2>The idea</h2>
+<p>Unsigned, the 8 bits weigh 128, 64 and so on down to 1. Two's complement changes one weight: the top bit, x₇, weighs -128 (CS:APP 2.2.3). To read a number, add the weights of its 1 bits: −128·x₇ + 64·x₆ + ⋯ + 2·x₁ + x₀.</p>
+<table>
+<tr><th>Bits</th><th>Unsigned</th><th>Two's complement</th></tr>
+<tr><td><code>00010010</code></td><td>18</td><td>18</td></tr>
+<tr><td><code>11010010</code></td><td>210</td><td>-46</td></tr>
+</table>
 
-Last time: in 8-bit two's complement, which number is `10000011`? You said **c) -3**. It is **b) -125**.
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> Any pattern that starts with 1, like <code>10110100</code>, is negative. Why?</p>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In C with no cast and no <code>signed char</code>, set <code>int v</code> to the two's complement value of <code>unsigned char u</code>.</p>
+<pre class="answer">int v = (u &amp; 127) - (u &amp; 128);</pre>
+<blockquote class="feedback">Right: subtracting <code>u &amp; 128</code> gives the top bit its weight of -128 (CS:APP 2.2.3).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Dee says <code>11111111</code> is the most negative number, since every bit is 1. What is wrong?</p>
+<pre class="answer">nothing, each 1 bit adds more minus, so all ones is the most negative (sure)</pre>
+<blockquote class="feedback">
+<p>You wrote "each 1 bit adds more minus". Watch what one more 1 does:</p>
+<ul>
+<li><code>11000000</code> is -128 + 64 = -64</li>
+<li><code>11100000</code> is -128 + 64 + 32 = -32</li>
+</ul>
+<p>So what number is <code>11111111</code>? (CS:APP 2.2.3)</p>
+</blockquote>
+</section>
 
-![10000011 under its weights, -128 then 64 down to 1](img/02-weights.svg)
-
-- a) -131 reads the bits unsigned, then adds a minus.
-- b) -125: the top bit weighs -128, then add 2 and 1.
-- c) -3 reads the top bit as a minus sign on the rest.
-- d) 131 reads the top bit as +128, its unsigned weight.
-
-## The idea
-
-Unsigned, the 8 bits weigh 128, 64 and so on down to 1. Two's complement changes one weight: the top bit, $x_7$, weighs -128 (CS:APP 2.2.3). To read a number, add the weights of its 1 bits:
-
-$$
--128 x_7 + 64 x_6 + \cdots + 2 x_1 + x_0
-$$
-
-Same bits, two readings:
-
-| Bits | Unsigned | Two's complement |
-|---|---|---|
-| `00010010` | 18 | 18 |
-| `11010010` | 210 | -46 |
-
-## Questions
-
-**Q1.** Any pattern that starts with 1, like `10110100`, is negative. Why?
-
-Answer:
-
-**Q2.** In C with no cast and no `signed char`, set `int v` to the two's complement value of `unsigned char u`.
-
-Answer:
-
-```c
-
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p><code>00000110</code> is 6. Which steps turn it into the bits of -6?</p>
+<ul>
+<li>a) flip the top bit</li>
+<li>b) flip every bit</li>
+<li>c) flip every bit, then add one</li>
+<li>d) add one, then flip every bit</li>
+</ul>
+</section>
 ```
-
-**Q3.** Dee says `11111111` is the most negative number, since every bit is 1. What is wrong?
-
-Answer:
-
-## Guess for next time (not graded)
-
-`00000110` is 6. Which steps turn it into the bits of -6?
-
-- a) flip the top bit
-- b) flip every bit
-- c) flip every bit, then add one
-- d) add one, then flip every bit
-
-Answer:
-````
-
-### After grading
-
-Every graded answer gets a feedback blockquote under it, a right one too. A feedback picture goes on its own line right after the quote.
-
-````markdown
-**Q2.** In C with no cast and no `signed char`, set `int v` to the two's complement value of `unsigned char u`.
-
-Answer:
-
-```c
-int v = (u & 127) - (u & 128);
-```
-
-> **Feedback:** Right: subtracting `u & 128` gives the top bit its weight of -128 (CS:APP 2.2.3).
-
-**Q3.** Dee says `11111111` is the most negative number, since every bit is 1. What is wrong?
-
-Answer: nothing, each 1 bit adds more minus, so all ones is the most negative (sure)
-
-> **Feedback:** You wrote "each 1 bit adds more minus". Watch what one more 1 does:
->
-> - `11000000` is -128 + 64 = -64
-> - `11100000` is -128 + 64 + 32 = -32
->
-> So what number is `11111111`? (CS:APP 2.2.3)
-````
