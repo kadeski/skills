@@ -53,6 +53,8 @@ About 5 minutes, one idea. If you cannot draw it, split it. A file never holds t
 
 **Pictures.** An SVG file in `img/`, linked with `<img>`, drawn with the lesson's real numbers. Set width and height equal to the viewBox, width at most 400 and text at least 14 so it reads on a phone, and give it its own white background and dark strokes so it reads in dark themes. Before linking it, render it outside the learning folder (`rsvg-convert -o /tmp/<name>.png img/<name>.svg`), look at the PNG, and fix anything wrong, clipped or hard to read. If `rsvg-convert` is missing, say so in the terminal line. A worked table with a "what happened" column counts as a picture for procedures.
 
+**Control.** When a concept lesson's idea has something to vary, add one control under its picture that works on the lesson's own example: flip the top bit's weight between +128 and -128 and watch `11010010` read 210 or -46. It is not a calculator, so it never answers the lesson's questions. Write one plain inline `<script>`, with no libraries and no network. The picture stays, so the page still teaches with scripts off. Drills, reviews and lesson 01 get no control. Keep the script short.
+
 **Multiple choice.** 4 options that cannot be told apart without the material: write the right claim first, then turn it into each wrong option by one real misconception, in the same shape, none longer or more detailed than the right one. No reasoning inside an option. Vary which letter is right.
 
 **Help level** (0 to 3, in `goal.md`): 3 worked example traced; 2 outline and picture; 1 bare prompt; 0 the learner defines the check. Up one on `stuck`, `too hard`, or a second miss. Down one on `too easy` or two lessons passed first try in a row (lesson 01 does not count). Say so at the top of the next lesson when it moves.
@@ -82,7 +84,7 @@ Every fact and definition traces to the source, cited by section, feedback inclu
 
 ## Format
 
-`goal.md` and `Learner.md` are plain markdown: no checkboxes, HTML or frontmatter. Each lesson and review page starts with the text of `head.html` from this skill's folder, then its own `<title>`, so it needs no other file. No scripts beyond those in `head.html`. Math is TeX in one element, `$...$` inline and `$$...$$` for display, with any other `$` in `<code>`. Escape `&` and `<` in text, the learner's answers included.
+`goal.md` and `Learner.md` are plain markdown: no checkboxes, HTML or frontmatter. Each lesson and review page starts with the text of `head.html` from this skill's folder, then its own `<title>`, so it needs no other file. No scripts beyond those in `head.html` and a concept lesson's control. Math is TeX in one element, `$...$` inline and `$$...$$` for display, with any other `$` in `<code>`. Escape `&` and `<` in text, the learner's answers included.
 
 ### goal.md
 

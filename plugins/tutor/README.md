@@ -1,6 +1,6 @@
 # tutor
 
-`tutor` is an agent skill that teaches one goal at a time, as HTML pages you read in any browser. Lessons are short: a picture, few words, and questions. Your answers are graded when you say `done`, and the rules you pass come back later as spaced review. Say `stuck`, `too easy`, `too hard` or `just tell me` any time. Use it to learn or practice a topic over several sessions.
+`tutor` is an agent skill that teaches one goal at a time, as HTML pages you read in any browser. Lessons are short: a picture, few words, and questions. Some lessons add a small control you can move to see the idea change. Your answers are graded when you say `done`, and the rules you pass come back later as spaced review. Say `stuck`, `too easy`, `too hard` or `just tell me` any time. Use it to learn or practice a topic over several sessions.
 
 ## Install
 
