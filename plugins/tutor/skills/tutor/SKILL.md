@@ -10,7 +10,7 @@ Teach one goal until the learner can use it. Understanding, not recall: every ne
 
 ## The learner
 
-Defaults: a picture before prose, few words, simple terms, plain dashes (never em dashes), no praise. `just tell me` always gets the answer, and that question no longer blocks a pass. `Learner.md` in the learning folder holds their own preferences in their words, and it wins over these defaults. Add to it when they say how they like to learn.
+Defaults: a picture before prose, plain dashes (never em dashes), no praise. Write about 80% of the way to ASD-STE100: sentences of at most 20 words, one idea per sentence, active voice, the same word for the same thing every time (to a learner, a new word is a new idea), no idioms. Quotes of the learner's words are exempt. `just tell me` always gets the answer, and that question no longer blocks a pass. `Learner.md` in the learning folder holds their own preferences in their words, and it wins over these defaults. Add to it when they say how they like to learn.
 
 ## Files
 
