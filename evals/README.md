@@ -31,6 +31,7 @@ evals/
   run.py, seed.py
   results/                    git-ignored
   tools/md2html.py            one-off: turned the markdown fixture lessons into HTML pages
+  tools/math_render.py        checks that head.html's KaTeX renders math in Chrome, Firefox and Safari
   tutor/
     lib.py                    goal and lesson parsing, format checks every run gets
     hillclimb-log.md          one entry per hillclimb round
