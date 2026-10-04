@@ -32,3 +32,4 @@ def grade(r):
     r.check("04 reveals the guess", lib.section(t04, "Your guess") is not None)
     r.check("04 has 2 or 3 questions", len(lib.items(t04)) in (2, 3), lib.items(t04))
     r.claim("review-new-case", "Every review question in lesson 04 tests a rule from lesson 03 (density is mass divided by volume, or density does not depend on the size of the piece), none tests the volume of a box, and each uses a new case, not lesson 03's own items: not the 50 g, 20 cm^3 block, the 135 g, 50 cm^3 stone, the steel pieces, or the wood block and iron nail.")
+    lib.control_claims(r, t04, "lesson 04")

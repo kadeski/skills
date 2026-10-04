@@ -34,3 +34,4 @@ def grade(r):
     r.claim("concept", "Lesson 04 teaches finding b from the slope and one point (notes 4), and its 2 or 3 questions use new numbers, not y = 2x + b through (3, 10). At least one asks for the learner's own words, and none is yes/no.")
     r.claim("one-name", "Each term in lesson 04 keeps one name throughout: the lesson never switches to a different word for the same thing.")
     r.claim("accurate", "Every fact in lesson 04 and the feedback in lesson 03 matches the notes, and every number the questions or feedback imply is correct.")
+    lib.control_claims(r, t04, "lesson 04")

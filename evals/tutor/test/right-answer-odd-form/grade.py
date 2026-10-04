@@ -22,7 +22,9 @@ def grade(r):
     r.check("r02 not moved", g.rule_next("r02") == r.d(1) and g.rule_gap("r02") == 2, g.rules.get("r02"))
     new = lib.new_lessons(r, S)
     r.check("lesson 04 written and linked", len(new) == 1 and "/04-" in new[0] and "](04-" in (g.plan.get("04") or [""])[0], new)
+    t04 = r.read(new[0]) if new else ""
     if new:
-        r.check("04 reveals the guess", lib.section(r.read(new[0]), "Your guess") is not None)
+        r.check("04 reveals the guess", lib.section(t04, "Your guess") is not None)
     r.claim("odd-form-right", "The feedback on Q2 says the learner's answer 14/24 is right. It does not call it wrong, partly right or incomplete, and does not ask the learner to simplify or change it. Noting that 14/24 equals 7/12 is allowed.")
     r.check("Q1 and Q3 called right, citing the notes", all(lib.right_and_cited(lib.item_block(t, q)) for q in ("Q1", "Q3")))
+    lib.control_claims(r, t04, "lesson 04")
