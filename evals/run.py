@@ -90,11 +90,13 @@ class Run:
         return p.read_text() if p.is_file() else None
 
     def files(self, root=None):
+        """Files in the home, minus dot folders and Library/, where `claude plugin eval`
+        writes its own logs, such as a plugin MCP server's."""
         base = self.ws if root is None else root
+        rels = (p.relative_to(base) for p in base.rglob("*") if p.is_file())
         return sorted(
-            str(p.relative_to(base))
-            for p in base.rglob("*")
-            if p.is_file() and not any(part.startswith(".") for part in p.relative_to(base).parts)
+            str(rel) for rel in rels
+            if rel.parts[0] != "Library" and not any(part.startswith(".") for part in rel.parts)
         )
 
     def new_files(self):

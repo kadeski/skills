@@ -12,7 +12,7 @@ evals/run.py rejudge evals/results/<run>     judge the same outputs again and co
 evals/run.py compare evals/results/<old> evals/results/<new>
 ```
 
-A full tutor run is 25 cases x 3 runs, about 25 minutes and roughly $9 on sonnet or $18 on opus. `--model` sets the model the skill runs on, `--judge-model` the judge (both default to sonnet). Compare only runs made with the same models.
+A full tutor run is 26 cases x 3 runs, about 25 minutes and roughly $9 on sonnet or $18 on opus. `--model` sets the model the skill runs on, `--judge-model` the judge (both default to sonnet). Compare only runs made with the same models.
 
 ## How a run works
 
@@ -32,6 +32,7 @@ evals/
   results/                    git-ignored
   tools/md2html.py            one-off: turned the markdown fixture lessons into HTML pages
   tools/math_render.py        checks that head.html's KaTeX renders math in Chrome, Firefox and Safari
+  tools/lesson_server_check.mjs  checks tutor's MCP server (plugins/tutor/server/) over JSON-RPC
   tutor/
     lib.py                    goal and lesson parsing, format checks every run gets
     hillclimb-log.md          one entry per hillclimb round
