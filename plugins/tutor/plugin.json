@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tutor",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Tutor for one goal at a time, as HTML pages you read in any browser. Short lessons - a picture, few words, questions - graded when you say done, with passed rules coming back as spaced review."
 }

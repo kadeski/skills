@@ -74,7 +74,7 @@ This copies the skill files into your project, so you can edit them. Update with
 
 In Claude Code the command is `/tutor:tutor`. In other agents, ask for the tutor skill by name.
 
-Start your agent in the folder you want to learn in: each goal gets its own folder there. Each lesson is an HTML page. The tutor gives its path after each run: open it in any browser, and refresh it after grading. A host that draws MCP Apps, such as Claude's Cowork, also shows the lesson in the chat, if Node.js is installed. Cursor and the Codex app draw them too, but are not tested yet. The browser works everywhere.
+Start your agent in the folder you want to learn in: each goal gets its own folder there. Each lesson is an HTML page. The tutor gives its path after each run: open it in any browser, and refresh it after grading.
 
 Answer in the chat: `1: ...` for Q1, `g: c` for the guess, `2 again: ...` for a redo. Type or dictate, in one message or several. The tutor copies each answer into the lesson as you wrote it.
 
