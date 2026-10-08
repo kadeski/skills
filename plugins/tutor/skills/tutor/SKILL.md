@@ -34,6 +34,8 @@ The files are the state. Nothing else is written. An open `.md` lesson from tuto
 4. Update `goal.md`. After a pass, write the next lesson.
 5. One line in the terminal: which answers were recorded, what was graded, if anything, and the page to open or refresh, as `file://` plus its absolute path, like `file:///Users/sam/learn/02-x.html`.
 
+If the `Artifact` or `show_widget` tool is available, read `claude-only.md` in this skill's folder once per session and follow it as well.
+
 The learner can also say `stuck` (add a `<p class="hint">` to that question's section), `too easy`, `too hard` and `just tell me`.
 
 ## Start a goal
