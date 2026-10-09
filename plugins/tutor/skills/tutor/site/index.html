@@ -1,0 +1,81 @@
+<style>
+/* tutor goal home page: one narrow column in head.html's palette. It reads goal.md; Claude writes no HTML for it. */
+:root { --bg: #f7f7f5; --card: #fff; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e4e4e0; --blue: #3557d4; --green: #1f7a4d; --amber: #c2780a; --purple: #7c4dcc; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #121212; --card: #1c1c1e; --fg: #ececec; --muted: #9c9c9c; --line: #2e2e31; --blue: #7d97ff; --green: #6fd3a0; --amber: #f0b24a; --purple: #b99aff; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #121212; --card: #1c1c1e; --fg: #ececec; --muted: #9c9c9c; --line: #2e2e31; --blue: #7d97ff; --green: #6fd3a0; --amber: #f0b24a; --purple: #b99aff; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, sans-serif; }
+main { max-width: 42rem; margin: 0 auto; padding-inline: 16px; padding-block: 2.5rem; }
+h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 .4rem; text-wrap: balance; }
+h2 { font: 600 .75rem system-ui, sans-serif; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin: 2rem 0 .6rem; }
+a { color: var(--blue); }
+.sub { color: var(--muted); margin: 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1.15rem; }
+.now { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; border-left: 4px solid var(--blue); }
+.now b { flex: 1 1 14rem; min-width: 0; }
+.open { padding: .35rem 1rem; border-radius: 6px; background: var(--blue); color: var(--bg); text-decoration: none; font-weight: 600; }
+ul { list-style: none; margin: 0; padding: 0; }
+li { display: flex; flex-wrap: wrap; gap: .1rem 1rem; justify-content: space-between; padding: .45rem 0; border-top: 1px solid var(--line); }
+li:first-child { border-top: 0; }
+.st { font-size: .85rem; color: var(--muted); }
+.st.passed { color: var(--green); } .st.redo { color: var(--amber); } .st.waiting { color: var(--blue); }
+.date { font: .85rem ui-monospace, Menlo, monospace; color: var(--purple); font-variant-numeric: tabular-nums; }
+pre { white-space: pre-wrap; font: 14px/1.5 ui-monospace, Menlo, monospace; margin: 0; }
+</style>
+<main id="home"><p class="sub">Loading the goal</p></main>
+<script id="reader">
+function readGoal(text) {
+  const g = { title: "", goal: "", exam: "", help: "", plan: [], rules: [] };
+  let section = "";
+  for (const line of text.split(/\r?\n/)) {
+    if (line.startsWith("# ")) { g.title = line.slice(2).trim(); continue; }
+    if (line.startsWith("## ")) { section = line.slice(3).trim().toLowerCase(); continue; }
+    if (!line.startsWith("- ")) continue;
+    const item = line.slice(2).trim();
+    let m;
+    if (!section && (m = item.match(/^(Goal|Exam|Help): *(.*)$/))) g[m[1].toLowerCase()] = m[2].trim();
+    else if (section == "plan" && (m = item.match(/^\[([^\]]+)\]\(([^)\s]+)\)(?: - (.*))?$/))) g.plan.push({ title: m[1], href: m[2], status: (m[3] || "").trim() });
+    else if (section == "plan") { const i = item.lastIndexOf(" - "); g.plan.push({ title: i < 0 ? item : item.slice(0, i), href: "", status: i < 0 ? "" : item.slice(i + 3) }); }
+    else if (section == "rules" && (m = item.match(/^(r\d+) (.*?) - (?:next (\S+?)(?:, gap (\d+))?|(learned))$/))) g.rules.push({ id: m[1], text: m[2], next: m[3] || "", gap: m[4] ? +m[4] : null, learned: !!m[5] });
+  }
+  return g;
+}
+function statusOf(item) {
+  if (!item.href) return { word: "not yet", kind: "" };
+  if (!item.status) return { word: "waiting for your answers", kind: "waiting" };
+  return { word: item.status, kind: item.status.startsWith("passed") ? "passed" : item.status.startsWith("redo") ? "redo" : "" };
+}
+</script>
+<script>
+const home = document.getElementById("home");
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const link = (href, text, cls) => { const a = el("a", cls, text); a.href = href; return a; };
+function show(text) {
+  const g = readGoal(text);
+  if (!g.title || !g.plan.length) throw new Error("no plan");
+  document.title = g.title;
+  home.replaceChildren(el("h1", "", g.title), el("p", "sub", g.goal.charAt(0).toUpperCase() + g.goal.slice(1)), ...(g.exam ? [el("p", "sub", "Exam: " + g.exam)] : []));
+  const now = [...g.plan].reverse().find(i => i.href);
+  if (now) {
+    const card = el("div", "card now");
+    card.append(el("b", "", now.title), el("span", "st " + statusOf(now).kind, statusOf(now).word), link(now.href, "Open", "open"));
+    home.append(el("h2", "", "Now"), card);
+  }
+  const plan = el("ul", "card");
+  for (const i of g.plan) {
+    const li = el("li");
+    li.append(i.href ? link(i.href, i.title) : el("span", "", i.title), el("span", "st " + statusOf(i).kind, statusOf(i).word));
+    plan.append(li);
+  }
+  home.append(el("h2", "", "Plan"), plan);
+  const due = g.rules.filter(r => !r.learned && r.next).sort((a, b) => a.next.localeCompare(b.next));
+  if (due.length) {
+    const ul = el("ul", "card");
+    for (const r of due) { const li = el("li"); li.append(el("span", "", r.text), el("span", "date", r.next)); ul.append(li); }
+    home.append(el("h2", "", "Next reviews"), ul);
+  }
+  home.append(el("h2", "", "Files"), link("goal.md", "goal.md"));
+}
+fetch("goal.md").then(r => r.ok ? r.text() : Promise.reject(new Error("HTTP " + r.status))).then(text => {
+  try { show(text); } catch { home.replaceChildren(el("pre", "card", text)); }
+}).catch(e => home.replaceChildren(el("p", "sub", "Could not read goal.md: " + e.message)));
+</script>
