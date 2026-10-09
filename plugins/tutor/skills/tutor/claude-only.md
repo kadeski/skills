@@ -2,6 +2,18 @@
 
 These rules add to SKILL.md when a Claude tool is there. Each section names the tool it needs; skip a section when that tool is missing. The files stay the record, and grading and typed chat answers do not change.
 
+## At step 5: publish
+
+Only when the `Artifact` tool is available. Each goal is one private artifact, and its link is the `- Page:` line in goal.md, after `- Help:`. The learning folder stays the record: the artifact is a copy of it.
+
+- **First publish.** Copy `site/index.html` from this skill's folder to `<goal>/.site/index.html`. Publish it as the page, with `root` set to the goal folder, `title` set to the goal's name and `icon` set to `lesson`. Send `goal.md` (as `text/plain`), every lesson and review page and every picture as files at their own paths. Then add `- Page: <link>` to goal.md; the copy on the page gets it with the next publish.
+- **Later runs.** In a session that has not published to the link yet, read it once and list its files (`scope: "files"`), since the tool refuses to change a path it has not seen. Then publish `.site/index.html` to the link with only the files this run wrote or changed, goal.md included.
+- **Review pages.** When you write `review-<date>.html`, add it to the end of the Plan as `- [Review <date>](review-<date>.html)`, and give it the status `graded` once graded, so the home page can find it.
+- **Design.** The home page reads goal.md and draws itself, and `head.html` styles the lessons. Write no HTML for the home page and do not restyle a page.
+- **Terminal line.** Give the link in place of the `file://` path. An open page reloads by itself after a publish and lands on the home page.
+
+If a publish fails, give the `file://` path as usual and say why in the terminal line.
+
 ## The answer card
 
 Only when the `show_widget` tool is available. Load its guide first, as the tool asks, with the `interactive` module.
