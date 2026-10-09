@@ -11,6 +11,10 @@ Only when goal.md has a `Page:` link and the `ArtifactData` tool is available. A
 - After the file is written, delete the documents you copied, in one `batch`, each pinned to the version you read.
 - When grading asks for a redo, add `data-redo` to that question's `<section>`, so the page shows a new box under the feedback. Remove it once the redo is graded.
 
+## A run with no learner message
+
+Only when goal.md has a `Page:` link and the `ArtifactData` tool is available. A daily scheduled task can start a run with only the command, and nobody there to answer. Then, for each goal folder with a `Page:` link, list its inbox. For each lesson with a `<lesson>-done` document, do the inbox step, grade that lesson, update goal.md, write the next lesson after a pass, and publish. Change nothing else: record no answers without a Done mark, ask nothing and start no goal. End with one line per goal graded, or say in one line that nothing was marked done, with each goal's link.
+
 ## At step 5: publish
 
 Only when the `Artifact` tool is available. Each goal is one private artifact, and its link is the `- Page:` line in goal.md, after `- Help:`. The learning folder stays the record: the artifact is a copy of it.

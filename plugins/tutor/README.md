@@ -80,7 +80,9 @@ Answer in the chat: `1: ...` for Q1, `g: c` for the guess, `2 again: ...` for a 
 
 In the Claude desktop and web apps, the tutor also shows a card in the chat after each lesson. Tap an option, or type a number and press Send, to answer a multiple-choice or number question. Open questions stay typed.
 
-In Claude Code signed in to claude.ai, each goal also gets one private claude.ai link that opens on any device, phone included. The tutor gives that link in place of the file path. Its home page shows the plan, the newest lesson and the next reviews, and an open page reloads by itself after grading. On that page you can also type an answer under each question and press Save, on your phone too, then say `done` in Claude Code to grade it. Your learning folder stays the record.
+In Claude Code signed in to claude.ai, each goal also gets one private claude.ai link that opens on any device, phone included. The tutor gives that link in place of the file path. Its home page shows the plan, the newest lesson and the next reviews, and an open page reloads by itself after grading. On that page you can also type an answer under each question and press Save, on your phone too, then press Done on the page and say `done` in Claude Code to grade it.
+
+To get feedback without opening Claude Code, set up a daily local scheduled task in the Claude desktop app: it runs in your learning folder with the prompt `/tutor:tutor`. Each day it grades the lessons you marked Done on the page, writes the next lesson and publishes, so the feedback is waiting on your phone. It runs only while the desktop app is open, and it leaves lessons with no Done mark as they are. Your learning folder stays the record.
 
 Without that link, phones are not supported: a phone's file preview does not load the lesson's pictures.
 
