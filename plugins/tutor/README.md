@@ -78,7 +78,7 @@ Start your agent in the folder you want to learn in: each goal gets its own fold
 
 Answer in the chat: `1: ...` for Q1, `g: c` for the guess, `2 again: ...` for a redo. Type or dictate, in one message or several. The tutor copies each answer into the lesson as you wrote it.
 
-In the Claude desktop and web apps, the tutor also shows a card in the chat after each lesson. Tap an option, or type a number and press Send, to answer a multiple-choice or number question. Open questions stay typed.
+In the Claude desktop and web apps, the tutor also shows a card in the chat after each lesson. Pick an option or type a number for each multiple-choice or number question, then press Send, or Send and grade. Open questions stay typed.
 
 Phones are not supported yet: a phone's file preview does not load the lesson's pictures.
 
