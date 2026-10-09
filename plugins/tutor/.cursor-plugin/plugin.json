@@ -1,6 +1,6 @@
 {
   "name": "tutor",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "Tutor for one goal at a time, as HTML pages you read in any browser. Short lessons - a picture, few words, questions - graded when you say done, with passed rules coming back as spaced review.",
   "author": {
     "name": "Kaden Staker"
