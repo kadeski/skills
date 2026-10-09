@@ -2,11 +2,20 @@
 
 These rules add to SKILL.md when a Claude tool is there. Each section names the tool it needs; skip a section when that tool is missing. The files stay the record, and grading and typed chat answers do not change.
 
+## At step 2: the inbox
+
+Only when goal.md has a `Page:` link and the `ArtifactData` tool is available. A lesson page on the link has an answer box under each open question, and its Save writes to the artifact's database.
+
+- Before chat answers, list the collection `data/users/me` with `ArtifactData` at that link.
+- A document with `lesson`, `q`, `text` and `tag` is a chat answer for that lesson's page: `{q: "Q2", text: "b", tag: "sure"}` is `2: b sure`, R1 is `r1`, G is `g`, and a question marked to redo is `2 again`. A `<lesson>-done` document is `done`. Record them by step 2 as usual, word for word. Leave other documents alone.
+- After the file is written, delete the documents you copied, in one `batch`, each pinned to the version you read.
+- When grading asks for a redo, add `data-redo` to that question's `<section>`, so the page shows a new box under the feedback. Remove it once the redo is graded.
+
 ## At step 5: publish
 
 Only when the `Artifact` tool is available. Each goal is one private artifact, and its link is the `- Page:` line in goal.md, after `- Help:`. The learning folder stays the record: the artifact is a copy of it.
 
-- **First publish.** Copy `site/index.html` from this skill's folder to `<goal>/.site/index.html`. Publish it as the page, with `root` set to the goal folder, `title` set to the goal's name and `icon` set to `lesson`. Send `goal.md` (as `text/plain`), every lesson and review page and every picture as files at their own paths. Then add `- Page: <link>` to goal.md; the copy on the page gets it with the next publish.
+- **First publish.** Copy `site/` from this skill's folder to `<goal>/.site/`. Publish `.site/index.html` as the page, with `root` set to the goal folder, `title` set to the goal's name, `icon` set to `lesson` and `capabilities: {db: {}, user: {}}`. Send `.site/answers.js` as `answers.js`, and `goal.md` (as `text/plain`), every lesson and review page and every picture as files at their own paths. Then add `- Page: <link>` to goal.md; the copy on the page gets it with the next publish.
 - **Later runs.** In a session that has not published to the link yet, read it once and list its files (`scope: "files"`), since the tool refuses to change a path it has not seen. Then publish `.site/index.html` to the link with only the files this run wrote or changed, goal.md included.
 - **Review pages.** When you write `review-<date>.html`, add it to the end of the Plan as `- [Review <date>](review-<date>.html)`, and give it the status `graded` once graded, so the home page can find it.
 - **Design.** The home page reads goal.md and draws itself, and `head.html` styles the lessons. Write no HTML for the home page and do not restyle a page.

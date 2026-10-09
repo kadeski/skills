@@ -80,7 +80,7 @@ Answer in the chat: `1: ...` for Q1, `g: c` for the guess, `2 again: ...` for a 
 
 In the Claude desktop and web apps, the tutor also shows a card in the chat after each lesson. Tap an option, or type a number and press Send, to answer a multiple-choice or number question. Open questions stay typed.
 
-In Claude Code signed in to claude.ai, each goal also gets one private claude.ai link that opens on any device, phone included. The tutor gives that link in place of the file path. Its home page shows the plan, the newest lesson and the next reviews, and an open page reloads by itself after grading. Your learning folder stays the record.
+In Claude Code signed in to claude.ai, each goal also gets one private claude.ai link that opens on any device, phone included. The tutor gives that link in place of the file path. Its home page shows the plan, the newest lesson and the next reviews, and an open page reloads by itself after grading. On that page you can also type an answer under each question and press Save, on your phone too, then say `done` in Claude Code to grade it. Your learning folder stays the record.
 
 Without that link, phones are not supported: a phone's file preview does not load the lesson's pictures.
 
