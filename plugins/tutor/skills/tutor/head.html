@@ -5,6 +5,8 @@
 <!-- tutor lesson page -->
 <style>
 :root { color-scheme: light dark; --bg: light-dark(#f7f7f5, #121212); --card: light-dark(#fff, #1c1c1e); --fg: light-dark(#1a1a1a, #ececec); --muted: light-dark(#6b6b6b, #9c9c9c); --line: light-dark(#e4e4e0, #2e2e31); --soft: light-dark(#f1f3f8, #24262d); --blue: light-dark(#3557d4, #7d97ff); --purple: light-dark(#7c4dcc, #b99aff); --amber: light-dark(#c2780a, #f0b24a); --amber-bg: light-dark(#fdf6e8, #2c2416); --green: light-dark(#1f7a4d, #6fd3a0); --green-bg: light-dark(#eff8f3, #1a2a22); }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 body { max-width: 42rem; margin: 2.5rem auto; padding: 0 1rem; font: 17px/1.6 system-ui, sans-serif; color: var(--fg); background: var(--bg); }
 h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 .4rem; }
 h1 + p { font-size: .85rem; color: var(--muted); margin: 0 0 2rem; }
@@ -39,4 +41,4 @@ button { padding: .3rem .8rem; color: var(--fg); background: var(--soft); border
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.css" integrity="sha384-3rdsX6e5mueWyoweR9NIVmtEsUkokpBT/0ALqKKIBMr9j4qhHkaIkAcGgsE6uVlp" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.js" integrity="sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]})"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], output: location.protocol == 'file:' ? 'htmlAndMathml' : 'mathml'})"></script>

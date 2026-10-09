@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Open a lesson page built from tutor's head.html in Chrome, Firefox and Safari
-from file://, once online and once with the CDN unreachable, and assert what
-KaTeX did to the DOM. The page reports back with sendBeacon to a local server.
-Safari opens in the background in your own browser; close its two tabs after.
+from file:// and from a local http server, once online and once with the CDN
+unreachable, and assert what KaTeX did to the DOM: HTML and MathML on file://,
+MathML only over http, as on claude.ai where the KaTeX stylesheet is blocked.
+It also sets data-theme on the root, as claude.ai does, and checks the colors.
+The page reports back with sendBeacon to the same local server.
+Safari opens in the background in your own browser; close its four tabs after.
 
     evals/tools/math_render.py [chrome] [firefox] [safari]"""
 
@@ -45,14 +48,18 @@ addEventListener("load", () => setTimeout(async () => {
   await document.fonts.ready;
   const q = s => document.querySelectorAll(s).length;
   const r = {
-    katex: q(".katex"), display: q(".katex-display"), errors: q(".katex-error"),
+    katex: q(".katex"), display: q('.katex math[display="block"]'), errors: q(".katex-error"),
     in_table: q("#cell .katex"), in_feedback: q("blockquote.feedback .katex"),
-    matrix: q("#matrix .katex-display"),
+    matrix: q('#matrix math[display="block"]'), html: q(".katex-html"), mathml: q(".katex math"),
     pre_raw: document.querySelector("pre.answer").textContent,
     code_raw: [...document.querySelectorAll("code")].map(c => c.textContent),
     font: document.fonts.check("16px KaTeX_Main"),
     inline_text: document.getElementById("inline").textContent.includes("$x^2"),
   };
+  r.theme = ["light", "dark"].map(t => {
+    document.documentElement.dataset.theme = t;
+    return getComputedStyle(document.body).backgroundColor;
+  });
   navigator.sendBeacon("http://127.0.0.1:%d/" + location.hash.slice(1), JSON.stringify(r));
 }, 500));
 </script>
@@ -62,6 +69,17 @@ results = {}
 
 
 class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        path = OUT / Path(self.path).name
+        if not path.is_file():
+            self.send_error(404)
+            return
+        body = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_POST(self):
         body = self.rfile.read(int(self.headers["Content-Length"]))
         results[self.path.strip("/")] = json.loads(body)
@@ -97,13 +115,16 @@ def launch(browser, url):
     return None
 
 
-def expect(r, online):
+def expect(r, online, http):
     if r is None:
         return ["no report within timeout"]
     raw_ok = r["pre_raw"] == "$5 and $10 (sure)" and r["code_raw"] == ["$5", "$5 and $10"]
-    want = {"katex": 8, "display": 2, "errors": 0, "in_table": 1, "in_feedback": 1, "matrix": 1, "font": True,
-            "inline_text": False} if online else \
+    want = {"katex": 8, "display": 2, "errors": 0, "in_table": 1, "in_feedback": 1, "matrix": 1, "mathml": 8,
+            "html": 0 if http else 8, "inline_text": False} if online else \
         {"katex": 0, "display": 0, "errors": 0, "in_table": 0, "in_feedback": 0, "matrix": 0, "inline_text": True}
+    if online and not http:
+        want["font"] = True
+    want["theme"] = ["rgb(247, 247, 245)", "rgb(18, 18, 18)"]
     bad = [f"{k}={r[k]!r} want {v!r}" for k, v in want.items() if r[k] != v]
     return bad + ([] if raw_ok else [f"raw text changed: {r['pre_raw']!r} {r['code_raw']!r}"])
 
@@ -115,19 +136,21 @@ def main():
     failed = False
     for online in (True, False):
         path = page(online)
-        for b in browsers:
-            key = f"{b}-{'online' if online else 'offline'}"
-            proc = launch(b, f"{path.as_uri()}#{key}")
-            deadline = time.time() + 30
-            while key not in results and time.time() < deadline:
-                time.sleep(0.2)
-            if proc:
-                proc.kill()
-            bad = expect(results.get(key), online)
-            failed |= bool(bad)
-            print(f"{'PASS' if not bad else 'FAIL'} {key:16} {json.dumps(results.get(key))}")
-            for x in bad:
-                print(f"     {x}")
+        for http in (False, True):
+            url = f"http://127.0.0.1:{PORT}/{path.name}" if http else path.as_uri()
+            for b in browsers:
+                key = f"{b}-{'http' if http else 'file'}-{'online' if online else 'offline'}"
+                proc = launch(b, f"{url}#{key}")
+                deadline = time.time() + 30
+                while key not in results and time.time() < deadline:
+                    time.sleep(0.2)
+                if proc:
+                    proc.kill()
+                bad = expect(results.get(key), online, http)
+                failed |= bool(bad)
+                print(f"{'PASS' if not bad else 'FAIL'} {key:22} {json.dumps(results.get(key))}")
+                for x in bad:
+                    print(f"     {x}")
     server.shutdown()
     sys.exit(1 if failed else 0)
 
