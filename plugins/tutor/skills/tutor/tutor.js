@@ -227,7 +227,8 @@
     renderLesson();
     // A request note changes with time alone, with no snapshot to trigger a render.
     clearTimeout(S.recheck);
-    if (S.recheckAt < Infinity) S.recheck = setTimeout(schedule, Math.max(0, S.recheckAt - Date.now()) + 50);
+    // Capped, since a claimedAt from a wrong clock can lie far ahead, past what setTimeout can wait.
+    if (S.recheckAt < Infinity) S.recheck = setTimeout(schedule, Math.min(CLAIM_LIMIT, Math.max(0, S.recheckAt - Date.now())) + 50);
   }
 
   function renderStatus() {
@@ -412,7 +413,7 @@
 
     // One button: Hint first, then Show me, then none. It waits while the last ask is unhandled.
     const asks = S.requests.filter(r => r.question === qid && (r.kind === "hint" || r.kind === "showme"));
-    const step = st.closed || S.readOnly || asks.some(r => r.kind === "showme" && r.handled) ? "none"
+    const step = st.closed || S.readOnly || solution || asks.some(r => r.kind === "showme" && r.handled) ? "none"
       : asks.length ? "showme" : "hint";
     const acts = box.querySelector(".tutor-q-actions");
     keyed(acts, step, node => {
