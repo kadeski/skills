@@ -43,6 +43,7 @@
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
+  const NOTHING_NEW = "Answer a question first, then press Done.";
 
   const S = {
     db: null, comments: null, readOnly: false, failed: null,
@@ -459,7 +460,10 @@
         // A failed write must not block the ones after it.
         chain = chain.catch(() => {}).then(() => S.db.doc(`answers/${lesson}-${qid}`).set({
           lesson, question: qid, type, answer: value, attempt, savedAt, recorded: false,
-        })).then(() => { s.last = value; s.wrote = { value, savedAt }; note(qid, ""); }, e => {
+        })).then(() => {
+          s.last = value; s.wrote = { value, savedAt }; note(qid, "");
+          if (S.notes.lesson === NOTHING_NEW) note("lesson", "");
+        }, e => {
           if (errCode(e) === "invalid_argument") S.readOnly = true;
           note(qid, `Not saved (${errCode(e)}).`);
           throw e;
@@ -499,6 +503,7 @@
       if (kind === "done") {
         const results = await Promise.allSettled([...S.savers.values()].map(s => s.flush()));
         if (results.some(r => r.status === "rejected")) { note(key, "An answer did not save. Try Done again."); return; }
+        if (!hasNewAnswer(S.lessons.get(lesson) || {})) { note(key, NOTHING_NEW); return; }
       }
       const id = `${lesson}-${Date.now().toString(36)}`;
       const ref = S.db.doc(`requests/${id}`);
@@ -526,6 +531,18 @@
   }
 
   const done = button => request("done", null, button);
+
+  // Done needs something to grade: an open question with an answer saved since its last grading.
+  // The page's own last write counts too, in case its snapshot has not arrived yet.
+  function hasNewAnswer(lesson) {
+    return [...S.questions].some(([qid, q]) => {
+      const a = S.answers.get(qid);
+      if (questionState(q, a, lesson).closed) return false;
+      if (a && !a.recorded && String(a.answer).trim()) return true;
+      const w = S.savers.has(qid) && S.savers.get(qid).wrote;
+      return !!w && String(w.value).trim() !== "" && (!a || w.savedAt > a.savedAt);
+    });
+  }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
