@@ -41,7 +41,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
    - `easy` and `hard`: Help goes down or up one, used at the next grading.
    - `done`: grade the lesson (Grading).
 
-   Mark each request `handled: true` with `handledAt` in the same batch as the writes it caused. The learner can also ask in the chat: for a hint, to be shown the answer, too easy, too hard, or done. Handle those the same way. An answer typed in the chat goes into its `answers` document word for word, `recorded: false`, and is graded at Done like any other.
+   Mark each request `handled: true` with `handledAt` in the same batch as the writes it caused. The learner can also ask in the chat: for a hint, to be shown the answer, too easy, too hard, or done. Handle those the same way. An answer typed in the chat goes into its `answers` document word for word, `recorded: false`, with the attempt the page would give (Grading), and is graded at Done like any other.
 4. **Write the next lesson** when the newest lesson has passed and the plan has lessons left. Do it after the grading batch, in a batch of its own. The page then shows the new lesson, so say that the feedback is under the old lesson in the plan.
 5. **Watch.** In Claude Code, watch the goal with `ArtifactComments` (`action: "watch"`), then list the watches. A goal whose row says auto-replies armed sends Done straight to this session; otherwise Done waits for the next `/tutor` run.
 6. **End with one line:** the goal's link, what was graded or written, and whether Done reaches this session.
@@ -56,7 +56,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 4. **The page** (The page, below). Publish it with title `Tutor: <goal name>` and icon `lesson`.
 5. **Seed** in one batch: `goal/main`, `goal/prefs` (copied from the newest other `Tutor:` goal, or empty), lesson 01 and its questions.
 
-**Lesson 01, "Where you're at."** Two or three questions on what lesson 02 needs, not on the goal itself, then the guess. It always counts as passed, teaches no rule and is never redone: a wrong model gets feedback with no question and is logged, and lesson 02's first question tests it again. Any Q answer wrong or blank sets Help to 3; a whole missing prerequisite adds a lesson for it. Every answer right means the questions were too easy, not that the level is found: add two harder questions to lesson 01 and wait for Done again. If those are right too, drop the plan lessons they cover.
+**Lesson 01, "Where you're at."** Two or three questions on what lesson 02 needs, not on the goal itself, then the guess. It always counts as passed, teaches no rule and is never redone: a wrong model gets feedback with no question and is logged, and lesson 02's first question tests it again. Any Q answer wrong or blank sets Help to 3; a whole missing prerequisite adds a lesson for it. Every answer right means the questions were too easy, not that the level is found: add two harder questions to lesson 01 (new sections in its `html` and new question documents) and wait for Done again. If those are right too, drop the plan lessons they cover. Its plan status is `passed` from the first grading, but its `pass` field stays null until the last grading of lesson 01, since `pass` closes every question on the page.
 
 ## The page
 
@@ -97,7 +97,7 @@ Grade the newest lesson when it has an unhandled `done` request, or when the lea
 
 What to write, in one batch per lesson:
 
-- Each graded question: append `{attempt, answer, text}` to `feedback`, with `answer` copied from its answer document, since a redo replaces that document. Set `redo` to true for a wrong answer, false otherwise.
+- Each graded question: append `{attempt, answer, text}` to `feedback`, with `answer` copied from its answer document, since a redo replaces that document. Set `redo` to true for a wrong answer, false otherwise. A review question never gets `redo`: its rule comes back on its own schedule.
 - Each graded answer: `recorded: true`. For a blank, set `answers/<nn>-<id>` with `answer: ""`, `recorded: true`, the current `savedAt`, and the attempt the page would give: 1, or one more than the recorded answer's. The redo then opens as the next attempt.
 - **Passed** (every lesson question right, or fixed in a redo; review answers never block): set the lesson's `pass` to `You can now ...`, mark the plan entry `passed`, or `passed, first try` with no redo and no Show me, and add the rules it taught with a first review date.
 - **Not passed**: set the plan status to the questions to redo, like `redo Q2, Q3`. The learner answers them under the feedback and presses Done again. A redo that repeats the old answer is a second miss.
@@ -105,7 +105,7 @@ What to write, in one batch per lesson:
 
 ## Review
 
-Each passed rule comes back as one mc or number question in the first lesson you write on or after its due date, at most 3 per lesson, under `<h2>Review</h2>` before the lesson's own questions: sections `R1`, `R2` and so on, each question document naming its `rule`. Test the same rule on a new case, never the lesson's own item. After the last lesson, a run with rules due and no review lesson open writes one: the next lesson number, `kind: "review"`, title `Review <date>`, added to the plan.
+Each passed rule comes back as one mc or number question in the first lesson you write on or after its due date, at most 3 per lesson, under `<h2>Review</h2>` before the lesson's own questions: sections `R1`, `R2` and so on, each question document naming its `rule`. Test the same rule on a new case, never the lesson's own item. After the last lesson, a run with rules due and no review lesson open writes one: the next lesson number, `kind: "review"`, title `Review <date>`, added to the plan. Its first grading sets its `pass` to a short line, like `Reviewed.`, and its plan status to `graded`.
 
 Spacing: first review 2 days after the pass. Right: double the gap. Wrong or blank: back to 1 day, and log it if it is a wrong model. A review that would land after the exam date moves to the day before it. A rule answered right at a gap of 16 days or more is learned: set its `next` to `learned` and stop reviewing it.
 
@@ -119,7 +119,7 @@ A lesson's `html` is a fragment: no `<html>`, `<head>`, `<style>` or `<script>`.
 
 Math is TeX in one text node, `$...$` inline and `$$...$$` for display, with any other `$` in `<code>`. Escape `&` and `<` in text, the learner's words included.
 
-A rule is named by the lesson that taught it: `{"id": "r02", "text": "the top bit weighs -128, not 128", "next": "2026-10-02", "gapDays": 4}`. `plan` statuses: empty while waiting, `passed`, `passed, first try`, or `redo Q2`. A misconception is `{rule, wrong, seen}`: the rule id it breaks (or the question, before the rule is taught), the wrong model in one line quoting the learner, and the questions it showed in, like `["02 Q3"]`.
+A rule is named by the lesson that taught it: `{"id": "r02", "text": "the top bit weighs -128, not 128", "next": "2026-10-02", "gapDays": 4}`. `plan` statuses: empty while waiting, `passed`, `passed, first try`, `redo Q2`, or `graded` for a review lesson. A misconception is `{rule, wrong, seen}`: the rule id it breaks (or the question, before the rule is taught), the wrong model in one line quoting the learner, and the questions it showed in, like `["02 Q3"]`.
 
 ### Example
 
