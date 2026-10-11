@@ -21,9 +21,9 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 | `goal/main` | `title`, `goal`, `source`, `examDate`, `help` (0-3), `plan` [{`id`, `title`, `status`}], `rules` [{`id`, `text`, `next`, `gapDays`}], `misconceptions` [{`rule`, `wrong`, `seen`}], `tutorJs` (the `tutor.js` version the page was published with) | tutor |
 | `goal/prefs` | `text`: the learner's preferences in their words | tutor |
 | `lessons/<nn>` | `title`, `kind` (`lesson` or `review`), `html`, `script` (or null), `pass` (or null) | tutor |
-| `lessons/<nn>/questions/<id>` | `id` (`Q1`, `R1`, `G`), `type` (`mc`, `number`, `text`), `options` [html], `rule` (review questions only), `feedback` [{`attempt`, `answer`, `text`}], `redo`, `hints` [html] | tutor |
+| `lessons/<nn>/questions/<id>` | `id` (`Q1`, `R1`, `G`), `type` (`mc`, `number`, `text`), `options` [html], `rule` (review questions only), `feedback` [{`attempt`, `answer`, `text`}], `redo`, `hints` [html], `solution` (html, or null) | tutor |
 | `answers/<nn>-<id>` | `lesson`, `question`, `type`, `answer`, `attempt`, `savedAt`, `recorded` | page; the tutor sets `recorded` |
-| `requests/<nn>-<base36 ms>` | `kind` (`done`, `hint`, `showme`, `easy`, `hard`), `lesson`, `question` (or null), `at`, `sent`, `threadId` (or null), `handled`, `handledAt` | page; the tutor sets `handled` and `handledAt` |
+| `requests/<nn>-<base36 ms>` | `kind` (`done`, `hint`, `showme`, `easy`, `hard`), `lesson`, `question` (or null), `at`, `sent`, `threadId` (or null), `claimedAt` (or null), `handled`, `handledAt` | page; the tutor sets `claimedAt`, `handled` and `handledAt` |
 
 - Lesson ids are two digits: `01`, `02`. An mc answer is the option's letter, `a` to `d`.
 - The answer key is never stored. Work out the right answer when you grade, and show it only in feedback.
@@ -34,10 +34,10 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 ## Each run
 
 1. **Find the goal.** `/tutor <link>` names it. Otherwise list the learner's artifacts with the `Artifact` tool and keep those titled `Tutor: ...`. A topic that matches one continues it; a new topic starts a goal (Start a goal). With no topic, take the only goal, or ask in one line which one, newest first.
-2. **Read** `goal/main`, `goal/prefs`, the requests with `handled` false, and the newest lesson with its questions and answers. If `tutorJs` is missing or lower than `VERSION` in this skill's `tutor.js`, update the page's `tutor.js` (The page).
+2. **Read** the requests with `handled` false, and at once **claim** them: one batch that sets each one's `claimedAt` to the current time from the system clock (`date -u +%Y-%m-%dT%H:%M:%SZ`). The page then shows that Claude is working; an unclaimed request tells the learner to run /tutor. If a claim fails on its version, read that request again and claim it once more. Then read `goal/main`, `goal/prefs`, and the newest lesson with its questions and answers. If `tutorJs` is missing or lower than `VERSION` in this skill's `tutor.js`, update the page's `tutor.js` (The page).
 3. **Handle requests**, oldest first. Each one, and what it does:
    - `hint`: add one hint to the question's `hints`, a nudge on a different example, not the answer. Help goes up one.
-   - `showme`: add the answer and the reasoning behind it to `hints`. That question no longer blocks a pass, and the lesson cannot pass first try.
+   - `showme`: set the question's `solution` to the answer and the reasoning behind it. That question no longer blocks a pass, and the lesson cannot pass first try.
    - `easy` and `hard`: Help goes down or up one, used at the next grading.
    - `done`: grade the lesson (Grading).
 
@@ -63,7 +63,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 Load the `artifact-design` skill, then write one HTML page for the goal and fit its look to the topic. The page holds no lesson content. This skill ships `tutor.js`, which does every job that must not break: it loads the database, draws the plan, reviews and lesson, adds answer controls and buttons, saves answers and requests, and renders math. Never edit it; its header comment is the full contract.
 
 - **Slots:** empty elements `tutor.js` fills: `data-tutor="title"`, `"goal"`, `"status"`, `"plan"`, `"reviews"` and `"lesson"`. End the body with `<script src="tutor.js"></script>`, and add no other script.
-- **Style** what `tutor.js` adds: question sections (`section#Q1`, `section[id^="R"]`, `section#G`), `.tutor-option[aria-pressed]`, `.tutor-input`, `.answer`, `.feedback`, `.hint`, `.pass`, `.tutor-actions` with `.tutor-done`, `.tutor-note`, `.tutor-plan-item[aria-current]` and `.tutor-review-date`. Its own defaults are bare, so the page's CSS wins. Light and dark themes both.
+- **Style** what `tutor.js` adds: question sections (`section#Q1`, `section[id^="R"]`, `section#G`), `.tutor-option[aria-pressed]`, `.tutor-input`, `.answer`, `.feedback`, `.hint`, `.solution` (labelled as the answer), `.pass`, `.tutor-actions` with `.tutor-done`, `.tutor-note`, `.tutor-plan-item[aria-current]` and `.tutor-review-date`. Its own defaults are bare, so the page's CSS wins. Light and dark themes both.
 - **Publish:** copy `tutor.js` from this skill's folder into a scratch folder next to the page, since the `Artifact` tool sends only files under the working or scratchpad folder. Publish the page with `files: {"tutor.js": "<scratch folder>/tutor.js"}` and `capabilities: {db: {rules: [{path: "goal", write: "owner"}, {path: "lessons", write: "owner"}]}, comments: {}}`.
 - **Republish** to change the page's look (only when the learner asks) or to update its `tutor.js`. In a session that has not published it, first read it with the `Artifact` tool, then read it again with `path: "index.html"`, which saves the page's source to a file, and list its files (`scope: "files"`): the tool refuses to publish over a version or replace a file it has not seen. Then publish to its link from that saved file, with the new `files` entry, and leave out `capabilities` and `icon` so the page keeps them. After a `tutor.js` update, set `tutorJs` in `goal/main`.
 

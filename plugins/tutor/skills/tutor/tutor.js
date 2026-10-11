@@ -24,16 +24,20 @@
  *   tutor.js adds to each section a <div class="tutor-q"> holding, in order:
  *     .tutor-attempt > .answer + blockquote.feedback   one per feedback entry
  *     .hint                                            one per entry in hints
+ *     .solution                                        the question's solution, the answer to Show me
  *     .tutor-controls                                  .tutor-options > button.tutor-option[aria-pressed], or .tutor-input
  *     .tutor-q-actions                                 one button (Hint, then Show me once a hint was asked), .tutor-note
- *   A .tutor-note waiting on Claude (a sent request not yet handled) holds span.tutor-wait, three animated dots.
+ *   A .tutor-note for a request a Claude session claimed and has not handled holds span.tutor-wait, three
+ *   animated dots. A request nobody claimed within CLAIM_WAIT, or claimed longer than CLAIM_LIMIT ago,
+ *   gets a note to run /tutor instead.
  *   After the fragment: p.pass (when the lesson passed) and .tutor-actions (Too easy, Too hard, Done, .tutor-note).
  *   Math: $...$ and $$...$$, rendered as MathML by KaTeX, so the page needs no KaTeX stylesheet.
  *   lessons/<nn>.script runs once per render of the fragment, with `root` = the lesson's container.
  *
  * DATA - reads goal/main, lessons, lessons/<nn>/questions, answers and requests of the lesson shown.
  *   Writes only answers/<nn>-<id> (set: lesson, question, type, answer, attempt, savedAt, recorded: false)
- *   and requests/<nn>-<base36 ms> (kind, lesson, question, at, sent, threadId, handled: false, handledAt).
+ *   and requests/<nn>-<base36 ms> (kind, lesson, question, at, sent, threadId, claimedAt: null, handled: false, handledAt).
+ *   The tutor sets claimedAt when it starts on a request, and handled when it is done.
  *   Never goal or lessons: rules do not limit the owner, and the learner is the owner.
  *
  * LOCKS - from documents only, so two open devices agree:
@@ -44,17 +48,20 @@
 (() => {
   "use strict";
 
-  const VERSION = 1;
+  const VERSION = 2;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
   const NOTHING_NEW = "Answer a question first, then press Done.";
+  const CLAIM_WAIT = 30e3;      // a watching session claims a sent request within this, or the note says to run /tutor
+  const CLAIM_LIMIT = 10 * 60e3; // a claim older than this is taken as a session that stopped
 
   const S = {
     db: null, comments: null, readOnly: false, failed: null,
     goal: null, lessons: new Map(), current: null, shown: null,
     questions: new Map(), answers: new Map(), requests: [],
     lessonUnsubs: [], savers: new Map(), busy: false, notes: {},
+    recheckAt: Infinity, recheck: null,
   };
 
   const slot = name => document.querySelector(`[data-tutor="${name}"]`);
@@ -106,6 +113,7 @@
 @keyframes tutor-wait-still{0%,80%,100%{opacity:.25}40%{opacity:1}}
 @media (prefers-reduced-motion:reduce){:where(.tutor-wait i){animation-name:tutor-wait-still;animation-duration:2.4s}}
 :where(.tutor-q .answer){white-space:pre-wrap}
+:where(.solution)::before{content:"Answer";display:block;font-weight:600}
 :where(.tutor-plan button){font:inherit;color:inherit;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
 `));
 
@@ -215,7 +223,11 @@
     const gl = slot("goal"); if (gl && g.goal && gl.textContent !== g.goal) gl.textContent = g.goal;
     renderPlan();
     renderReviews();
+    S.recheckAt = Infinity;
     renderLesson();
+    // A request note changes with time alone, with no snapshot to trigger a render.
+    clearTimeout(S.recheck);
+    if (S.recheckAt < Infinity) S.recheck = setTimeout(schedule, Math.max(0, S.recheckAt - Date.now()) + 50);
   }
 
   function renderStatus() {
@@ -307,12 +319,30 @@
     const open = ids.some(qid => !questionState(S.questions.get(qid), S.answers.get(qid), lesson).closed);
     actions.hidden = !!lesson.pass || S.readOnly || !open && !pendingDone;
     actions.querySelectorAll("button").forEach(b => { b.disabled = S.busy || !!pendingDone; });
-    const waiting = !S.notes.lesson && pendingDone && pendingDone.sent;
-    setNote(actions.querySelector(".tutor-note"), waiting ? "Claude is grading" : S.notes.lesson || (pendingDone
-      ? `Done saved at ${clock(pendingDone.at)}. No Claude session got it, so ask Claude to run /tutor.` : ""), waiting);
+    const st = !S.notes.lesson && pendingDone ? requestNote(pendingDone, "Done", "grading") : { msg: S.notes.lesson || "" };
+    setNote(actions.querySelector(".tutor-note"), st.msg, st.waiting);
   }
 
-  // A sent request not yet handled shows animated dots, labelled for screen readers; anything else is text.
+  // What an unhandled request's note says. The claim is checked before sent, since the page's
+  // sent write can lose to the tutor's claim. Notes that change with time set when to render again.
+  function requestNote(r, what, doing) {
+    const t = s => Date.parse(s) || 0;
+    const later = at => { S.recheckAt = Math.min(S.recheckAt, at); };
+    const run = "If no Claude session is open, ask Claude to run /tutor.";
+    if (r.claimedAt && Date.now() < t(r.claimedAt) + CLAIM_LIMIT) {
+      later(t(r.claimedAt) + CLAIM_LIMIT);
+      return { msg: `Claude is ${doing}`, waiting: true };
+    }
+    if (r.claimedAt) return { msg: `Claude started on this at ${clock(r.claimedAt)} but has not finished. ${run}` };
+    if (!r.sent) return { msg: `${what} saved at ${clock(r.at)}. No Claude session got it, so ask Claude to run /tutor.` };
+    if (Date.now() < t(r.at) + CLAIM_WAIT) {
+      later(t(r.at) + CLAIM_WAIT);
+      return { msg: `${what} sent to Claude.` };
+    }
+    return { msg: `${what} saved at ${clock(r.at)}. No Claude session has taken it yet. If none is open, ask Claude to run /tutor.` };
+  }
+
+  // A claimed request not yet handled shows animated dots, labelled for screen readers; anything else is text.
   function setNote(note, msg, waiting) {
     keyed(note, `${waiting ? "wait" : "text"}:${msg}`, node => {
       if (waiting) node.append(el("span", { class: "tutor-wait", role: "img", "aria-label": msg }, el("i"), el("i"), el("i")));
@@ -364,8 +394,10 @@
     });
 
     const hints = Array.isArray(q.hints) ? q.hints : [];
-    keyed(box.querySelector(".tutor-hints"), JSON.stringify(hints), node => {
+    const solution = q.solution || null;
+    keyed(box.querySelector(".tutor-hints"), JSON.stringify([hints, solution]), node => {
       hints.forEach(h => node.append(el("div", { class: "hint", html: h })));
+      if (solution) node.append(el("div", { class: "solution", html: solution }));
       typeset(node);
     });
 
@@ -392,10 +424,10 @@
     acts.querySelectorAll("button").forEach(b => { b.disabled = locked || !!asked; });
     const note = acts.querySelector(".tutor-note");
     if (note) {
-      const what = asked && (asked.kind === "hint" ? "Hint" : "Answer");
-      const waiting = !S.notes[qid] && asked && asked.sent;
-      setNote(note, waiting ? `Claude is writing the ${what.toLowerCase()}` : S.notes[qid]
-        || (asked ? `${what} request saved at ${clock(asked.at)}. Ask Claude to run /tutor.` : ""), waiting);
+      const what = asked && (asked.kind === "hint" ? "hint" : "answer");
+      const st = !S.notes[qid] && asked ? requestNote(asked, `${what[0].toUpperCase()}${what.slice(1)} request`, `writing the ${what}`)
+        : { msg: S.notes[qid] || "" };
+      setNote(note, st.msg, st.waiting);
     }
   }
 
@@ -516,7 +548,7 @@
       const ref = S.db.doc(`requests/${id}`);
       const at = now();
       try {
-        await ref.set({ kind, lesson, question: qid, at, sent: false, threadId: null, handled: false, handledAt: null });
+        await ref.set({ kind, lesson, question: qid, at, sent: false, threadId: null, claimedAt: null, handled: false, handledAt: null });
       } catch (e) {
         note(key, `Not saved (${errCode(e)}). Try again.`);
         return;

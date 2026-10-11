@@ -49,13 +49,15 @@ section > p:first-child { margin-top: 0; }
 .tutor-option[aria-pressed="true"] { outline-color: var(--accent); background: var(--card); }
 .tutor-input { border-color: var(--line); background: var(--bg); font: 1rem var(--mono); }
 .answer { padding: .5rem .8rem; border-radius: 8px; background: var(--soft); }
-.answer::before, .feedback::before, .hint::before { display: block; font: 600 .7rem var(--sans); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.answer::before, .feedback::before, .hint::before, .solution::before { display: block; font: 600 .7rem var(--sans); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
 .answer::before { content: "Your answer"; }
 .feedback { margin: .4rem 0 0; padding: .5rem .8rem; border-radius: 8px; background: var(--good-bg); }
 .feedback::before { content: "Feedback"; color: var(--good); }
 .feedback > :last-child { margin-bottom: 0; }
 .hint { padding: .5rem .8rem; border-radius: 8px; background: var(--hint-bg); }
 .hint::before { content: "Hint"; color: var(--guess); }
+.solution { padding: .5rem .8rem; border-radius: 8px; border: 1px solid var(--good); }
+.solution::before { content: "Answer"; color: var(--good); }
 .tutor-attempt:has(~ .tutor-attempt) { opacity: .6; }
 .pass { padding: .8rem 1rem; border: 1px solid var(--good); border-radius: 10px; color: var(--good); font-weight: 600; }
 button { font: inherit; }
