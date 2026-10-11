@@ -11,7 +11,7 @@ Each plugin lives in `plugins/<name>/` and has its own README with install steps
 
 ## Plugins
 
-- [tutor](plugins/tutor/README.md) (Claude Code only): teaches one goal at a time in HTML pages you read in the browser. Short lessons are graded when you say `done`, and the rules you pass come back later as spaced review.
+- [tutor](plugins/tutor/README.md) (Claude Code only): teaches one goal at a time on one claude.ai page per goal. You answer on the page, Done sends your answers to be graded, and the rules you pass come back later as spaced review.
 
 ## License
 

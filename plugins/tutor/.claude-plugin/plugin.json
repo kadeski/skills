@@ -1,7 +1,7 @@
 {
   "name": "tutor",
   "version": "2.5.0",
-  "description": "Tutor for one goal at a time, as HTML pages you read in any browser. Short lessons - a picture, few words, questions - graded when you say done, with passed rules coming back as spaced review.",
+  "description": "Tutor for one goal at a time, on one claude.ai page per goal. Short lessons - a picture, few words, questions - answered on the page and graded when you press Done, with passed rules coming back as spaced review.",
   "author": {
     "name": "Kaden Staker"
   },

@@ -1,6 +1,6 @@
 # tutor
 
-`tutor` is an agent skill that teaches one goal at a time, as HTML pages you read in any browser. Lessons are short: a picture, few words, and questions. Some lessons add a small control you can move to see the idea change. Your answers are graded when you say `done`, and the rules you pass come back later as spaced review. Say `stuck`, `too easy`, `too hard` or `just tell me` any time. Use it to learn or practice a topic over several sessions.
+`tutor` is a Claude skill that teaches one goal at a time on one claude.ai page per goal. Lessons are short: a picture, few words, and questions. Some lessons add a small control you can move to see the idea change. You answer on the page and press Done to have your answers graded, and the rules you pass come back later as spaced review. The page works on desktop and phone. Use it to learn or practice a topic over several sessions.
 
 ## Install
 
@@ -19,15 +19,15 @@ If you installed `kadeski-skills@kadeski`, remove it first: `/plugin uninstall k
 /tutor <topic> [source: path or url]
 ```
 
-In Claude Code the command is `/tutor:tutor`. In other agents, ask for the tutor skill by name.
+In Claude Code the command is `/tutor:tutor`. The tutor makes a private page titled `Tutor: <goal>` and gives you its link. Run `/tutor` again to continue: it finds your goal pages by that title, or give it a page's link.
 
-Start your agent in the folder you want to learn in: each goal gets its own folder there. Each lesson is an HTML page. The tutor gives its path after each run: open it in any browser, and refresh it after grading.
+On the page:
 
-Answer in the chat: `1: ...` for Q1, `g: c` for the guess, `2 again: ...` for a redo. Type or dictate, in one message or several. The tutor copies each answer into the lesson as you wrote it.
+- Tap an option or type in the box under each question. Your answers save as you go, and you can change them until you press Done.
+- Hint gives a nudge on one question; press it again for Show me, which shows the answer. Too easy and Too hard change the level of the next lessons.
+- Done locks your answers and sends them to the tutor. Feedback appears under each answer without a reload. A question to redo opens again under its feedback.
 
-Phones are not supported yet: a phone's file preview does not load the lesson's pictures.
-
-Lessons from tutor 1.x are markdown files. An open one is graded as it is, and the next lesson is an HTML page.
+If a Claude Code session is watching the page, Done starts the grading at once. Otherwise the request waits on the page, and the next `/tutor` run grades it. You can also ask in the chat: for a hint, to see the answer, too easy, too hard, or done.
 
 ## License
 
