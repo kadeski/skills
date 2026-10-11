@@ -2,6 +2,10 @@
  * tutor.js - the fixed behavior of a tutor goal page. Claude designs the page around it;
  * this file does every job that must not break. Do not edit it per goal.
  *
+ * VERSION - bump it on every change to this file. The tutor skill keeps the version each goal
+ *   page was published with in goal/main.tutorJs and republishes older pages with this file, so a
+ *   newer tutor.js must keep working with pages and documents written for older ones.
+ *
  * PUBLISH
  *   Artifact publish with files: {"tutor.js": "<this skill's folder>/tutor.js"} and
  *   capabilities: {db: {rules: [{path: "goal", write: "owner"}, {path: "lessons", write: "owner"}]}, comments: {}}
@@ -40,6 +44,7 @@
 (() => {
   "use strict";
 
+  const VERSION = 1;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -140,6 +145,7 @@
   const use = name => (window.claude && window.claude.use ? window.claude.use(name) : Promise.resolve(null)).catch(() => null);
 
   function start() {
+    document.documentElement.dataset.tutorJs = VERSION;
     renderStatus();
     use("comments").then(c => { S.comments = c; });
     use("user").then(async u => {
@@ -394,6 +400,7 @@
   }
 
   function answerView(type, answer, options) {
+    if (!String(answer).trim()) return el("div", { class: "answer tutor-blank" }, "Left blank");
     if (type === "mc" && /^[a-z]$/.test(answer)) {
       const i = answer.charCodeAt(0) - 97;
       return el("div", { class: "answer" }, el("b", {}, `${answer}) `), el("span", { html: options[i] || "" }));

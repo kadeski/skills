@@ -18,7 +18,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 
 | Document | Fields | Written by |
 |---|---|---|
-| `goal/main` | `title`, `goal`, `source`, `examDate`, `help` (0-3), `plan` [{`id`, `title`, `status`}], `rules` [{`id`, `text`, `next`, `gapDays`}], `misconceptions` [{`rule`, `wrong`, `seen`}] | tutor |
+| `goal/main` | `title`, `goal`, `source`, `examDate`, `help` (0-3), `plan` [{`id`, `title`, `status`}], `rules` [{`id`, `text`, `next`, `gapDays`}], `misconceptions` [{`rule`, `wrong`, `seen`}], `tutorJs` (the `tutor.js` version the page was published with) | tutor |
 | `goal/prefs` | `text`: the learner's preferences in their words | tutor |
 | `lessons/<nn>` | `title`, `kind` (`lesson` or `review`), `html`, `script` (or null), `pass` (or null) | tutor |
 | `lessons/<nn>/questions/<id>` | `id` (`Q1`, `R1`, `G`), `type` (`mc`, `number`, `text`), `options` [html], `rule` (review questions only), `feedback` [{`attempt`, `answer`, `text`}], `redo`, `hints` [html] | tutor |
@@ -34,7 +34,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 ## Each run
 
 1. **Find the goal.** `/tutor <link>` names it. Otherwise list the learner's artifacts with the `Artifact` tool and keep those titled `Tutor: ...`. A topic that matches one continues it; a new topic starts a goal (Start a goal). With no topic, take the only goal, or ask in one line which one, newest first.
-2. **Read** `goal/main`, `goal/prefs`, the requests with `handled` false, and the newest lesson with its questions and answers.
+2. **Read** `goal/main`, `goal/prefs`, the requests with `handled` false, and the newest lesson with its questions and answers. If `tutorJs` is missing or lower than `VERSION` in this skill's `tutor.js`, update the page's `tutor.js` (The page).
 3. **Handle requests**, oldest first. Each one, and what it does:
    - `hint`: add one hint to the question's `hints`, a nudge on a different example, not the answer. Help goes up one.
    - `showme`: add the answer and the reasoning behind it to `hints`. That question no longer blocks a pass, and the lesson cannot pass first try.
@@ -54,7 +54,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 2. **Goal.** One concrete line: what they will be able to do. If the learner gave only a topic, ask in one line; if they gave a source or nobody answers, write it from the source's scope. Note the exam date if they gave one.
 3. **Plan** 3 to 6 lessons, 01 included, prerequisites first. Set `help` to 2.
 4. **The page** (The page, below). Publish it with title `Tutor: <goal name>` and icon `lesson`.
-5. **Seed** in one batch: `goal/main`, `goal/prefs` (copied from the newest other `Tutor:` goal, or empty), lesson 01 and its questions.
+5. **Seed** in one batch: `goal/main` with `tutorJs` set to `tutor.js`'s `VERSION`, `goal/prefs` (copied from the newest other `Tutor:` goal, or empty), lesson 01 and its questions.
 
 **Lesson 01, "Where you're at."** Two or three questions on what lesson 02 needs, not on the goal itself, then the guess. It always counts as passed, teaches no rule and is never redone: a wrong model gets feedback with no question and is logged, and lesson 02's first question tests it again. Any Q answer wrong or blank sets Help to 3; a whole missing prerequisite adds a lesson for it. Every answer right means the questions were too easy, not that the level is found: add two harder questions to lesson 01 (new sections in its `html` and new question documents) and wait for Done again. If those are right too, drop the plan lessons they cover. Its plan status is `passed` from the first grading, but its `pass` field stays null until the last grading of lesson 01, since `pass` closes every question on the page.
 
@@ -65,7 +65,7 @@ Load the `artifact-design` skill, then write one HTML page for the goal and fit 
 - **Slots:** empty elements `tutor.js` fills: `data-tutor="title"`, `"goal"`, `"status"`, `"plan"`, `"reviews"` and `"lesson"`. End the body with `<script src="tutor.js"></script>`, and add no other script.
 - **Style** what `tutor.js` adds: question sections (`section#Q1`, `section[id^="R"]`, `section#G`), `.tutor-option[aria-pressed]`, `.tutor-input`, `.answer`, `.feedback`, `.hint`, `.pass`, `.tutor-actions` with `.tutor-done`, `.tutor-note`, `.tutor-plan-item[aria-current]` and `.tutor-review-date`. Its own defaults are bare, so the page's CSS wins. Light and dark themes both.
 - **Publish:** copy `tutor.js` from this skill's folder into a scratch folder next to the page, since the `Artifact` tool sends only files under the working or scratchpad folder. Publish the page with `files: {"tutor.js": "<scratch folder>/tutor.js"}` and `capabilities: {db: {rules: [{path: "goal", write: "owner"}, {path: "lessons", write: "owner"}]}, comments: {}}`.
-- **Later changes** to the page, only when the learner asks: in a session that has not published it, read it with the `Artifact` tool first, then publish to its link.
+- **Republish** to change the page's look (only when the learner asks) or to update its `tutor.js`. In a session that has not published it, first read it with the `Artifact` tool, then read it again with `path: "index.html"`, which saves the page's source to a file, and list its files (`scope: "files"`): the tool refuses to publish over a version or replace a file it has not seen. Then publish to its link from that saved file, with the new `files` entry, and leave out `capabilities` and `icon` so the page keeps them. After a `tutor.js` update, set `tutorJs` in `goal/main`.
 
 If a publish fails, say why in the last line.
 
