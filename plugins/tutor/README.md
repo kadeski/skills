@@ -4,10 +4,7 @@
 
 ## Install
 
-Pick one way per agent. Installing more than one way in the same agent gives you the skill twice.
-
-<details>
-<summary><strong>Claude Code</strong></summary>
+In Claude Code:
 
 ```
 /plugin marketplace add kadeski/skills
@@ -15,56 +12,6 @@ Pick one way per agent. Installing more than one way in the same agent gives you
 ```
 
 If you installed `kadeski-skills@kadeski`, remove it first: `/plugin uninstall kadeski-skills@kadeski`.
-
-</details>
-
-<details>
-<summary><strong>Codex</strong></summary>
-
-```bash
-codex plugin marketplace add kadeski/skills
-codex plugin add tutor@kadeski
-```
-
-If you installed `kadeski-skills@kadeski`, remove it first: `codex plugin remove kadeski-skills@kadeski`.
-
-</details>
-
-<details>
-<summary><strong>Gemini CLI</strong></summary>
-
-```bash
-gemini skills install https://github.com/kadeski/skills --path plugins/tutor/skills/tutor
-```
-
-If you installed the `kadeski-skills` extension, remove it first: `gemini extensions uninstall kadeski-skills`.
-
-</details>
-
-<details>
-<summary><strong>Cursor</strong></summary>
-
-The repo is a Cursor marketplace (`.cursor-plugin/marketplace.json`). A team admin can add it under **Dashboard -> Plugins -> Add Marketplace -> Import from Repo**. On your own, use the installer under "Any other agent". Not tested yet.
-
-</details>
-
-<details>
-<summary><strong>Grok Build</strong></summary>
-
-Grok Build reads Claude Code marketplaces, so add `kadeski/skills` as a marketplace source and install `tutor` from its Marketplace tab. Not tested yet.
-
-</details>
-
-<details>
-<summary><strong>Any other agent</strong></summary>
-
-```bash
-npx skills@latest add kadeski/skills --skill tutor
-```
-
-This copies the skill files into your project, so you can edit them. Update with `npx skills update`.
-
-</details>
 
 ## Usage
 

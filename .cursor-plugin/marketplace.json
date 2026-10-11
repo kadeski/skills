@@ -6,10 +6,5 @@
   "metadata": {
     "description": "Agent skills by Kaden Staker."
   },
-  "plugins": [
-    {
-      "name": "tutor",
-      "source": "plugins/tutor"
-    }
-  ]
+  "plugins": []
 }

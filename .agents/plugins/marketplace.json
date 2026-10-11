@@ -3,17 +3,5 @@
   "interface": {
     "displayName": "kadeski"
   },
-  "plugins": [
-    {
-      "name": "tutor",
-      "source": {
-        "source": "local",
-        "path": "./plugins/tutor"
-      },
-      "policy": {
-        "installation": "AVAILABLE"
-      },
-      "category": "Productivity"
-    }
-  ]
+  "plugins": []
 }

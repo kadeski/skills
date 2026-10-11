@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Checks that every plugin's manifests agree, every marketplace lists every plugin,
-# and every skill is well formed.
+# Checks that every plugin's manifests agree, every marketplace lists every plugin it
+# should, and every skill is well formed. A plugin with only .claude-plugin/plugin.json
+# is Claude-only: it is listed in the Claude Code marketplace and no other.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -13,10 +14,14 @@ for f in "${marketplaces[@]}"; do
 done
 
 plugins=$(ls plugins)
+claude_only() { [ ! -e "plugins/$1/plugin.json" ] && [ ! -e "plugins/$1/.cursor-plugin/plugin.json" ]; }
+multi_agent=$(for p in $plugins; do claude_only "$p" || echo "$p"; done)
 for m in "${marketplaces[@]}"; do
+  expected=$plugins
+  [ "$m" = .claude-plugin/marketplace.json ] || expected=$multi_agent
   listed=$(jq -r '.plugins[].name' "$m" | sort)
-  [ "$listed" = "$plugins" ] || err "$m lists '$(echo $listed)', plugins/ has '$(echo $plugins)'"
-  for p in $plugins; do
+  [ "$listed" = "$expected" ] || err "$m lists '$(echo $listed)', expected '$(echo $expected)'"
+  for p in $expected; do
     src=$(jq -r --arg p "$p" '.plugins[] | select(.name == $p) | .source | if type == "object" then .path else . end' "$m")
     [ "${src#./}" = "plugins/$p" ] || err "$m: $p source is '$src', not plugins/$p"
   done
@@ -24,7 +29,8 @@ done
 
 for p in $plugins; do
   dir=plugins/$p
-  manifests=("$dir/.claude-plugin/plugin.json" "$dir/plugin.json" "$dir/.cursor-plugin/plugin.json")
+  manifests=("$dir/.claude-plugin/plugin.json")
+  claude_only "$p" || manifests+=("$dir/plugin.json" "$dir/.cursor-plugin/plugin.json")
   for f in "${manifests[@]}"; do
     jq -e . "$f" >/dev/null || err "$f is missing or not valid JSON"
   done

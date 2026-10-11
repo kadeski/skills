@@ -8,7 +8,7 @@ Each plugin has a manifest per agent:
 - Codex: `plugin.json`
 - Cursor: `.cursor-plugin/plugin.json`
 
-`name` and `version` must match in all three. Bump the version in all of them together. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
+`name` and `version` must match in all three. Bump the version in all of them together. A plugin may ship for Claude Code only: it then has only `.claude-plugin/plugin.json` and is listed only in the Claude Code marketplace. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
 
 Each plugin is listed in every marketplace at the root:
 
