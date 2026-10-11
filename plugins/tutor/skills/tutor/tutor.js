@@ -22,6 +22,7 @@
  *     .hint                                            one per entry in hints
  *     .tutor-controls                                  .tutor-options > button.tutor-option[aria-pressed], or .tutor-input
  *     .tutor-q-actions                                 one button (Hint, then Show me once a hint was asked), .tutor-note
+ *   A .tutor-note waiting on Claude (a sent request not yet handled) holds span.tutor-wait, three animated dots.
  *   After the fragment: p.pass (when the lesson passed) and .tutor-actions (Too easy, Too hard, Done, .tutor-note).
  *   Math: $...$ and $$...$$, rendered as MathML by KaTeX, so the page needs no KaTeX stylesheet.
  *   lessons/<nn>.script runs once per render of the fragment, with `root` = the lesson's container.
@@ -91,6 +92,13 @@
 :where(.tutor-q-actions,.tutor-actions){display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
 :where(.tutor-actions){margin-top:1.25rem}
 :where(.tutor-note){font-size:.85em;opacity:.8}
+:where(.tutor-wait){display:inline-flex;gap:.3em;padding:.3em 0;vertical-align:middle}
+:where(.tutor-wait i){width:.5em;height:.5em;border-radius:50%;background:currentColor;animation:tutor-wait 1.2s ease-in-out infinite}
+:where(.tutor-wait i:nth-child(2)){animation-delay:.15s}
+:where(.tutor-wait i:nth-child(3)){animation-delay:.3s}
+@keyframes tutor-wait{0%,80%,100%{opacity:.25;transform:scale(.75)}40%{opacity:1;transform:none}}
+@keyframes tutor-wait-still{0%,80%,100%{opacity:.25}40%{opacity:1}}
+@media (prefers-reduced-motion:reduce){:where(.tutor-wait i){animation-name:tutor-wait-still;animation-duration:2.4s}}
 :where(.tutor-q .answer){white-space:pre-wrap}
 :where(.tutor-plan button){font:inherit;color:inherit;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
 `));
@@ -292,11 +300,17 @@
     const open = ids.some(qid => !questionState(S.questions.get(qid), S.answers.get(qid), lesson).closed);
     actions.hidden = !!lesson.pass || S.readOnly || !open && !pendingDone;
     actions.querySelectorAll("button").forEach(b => { b.disabled = S.busy || !!pendingDone; });
-    const note = actions.querySelector(".tutor-note");
-    const msg = S.notes.lesson || (pendingDone ? (pendingDone.sent
-      ? `Sent to Claude at ${clock(pendingDone.at)}. Feedback appears here after grading.`
-      : `Done saved at ${clock(pendingDone.at)}. No Claude session got it, so ask Claude to run /tutor.`) : "");
-    if (note.textContent !== msg) note.textContent = msg;
+    const waiting = !S.notes.lesson && pendingDone && pendingDone.sent;
+    setNote(actions.querySelector(".tutor-note"), waiting ? "Claude is grading" : S.notes.lesson || (pendingDone
+      ? `Done saved at ${clock(pendingDone.at)}. No Claude session got it, so ask Claude to run /tutor.` : ""), waiting);
+  }
+
+  // A sent request not yet handled shows animated dots, labelled for screen readers; anything else is text.
+  function setNote(note, msg, waiting) {
+    keyed(note, `${waiting ? "wait" : "text"}:${msg}`, node => {
+      if (waiting) node.append(el("span", { class: "tutor-wait", role: "img", "aria-label": msg }, el("i"), el("i"), el("i")));
+      else node.textContent = msg;
+    });
   }
 
   function runScript(code, root) {
@@ -372,9 +386,9 @@
     const note = acts.querySelector(".tutor-note");
     if (note) {
       const what = asked && (asked.kind === "hint" ? "Hint" : "Answer");
-      const msg = S.notes[qid] || (!asked ? "" : asked.sent ? `${what} asked at ${clock(asked.at)}. It appears here.`
-        : `${what} request saved at ${clock(asked.at)}. Ask Claude to run /tutor.`);
-      if (note.textContent !== msg) note.textContent = msg;
+      const waiting = !S.notes[qid] && asked && asked.sent;
+      setNote(note, waiting ? `Claude is writing the ${what.toLowerCase()}` : S.notes[qid]
+        || (asked ? `${what} request saved at ${clock(asked.at)}. Ask Claude to run /tutor.` : ""), waiting);
     }
   }
 
