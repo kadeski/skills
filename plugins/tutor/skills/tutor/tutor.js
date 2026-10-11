@@ -21,7 +21,7 @@
  *     .tutor-attempt > .answer + blockquote.feedback   one per feedback entry
  *     .hint                                            one per entry in hints
  *     .tutor-controls                                  .tutor-options > button.tutor-option[aria-pressed], or .tutor-input
- *     .tutor-q-actions                                 Hint, Show me, .tutor-note
+ *     .tutor-q-actions                                 one button (Hint, then Show me once a hint was asked), .tutor-note
  *   After the fragment: p.pass (when the lesson passed) and .tutor-actions (Too easy, Too hard, Done, .tutor-note).
  *   Math: $...$ and $$...$$, rendered as MathML by KaTeX, so the page needs no KaTeX stylesheet.
  *   lessons/<nn>.script runs once per render of the fragment, with `root` = the lesson's container.
@@ -357,18 +357,20 @@
     const saver = S.savers.get(qid);
     if (saver && saver.attempt !== st.attempt) { saver.attempt = st.attempt; saver.last = undefined; }
 
+    // One button: Hint first, then Show me, then none. It waits while the last ask is unhandled.
+    const asks = S.requests.filter(r => r.question === qid && (r.kind === "hint" || r.kind === "showme"));
+    const step = st.closed || S.readOnly || asks.some(r => r.kind === "showme" && r.handled) ? "none"
+      : asks.length ? "showme" : "hint";
     const acts = box.querySelector(".tutor-q-actions");
-    keyed(acts, st.closed || S.readOnly ? "none" : "open", node => {
-      if (st.closed || S.readOnly) return;
-      node.append(
-        el("button", { type: "button", "data-kind": "hint", onclick: e => request("hint", qid, e.currentTarget) }, "Hint"),
-        el("button", { type: "button", "data-kind": "showme", onclick: e => request("showme", qid, e.currentTarget) }, "Show me"),
-        el("span", { class: "tutor-note", role: "status" }));
+    keyed(acts, step, node => {
+      if (step !== "none") node.append(el("button", { type: "button", "data-kind": step,
+        onclick: e => request(step, qid, e.currentTarget) }, step === "hint" ? "Hint" : "Show me"));
+      if (!st.closed && !S.readOnly) node.append(el("span", { class: "tutor-note", role: "status" }));
     });
-    acts.querySelectorAll("button").forEach(b => { b.disabled = locked; });
+    const asked = asks.filter(r => !r.handled).pop();
+    acts.querySelectorAll("button").forEach(b => { b.disabled = locked || !!asked; });
     const note = acts.querySelector(".tutor-note");
     if (note) {
-      const asked = S.requests.filter(r => r.question === qid && !r.handled && (r.kind === "hint" || r.kind === "showme")).pop();
       const what = asked && (asked.kind === "hint" ? "Hint" : "Answer");
       const msg = S.notes[qid] || (!asked ? "" : asked.sent ? `${what} asked at ${clock(asked.at)}. It appears here.`
         : `${what} request saved at ${clock(asked.at)}. Ask Claude to run /tutor.`);
