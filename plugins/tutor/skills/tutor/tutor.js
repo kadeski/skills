@@ -48,7 +48,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 2;
+  const VERSION = 3;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -320,13 +320,13 @@
     const open = ids.some(qid => !questionState(S.questions.get(qid), S.answers.get(qid), lesson).closed);
     actions.hidden = !!lesson.pass || S.readOnly || !open && !pendingDone;
     actions.querySelectorAll("button").forEach(b => { b.disabled = S.busy || !!pendingDone; });
-    const st = !S.notes.lesson && pendingDone ? requestNote(pendingDone, "Done", "grading") : { msg: S.notes.lesson || "" };
+    const st = !S.notes.lesson && pendingDone ? requestNote(pendingDone, "Done", "grading", "Grading usually takes a minute or two.") : { msg: S.notes.lesson || "" };
     setNote(actions.querySelector(".tutor-note"), st.msg, st.waiting);
   }
 
   // What an unhandled request's note says. The claim is checked before sent, since the page's
   // sent write can lose to the tutor's claim. Notes that change with time set when to render again.
-  function requestNote(r, what, doing) {
+  function requestNote(r, what, doing, takes) {
     const t = s => Date.parse(s) || 0;
     const later = at => { S.recheckAt = Math.min(S.recheckAt, at); };
     const run = "If no Claude session is open, ask Claude to run /tutor.";
@@ -338,7 +338,7 @@
     if (!r.sent) return { msg: `${what} saved at ${clock(r.at)}. No Claude session got it, so ask Claude to run /tutor.` };
     if (Date.now() < t(r.at) + CLAIM_WAIT) {
       later(t(r.at) + CLAIM_WAIT);
-      return { msg: `${what} sent to Claude.` };
+      return { msg: `${what} sent to Claude. ${takes}` };
     }
     return { msg: `${what} saved at ${clock(r.at)}. No Claude session has taken it yet. If none is open, ask Claude to run /tutor.` };
   }
@@ -426,7 +426,8 @@
     const note = acts.querySelector(".tutor-note");
     if (note) {
       const what = asked && (asked.kind === "hint" ? "hint" : "answer");
-      const st = !S.notes[qid] && asked ? requestNote(asked, `${what[0].toUpperCase()}${what.slice(1)} request`, `writing the ${what}`)
+      const st = !S.notes[qid] && asked ? requestNote(asked, `${what[0].toUpperCase()}${what.slice(1)} request`, `writing the ${what}`,
+        `The ${what} usually takes about a minute.`)
         : { msg: S.notes[qid] || "" };
       setNote(note, st.msg, st.waiting);
     }

@@ -46,7 +46,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 5. **Watch.** In Claude Code, watch the goal with `ArtifactComments` (`action: "watch"`), then list the watches. A goal whose row says auto-replies armed sends Done straight to this session; otherwise Done waits for the next `/tutor` run.
 6. **End with one line:** the goal's link, what was graded or written, and whether Done reaches this session.
 
-**A run started by the page.** Done, Hint and Show me can wake a watching session with a turn headed `[Artifact comment sent to Claude]`, which names the request. That is a run of this skill: do steps 2 to 4, then reply once in that thread with what happened (`ArtifactComments` `reply`, like "Graded: Q2 to redo. Feedback is on the page.") and resolve it. A handled request that has a `threadId` gets the same reply and resolve from any later run.
+**A run started by the page.** Done, Hint and Show me can wake a watching session with a turn headed `[Artifact comment sent to Claude]`, which names the request. That is a run of this skill. Its first call claims the named request (step 2), with the goal link from the turn, before anything else is read: until then the page tells the learner no session has it. Then do steps 2 to 4, then reply once in that thread with what happened (`ArtifactComments` `reply`, like "Graded: Q2 to redo. Feedback is on the page.") and resolve it. A handled request that has a `threadId` gets the same reply and resolve from any later run.
 
 ## Start a goal
 
