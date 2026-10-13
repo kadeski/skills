@@ -23,7 +23,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 | `lessons/<nn>` | `title`, `kind` (`lesson` or `review`), `html`, `script` (or null), `pass` (or null) | tutor |
 | `lessons/<nn>/questions/<id>` | `id` (`Q1`, `R1`, `G`), `type` (`mc`, `number`, `text`), `options` [html], `rule` (review questions only), `feedback` [{`attempt`, `answer`, `text`}], `redo`, `hints` [html], `solution` (html, or null) | tutor |
 | `answers/<nn>-<id>` | `lesson`, `question`, `type`, `answer`, `attempt`, `savedAt`, `recorded` | page; the tutor sets `recorded` |
-| `requests/<nn>-<base36 ms>` | `kind` (`done`, `hint`, `showme`, `easy`, `hard`), `lesson`, `question` (or null), `at`, `sent`, `threadId` (or null), `claimedAt` (or null), `handled`, `handledAt` | page; the tutor sets `claimedAt`, `handled` and `handledAt` |
+| `requests/<nn>-<base36 ms>` | `kind` (`done`, `hint`, `showme`, `easy`, `hard`), `lesson`, `question` (or null), `at`, `sent`, `threadId` (or null), `claimedAt` (or null), `claimedBy` (or null), `handled`, `handledAt` | page; the tutor sets `claimedAt`, `claimedBy`, `handled` and `handledAt` |
 
 - Lesson ids are two digits: `01`, `02`. An mc answer is the option's letter, `a` to `d`.
 - The answer key is never stored. Work out the right answer when you grade, and show it only in feedback.
@@ -34,7 +34,11 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 ## Each run
 
 1. **Find the goal.** `/tutor <link>` names it. Otherwise list the learner's artifacts with the `Artifact` tool and keep those titled `Tutor: ...`. A topic that matches one continues it; a new topic starts a goal (Start a goal). With no topic, take the only goal, or ask in one line which one, newest first.
-2. **Read** the requests with `handled` false, and at once **claim** them: one batch of `update` writes that set each one's `claimedAt` to the current time from the system clock (`date -u +%Y-%m-%dT%H:%M:%SZ`). The page then shows that Claude is working; an unclaimed request tells the learner to run /tutor. If a claim fails on its version, read that request again and claim it once more. Later writes to a request use the version the claim batch returned. Then read `goal/main`, `goal/prefs`, and the newest lesson with its questions and answers. If `tutorJs` is missing or lower than `VERSION` in this skill's `tutor.js`, update the page's `tutor.js` (The page).
+2. **Read** `goal/main` and the requests with `handled` false, and **check the version**: compare `tutorJs` with `VERSION` in this skill's `tutor.js`.
+   - `tutorJs` higher: this skill is older than the page. Write nothing, not even a claim. Stop watching the goal (`ArtifactComments` `action: "watch"`, `on: false`) and end the run with one line: this session's tutor is older than the page, so update the tutor plugin and run /tutor in a new Claude Code session. In a run started by the page, that line is the reply in its thread, which stays open.
+   - `tutorJs` missing or lower: update the page's `tutor.js` (The page) later in this run.
+
+   Then at once **claim** the requests: one batch of `update` writes that set each one's `claimedAt` to the current time and `claimedBy` to this session's id, both from the shell (`date -u +%Y-%m-%dT%H:%M:%SZ; echo "$CLAUDE_CODE_SESSION_ID"`). With no id, use `chat-` and the claim time. Keep the same `claimedBy` for the whole run. Leave out a request that another session claimed (a different `claimedBy`) less than 10 minutes ago: that session is on it. The page then shows that Claude is working; an unclaimed request tells the learner to run /tutor. If the batch fails on a version, it wrote nothing: read that request again, leave it out if another session has claimed it since, and send the batch again. Later writes to a request use the version the claim batch returned. Then read `goal/prefs`, and the newest lesson with its questions and answers.
 3. **Handle requests**, oldest first. Each one, and what it does:
    - `hint`: add one hint to the question's `hints`, a nudge on a different example, not the answer. Help goes up one.
    - `showme`: set the question's `solution` to the answer and the reasoning behind it. That question no longer blocks a pass, and the lesson cannot pass first try.
@@ -46,7 +50,7 @@ Each goal is one private claude.ai artifact titled `Tutor: <goal name>`. The pag
 5. **Watch.** In Claude Code, watch the goal with `ArtifactComments` (`action: "watch"`), then list the watches. A goal whose row says auto-replies armed sends Done straight to this session; otherwise Done waits for the next `/tutor` run.
 6. **End with one line:** the goal's link, what was graded or written, and whether Done reaches this session.
 
-**A run started by the page.** Done, Hint and Show me can wake a watching session with a turn headed `[Artifact comment sent to Claude]`, which names the request. That is a run of this skill. Its first call claims the named request (step 2), with the goal link from the turn, before anything else is read: until then the page tells the learner no session has it. Then do steps 2 to 4, then reply once in that thread with what happened (`ArtifactComments` `reply`, like "Graded: Q2 to redo. Feedback is on the page.") and resolve it. A handled request that has a `threadId` gets the same reply and resolve from any later run.
+**A run started by the page.** Done, Hint and Show me can wake a watching session with a turn headed `[Artifact comment sent to Claude]`, which names the request. That is a run of this skill. Its first calls read `goal/main` and the named request, with the goal link from the turn, then check the version and claim (step 2), before anything else: until the claim, the page tells the learner no session has it. If another session has claimed the named request, end the run with no reply. Otherwise finish step 2 and do steps 3 and 4, then reply once in that thread with what happened (`ArtifactComments` `reply`, like "Graded: Q2 to redo. Feedback is on the page.") and resolve it. A handled request that has a `threadId` gets the same reply and resolve from any later run.
 
 ## Start a goal
 

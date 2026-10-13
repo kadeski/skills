@@ -399,6 +399,8 @@
    "at": "2026-10-07T18:03:20.000Z",
    "sent": false,
    "threadId": null,
+   "claimedAt": "2026-10-07T18:03:30.000Z",
+   "claimedBy": "demo-session",
    "handled": true,
    "handledAt": "2026-10-07T18:05:02.000Z"
   }
@@ -414,6 +416,8 @@
    "at": "2026-10-09T17:42:00.000Z",
    "sent": false,
    "threadId": null,
+   "claimedAt": "2026-10-09T17:42:10.000Z",
+   "claimedBy": "demo-session",
    "handled": true,
    "handledAt": "2026-10-09T17:44:31.000Z"
   }
@@ -429,6 +433,8 @@
    "at": "2026-10-11T16:18:40.000Z",
    "sent": false,
    "threadId": null,
+   "claimedAt": "2026-10-11T16:18:50.000Z",
+   "claimedBy": "demo-session",
    "handled": true,
    "handledAt": "2026-10-11T16:19:10.000Z"
   }
@@ -444,6 +450,8 @@
    "at": "2026-10-11T16:22:05.000Z",
    "sent": false,
    "threadId": null,
+   "claimedAt": "2026-10-11T16:22:15.000Z",
+   "claimedBy": "demo-session",
    "handled": true,
    "handledAt": "2026-10-11T16:24:48.000Z"
   }

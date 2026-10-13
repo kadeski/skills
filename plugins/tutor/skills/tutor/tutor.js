@@ -2,9 +2,12 @@
  * tutor.js - the fixed behavior of a tutor goal page. Claude designs the page around it;
  * this file does every job that must not break. Do not edit it per goal.
  *
- * VERSION - bump it on every change to this file. The tutor skill keeps the version each goal
+ * VERSION - bump it on every change to this file, and also when the meaning of data the tutor writes
+ *   changes, since it stands for the skill's version too. The tutor skill keeps the version each goal
  *   page was published with in goal/main.tutorJs and republishes older pages with this file, so a
- *   newer tutor.js must keep working with pages and documents written for older ones.
+ *   newer tutor.js must keep working with pages and documents written for older ones. A session whose
+ *   tutor.js is older than the page's leaves the page's requests alone, and the text Done, Hint and
+ *   Show me send names VERSION, so an older or skill-less session stops too.
  *
  * PUBLISH
  *   Artifact publish with files: {"tutor.js": "<this skill's folder>/tutor.js"} and
@@ -24,7 +27,8 @@
  *   tutor.js adds to each section a <div class="tutor-q"> holding, in order:
  *     .tutor-attempt > .answer + blockquote.feedback   one per feedback entry
  *     .hint                                            one per entry in hints
- *     .solution                                        the question's solution, the answer to Show me
+ *     .solution                                        the question's solution, the answer to Show me; with no
+ *                                                      solution after a handled Show me, the last hint
  *     .tutor-controls                                  .tutor-options > button.tutor-option[aria-pressed], or .tutor-input
  *     .tutor-q-actions                                 one button (Hint, then Show me once a hint was asked), .tutor-note
  *   A .tutor-note for a request a Claude session claimed and has not handled holds span.tutor-wait, three
@@ -36,8 +40,9 @@
  *
  * DATA - reads goal/main, lessons, lessons/<nn>/questions, answers and requests of the lesson shown.
  *   Writes only answers/<nn>-<id> (set: lesson, question, type, answer, attempt, savedAt, recorded: false)
- *   and requests/<nn>-<base36 ms> (kind, lesson, question, at, sent, threadId, claimedAt: null, handled: false, handledAt).
- *   The tutor sets claimedAt when it starts on a request, and handled when it is done.
+ *   and requests/<nn>-<base36 ms> (kind, lesson, question, at, sent, threadId, claimedAt: null, claimedBy: null,
+ *   handled: false, handledAt). The tutor sets claimedAt and claimedBy (its session) when it starts on a
+ *   request, and handled when it is done.
  *   Never goal or lessons: rules do not limit the owner, and the learner is the owner.
  *
  * LOCKS - from documents only, so two open devices agree:
@@ -48,7 +53,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 3;
+  const VERSION = 4;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -394,8 +399,12 @@
       typeset(node);
     });
 
-    const hints = Array.isArray(q.hints) ? q.hints : [];
-    const solution = q.solution || null;
+    // An older tutor may have written a Show me answer into hints: then the last hint is the answer.
+    const asks = S.requests.filter(r => r.question === qid && (r.kind === "hint" || r.kind === "showme"));
+    const allHints = Array.isArray(q.hints) ? q.hints : [];
+    const fallback = !q.solution && allHints.length > 0 && asks.some(r => r.kind === "showme" && r.handled);
+    const hints = fallback ? allHints.slice(0, -1) : allHints;
+    const solution = q.solution || (fallback ? allHints[allHints.length - 1] : null);
     keyed(box.querySelector(".tutor-hints"), JSON.stringify([hints, solution]), node => {
       hints.forEach(h => node.append(el("div", { class: "hint", html: h })));
       if (solution) node.append(el("div", { class: "solution", html: solution }));
@@ -412,7 +421,6 @@
     if (saver && saver.attempt !== st.attempt) { saver.attempt = st.attempt; saver.last = undefined; }
 
     // One button: Hint first, then Show me, then none. It waits while the last ask is unhandled.
-    const asks = S.requests.filter(r => r.question === qid && (r.kind === "hint" || r.kind === "showme"));
     const step = st.closed || S.readOnly || solution || asks.some(r => r.kind === "showme" && r.handled) ? "none"
       : asks.length ? "showme" : "hint";
     const acts = box.querySelector(".tutor-q-actions");
@@ -528,7 +536,12 @@
   function claudeText(kind, lesson, qid, id) {
     const what = { done: `Done with lesson ${lesson}`, hint: `Hint for ${qid} in lesson ${lesson}`, showme: `Show me the answer to ${qid} in lesson ${lesson}` }[kind];
     return `${what}. Use the tutor skill (/tutor) on this goal: the request is requests/${id}`
-      + (kind === "done" ? `, and the answers are answers/${lesson}-*.` : ".");
+      + (kind === "done" ? `, and the answers are answers/${lesson}-*.` : ".")
+      // Read by whatever session gets it, so the check is spelled out in full: old sessions lack the skill's own.
+      + ` First check the skill: this page needs tutor.js VERSION ${VERSION} or higher, from the VERSION line in the`
+      + ` tutor.js file in the tutor skill's folder. If the tutor skill is not loaded here, or its VERSION is lower,`
+      + ` write nothing to this goal and leave the request unclaimed. In Claude Code, stop watching this page.`
+      + ` Then reply only: "This session's tutor is older than the page. Update the tutor plugin, then run /tutor in a new Claude Code session."`;
   }
 
   // Save the request first, so it is there with or without a watching session; then send.
@@ -550,7 +563,7 @@
       const ref = S.db.doc(`requests/${id}`);
       const at = now();
       try {
-        await ref.set({ kind, lesson, question: qid, at, sent: false, threadId: null, claimedAt: null, handled: false, handledAt: null });
+        await ref.set({ kind, lesson, question: qid, at, sent: false, threadId: null, claimedAt: null, claimedBy: null, handled: false, handledAt: null });
       } catch (e) {
         note(key, `Not saved (${errCode(e)}). Try again.`);
         return;
