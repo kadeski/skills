@@ -1,0 +1,48 @@
+/*
+ * look.css - the tutor's look, "paper and grid". Copy this whole file to the top of the goal page's <style>,
+ * then style the page and the classes tutor.js adds with the names below. Do not change the values per goal.
+ *
+ * COLORS - each has one job on the whole page, in the page and in lesson pictures alike:
+ *   --blue    the main thing        --blue-soft  a light fill of it
+ *   --warn    a limit or a mistake  --ok         right or done
+ *   --hi      look here             --hi-ink     text on --hi
+ *   --ink     text and strokes      --muted      quieter text
+ *   --line    rules, empty shapes   --card       raised fills
+ *   --bg      the paper             --grid       the grid lines on it
+ *   A lesson picture writes each one with its light value as fallback: fill="var(--blue, #2456A6)".
+ *
+ * FONTS - --lab for headings and picture labels (class="lbl"), --num for numbers and other picture text,
+ *   --body for prose.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap");
+
+:root {
+  --bg: #F6F7F4; --card: #FFFFFF; --ink: #1C2733; --muted: #5C6A77; --line: #D9DED8;
+  --blue: #2456A6; --blue-soft: #E3EAF6; --warn: #BE3B3B; --ok: #2E7D4F; --hi: #F5D64E; --hi-ink: #3A3009;
+  --grid: rgba(36, 86, 166, .07);
+  --lab: "Bricolage Grotesque", system-ui, sans-serif;
+  --num: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171E; --card: #1B222B; --ink: #E9EDF1; --muted: #98A5B1; --line: #2C3641;
+  --blue: #7FA9E8; --blue-soft: #20304A; --warn: #E07A72; --ok: #77C596; --hi: #E4C84F; --hi-ink: #2E2707;
+  --grid: rgba(127, 169, 232, .06); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12171E; --card: #1B222B; --ink: #E9EDF1; --muted: #98A5B1; --line: #2C3641;
+  --blue: #7FA9E8; --blue-soft: #20304A; --warn: #E07A72; --ok: #77C596; --hi: #E4C84F; --hi-ink: #2E2707;
+  --grid: rgba(127, 169, 232, .06); color-scheme: dark }
+
+body {
+  background-color: var(--bg); color: var(--ink); font-family: var(--body);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+h1, h2, h3 { font-family: var(--lab); }
+svg text { font-family: var(--num); }
+svg .lbl { font-family: var(--lab); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
