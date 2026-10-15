@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 Two-way tables</title>
+<h1>02 Two-way tables</h1>
+<p>Part of <a href="goal.md">Reading Probabilities From Counts</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: 30 members, 18 swim, 10 of them also run, 6 run but do not swim. How many do neither? You said <b>a) 6</b>. It is <b>a) 6</b>.</p>
+<img src="img/02-table.svg" alt="the club as a two-way table">
+<ul>
+<li>a) 6: the 12 who do not swim, less the 6 of them who run.</li>
+<li>b) 2 takes 10 and 18 from 30.</li>
+<li>c) 12 counts everyone who does not swim.</li>
+<li>d) 8 counts swimmers who do not run.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>Two yes-or-no questions split a group four ways, and each person lands in one cell (notes 1). So rows and columns add up to totals, and a missing cell can be found from the others.</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> 50 students: 20 take art, 12 of those also take music, and 25 take music in all. How many take music but not art?</p>
+<pre class="answer">13</pre>
+<blockquote class="feedback">Right: 25 music students, 12 of them in art (notes 1).</blockquote>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> Same school. How many take neither?</p>
+<pre class="answer">17</pre>
+<blockquote class="feedback">Right: 50 - 20 - 13 = 17 (notes 1).</blockquote>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Kim says the four cells can add up to more than 50, since some students take both. What is wrong?</p>
+<pre class="answer">each student is in exactly one cell, the both cell counts them once, so the cells add to 50</pre>
+<blockquote class="feedback">Right: one cell per person (notes 1).</blockquote>
+</section>
+<p class="pass">You can now fill in a two-way table from partial counts.</p>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>Same school. Of the students who take music, what fraction also take art?</p>
+<ul>
+<li>a) 12/20</li>
+<li>b) 12/25</li>
+<li>c) 12/50</li>
+<li>d) 25/50</li>
+</ul>
+<pre class="answer">b (sure)</pre>
+</section>

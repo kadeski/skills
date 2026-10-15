@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="150" viewBox="0 0 380 150">
+  <rect width="380" height="150" fill="white"/>
+  <text x="20" y="40" font-size="16" fill="#111">do:</text>
+  <text x="70" y="40" font-size="16" fill="#111">x</text>
+  <text x="110" y="40" font-size="16" fill="#111">times 3</text>
+  <text x="200" y="40" font-size="16" fill="#111">plus 5</text>
+  <text x="290" y="40" font-size="16" fill="#111">= 20</text>
+  <line x1="20" y1="70" x2="360" y2="70" stroke="#222" stroke-width="2"/>
+  <text x="20" y="110" font-size="16" fill="#111">undo:</text>
+  <text x="80" y="110" font-size="16" fill="#111">20</text>
+  <text x="120" y="110" font-size="16" fill="#111">minus 5</text>
+  <text x="200" y="110" font-size="16" fill="#111">divide by 3</text>
+  <text x="310" y="110" font-size="16" fill="#111">= 5</text>
+</svg>

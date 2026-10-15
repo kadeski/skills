@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="140" viewBox="0 0 380 140">
+  <rect width="380" height="140" fill="white"/>
+  <g stroke="#222" stroke-width="2">
+    <rect x="20" y="30" width="60" height="40" fill="#9cc"/><rect x="80" y="30" width="60" height="40" fill="#9cc"/><rect x="140" y="30" width="60" height="40" fill="#9cc"/>
+    <rect x="200" y="30" width="60" height="40" fill="#fc9"/><rect x="260" y="30" width="60" height="40" fill="#fc9"/>
+  </g>
+  <g font-size="16" fill="#111" text-anchor="middle">
+    <text x="50" y="56">4</text><text x="110" y="56">4</text><text x="170" y="56">4</text><text x="230" y="56">4</text><text x="290" y="56">4</text>
+    <text x="110" y="95">Ana: 3 x 4 = 12</text><text x="260" y="95">Ben: 2 x 4 = 8</text>
+    <text x="170" y="125">20 / 5 = 4 in each share</text>
+  </g>
+</svg>

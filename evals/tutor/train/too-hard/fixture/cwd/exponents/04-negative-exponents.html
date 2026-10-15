@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>04 Negative exponents</title>
+<h1>04 Negative exponents</h1>
+<p>Part of <a href="goal.md">Exponent Rules</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+<p>Help is down to 2, since 02 and 03 both passed first try: an outline and a picture, no worked example.</p>
+
+<h2>Review</h2>
+<section id="R1">
+<p><b>R1.</b> Which is 6² × 6⁵?</p>
+<ul>
+<li>a) 36⁷</li>
+<li>b) 6¹⁰</li>
+<li>c) 6⁷</li>
+<li>d) 12⁷</li>
+</ul>
+</section>
+
+<h2>Your guess</h2>
+<p>Last time: going down from 2³ = 8, what is 2⁰? You said <b>a) 0</b>. It is <b>b) 1</b>.</p>
+<img src="img/04-halving.svg" alt="powers of 2 from 2^3 down to 2^-2, each step down divides by 2">
+<ul>
+<li>a) 0 reads zero copies as nothing left.</li>
+<li>b) 1: each step down divides by 2, and 2 / 2 = 1.</li>
+<li>c) 2 stops one step too early.</li>
+<li>d) no value treats zero copies as undefined.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>"A power counts copies" stops making sense at zero copies, or fewer. Keep the pattern instead: each step down in the exponent divides by the base once more (notes 4). Keep going past 0 and you get one over a power (notes 5):</p>
+<p>a⁻ⁿ = 1/aⁿ</p>
+<p>Outline:</p>
+<ul>
+<li>start from a power you know</li>
+<li>step down one at a time, dividing by the base each step</li>
+<li>a minus in the exponent gives a small positive number, not a negative one</li>
+</ul>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> What is 3⁻², as a fraction?</p>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> In your own words: why is 5⁻¹ equal to one fifth, and not -5?</p>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Rae says 10⁻³ is -1000, since the minus sign makes it negative. What is wrong?</p>
+</section>

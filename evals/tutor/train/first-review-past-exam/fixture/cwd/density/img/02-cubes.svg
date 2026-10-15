@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200">
+  <rect width="360" height="200" fill="white"/>
+  <text x="20" y="26" font-size="16" fill="#111">one layer: 2 x 3 = 6 cubes</text>
+  <g fill="#9cc" stroke="#222">
+    <rect x="20" y="40" width="30" height="30"/><rect x="50" y="40" width="30" height="30"/><rect x="80" y="40" width="30" height="30"/>
+    <rect x="20" y="70" width="30" height="30"/><rect x="50" y="70" width="30" height="30"/><rect x="80" y="70" width="30" height="30"/>
+  </g>
+  <g fill="#9cc" stroke="#222">
+    <rect x="160" y="40" width="90" height="30"/><rect x="160" y="70" width="90" height="30"/>
+    <rect x="160" y="100" width="90" height="30"/><rect x="160" y="130" width="90" height="30"/>
+  </g>
+  <text x="260" y="105" font-size="16" fill="#111">4 layers</text>
+  <text x="20" y="190" font-size="16" fill="#111">6 x 4 = 24 cubes, so 24 cm^3</text>
+</svg>

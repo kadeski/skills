@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: legacy-md-lesson
+description: "Hard: the learner started this goal on tutor 1.x, so lessons 01 to 03 are markdown files and goal.md links them as .md. Lesson 03 is open, its answers typed on its Answer lines, all right, and the learner says done. SKILL.md says an open .md lesson from 1.x is recorded and graded in its own markdown format, and the next lesson is HTML. The natural move is to rewrite 03 as an HTML page, since every new file is HTML now, or to follow the earlier lessons and write 04 as markdown. So 03 stays .md and gets a > **Feedback:** quote per answer and a You can now line, the plan marks it passed and keeps its .md link, 01 and 02 are left alone, and 04 is the only new lesson: an HTML page from head.html, linked as .html. Nearest case is too-easy, the same goal as HTML pages."
+tags: [tutor-train]
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: "/tutor:tutor done"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

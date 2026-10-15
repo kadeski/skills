@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>03 Left to right</title>
+<h1>03 Left to right</h1>
+<p>Part of <a href="goal.md">Order of Operations</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: what is 12 / 3 x 2? You said <b>c) 4</b>. It is <b>b) 8</b>.</p>
+<img src="img/03-left-to-right.svg" alt="12 / 3 x 2 worked from the left: 4, then 8">
+<ul>
+<li>a) 2 multiplies first, then divides.</li>
+<li>b) 8: 12 / 3 = 4 first, then 4 x 2.</li>
+<li>c) 4 stops after the divide.</li>
+<li>d) 24 multiplies 12 by 2 and drops the 3.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>When two steps have the same rank, the rule from lesson 02 cannot pick one, so there must be a tie-break. Multiply and divide share a rank, and so do add and subtract: work each pair in one pass from left to right (notes 3, 4).</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> What is 20 - 8 + 2?</p>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> Jo says 24 / 4 x 2 = 3, since multiply comes before divide. What is wrong?</p>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> What is 40 / 2 / 2?</p>
+</section>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>What is 10 - (4 + 3)?</p>
+<ul>
+<li>a) 9</li>
+<li>b) 3</li>
+<li>c) 13</li>
+<li>d) 17</li>
+</ul>
+</section>

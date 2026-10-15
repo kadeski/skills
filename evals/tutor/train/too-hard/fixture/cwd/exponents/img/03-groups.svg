@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="160" viewBox="0 0 380 160">
+  <rect width="380" height="160" fill="white"/>
+  <g fill="none" stroke="#222" stroke-width="2">
+    <rect x="15" y="35" width="150" height="50"/>
+    <rect x="195" y="35" width="150" height="50"/>
+  </g>
+  <g font-size="16" fill="#111">
+    <text x="15" y="25">copy 1 of 2 to the 3</text>
+    <text x="195" y="25">copy 2</text>
+    <text x="35" y="66">2</text><text x="80" y="66">2</text><text x="125" y="66">2</text>
+    <text x="215" y="66">2</text><text x="260" y="66">2</text><text x="305" y="66">2</text>
+    <text x="15" y="125">2 groups x 3 twos = 6 twos: 2 to the 6</text>
+  </g>
+</svg>

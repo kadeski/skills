@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="220" viewBox="0 0 340 220">
+  <rect width="340" height="220" fill="white"/>
+  <polygon points="30,170 310,170 120,30" fill="#def" stroke="#222" stroke-width="3"/>
+  <g font-family="sans-serif" font-size="18" fill="#111">
+    <text x="55" y="160">50</text><text x="260" y="160">60</text><text x="113" y="65">70</text>
+    <text x="60" y="205">50 + 60 + 70 = 180</text>
+  </g>
+</svg>

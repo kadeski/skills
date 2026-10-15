@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="140" viewBox="0 0 380 140">
+  <rect width="380" height="140" fill="white"/>
+  <rect x="20" y="40" width="140" height="30" fill="#9cc" stroke="#222"/>
+  <rect x="160" y="40" width="140" height="30" fill="#9cc" stroke="#222"/>
+  <rect x="300" y="40" width="70" height="30" fill="#fc9" stroke="#222"/>
+  <text x="50" y="30" font-size="16" fill="#111">100 cm</text>
+  <text x="190" y="30" font-size="16" fill="#111">100 cm</text>
+  <text x="305" y="30" font-size="16" fill="#111">50 cm</text>
+  <text x="20" y="110" font-size="16" fill="#111">2.5 m = 100 + 100 + 50 = 250 cm</text>
+</svg>

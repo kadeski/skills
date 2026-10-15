@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 Union and intersection</title>
+<h1>02 Union and intersection</h1>
+<p>Part of <a href="goal.md">Python Sets</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: <code>a = {1, 2}</code> and <code>b = {2, 3}</code>. What is <code>a | b</code>? You said <b>d) <code>True</code></b>. It is <b>b) <code>{1, 2, 3}</code></b>.</p>
+<table>
+<tr><th>Value</th><th>In a</th><th>In b</th><th>In a or b</th></tr>
+<tr><td>1</td><td>yes</td><td>no</td><td>yes</td></tr>
+<tr><td>2</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>3</td><td>no</td><td>yes</td><td>yes</td></tr>
+</table>
+<ul>
+<li>a) <code>{2}</code> is <code>a &amp; b</code>, the values in both.</li>
+<li>b) <code>{1, 2, 3}</code>: <code>|</code> keeps every value in either set.</li>
+<li>c) <code>{1, 3}</code> keeps the values in only one set.</li>
+<li>d) <code>True</code> reads <code>|</code> as a yes or no test.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>You often need to merge two groups, or find what they share. For sets, <code>|</code> gives the union: every value in either set (notes 2). <code>&amp;</code> gives the intersection: only the values in both (notes 3).</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> <code>x = {"red", "blue"}</code> and <code>y = {"blue", "green"}</code>. Why does <code>x | y</code> have 3 values, not 4?</p>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> <code>tags_a</code> and <code>tags_b</code> are sets. Write code that sets <code>all_tags</code> to every tag in either set.</p>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Kim says <code>x &amp; y</code> is bigger than <code>x | y</code> when the sets share values. What is wrong?</p>
+</section>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p><code>a = {1, 2, 3}</code> and <code>b = {2}</code>. What is <code>a - b</code>?</p>
+<ul>
+<li>a) <code>{1, 3}</code></li>
+<li>b) <code>{2}</code></li>
+<li>c) <code>{-1, 0, 1}</code></li>
+<li>d) <code>2</code></li>
+</ul>
+</section>

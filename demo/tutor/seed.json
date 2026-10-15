@@ -1,0 +1,461 @@
+[
+ {
+  "op": "set",
+  "collection": "goal",
+  "doc_id": "main",
+  "data": {
+   "title": "8-bit Two's Complement",
+   "goal": "Read, negate and add 8-bit two's complement numbers, and spot overflow.",
+   "source": "Computer Systems: A Programmer's Perspective, 3rd ed. (CS:APP), 2.2.2, 2.2.3, 2.3.2, 2.3.3",
+   "examDate": "2026-10-30",
+   "help": 2,
+   "plan": [
+    {
+     "id": "01",
+     "title": "Where you're at",
+     "status": "passed"
+    },
+    {
+     "id": "02",
+     "title": "Reading the bits",
+     "status": "passed, first try"
+    },
+    {
+     "id": "03",
+     "title": "Negation",
+     "status": "redo Q3"
+    },
+    {
+     "id": "04",
+     "title": "Adding and overflow",
+     "status": ""
+    },
+    {
+     "id": "05",
+     "title": "Mixed drill",
+     "status": ""
+    }
+   ],
+   "rules": [
+    {
+     "id": "r02",
+     "text": "the top bit weighs -128, not 128",
+     "next": "2026-10-11",
+     "gapDays": 2
+    }
+   ],
+   "misconceptions": [],
+   "tutorJs": 7
+  }
+ },
+ {
+  "op": "set",
+  "collection": "goal",
+  "doc_id": "prefs",
+  "data": {
+   "text": "Pictures first. Short sentences."
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons",
+  "doc_id": "01",
+  "data": {
+   "title": "Where you're at",
+   "kind": "lesson",
+   "script": null,
+   "pass": "You can now start on two's complement.",
+   "html": "<h2>Where you're at</h2>\n<p>Two questions on what lesson 02 needs, then a guess.</p>\n<section id='Q1'><p><b>Q1.</b> Which bits are 13 in unsigned binary?</p></section>\n<section id='Q2'><p><b>Q2.</b> What is $2^7$?</p></section>\n<h2>Guess for next time (not graded)</h2>\n<section id='G'><p>In 8-bit two's complement, which number is <code>10000011</code>?</p></section>"
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/01/questions",
+  "doc_id": "Q1",
+  "data": {
+   "id": "Q1",
+   "type": "mc",
+   "redo": false,
+   "hints": [],
+   "options": [
+    "<code>00001101</code>",
+    "<code>00001011</code>",
+    "<code>00010011</code>",
+    "<code>00001110</code>"
+   ],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "a",
+     "text": "Right: 8 + 4 + 1 = 13."
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/01/questions",
+  "doc_id": "Q2",
+  "data": {
+   "id": "Q2",
+   "type": "number",
+   "redo": false,
+   "hints": [],
+   "options": [],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "128",
+     "text": "Right: seven doublings of 1."
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/01/questions",
+  "doc_id": "G",
+  "data": {
+   "id": "G",
+   "type": "mc",
+   "redo": false,
+   "hints": [],
+   "options": [
+    "-131",
+    "-125",
+    "-3",
+    "131"
+   ],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "c",
+     "text": "Not graded. Lesson 02 shows the answer."
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons",
+  "doc_id": "02",
+  "data": {
+   "title": "Reading the bits",
+   "kind": "lesson",
+   "script": null,
+   "pass": "You can now read any 8-bit two's complement number.",
+   "html": "<h2>Your guess</h2>\n<p>Last time: which number is <code>10000011</code>? You said <b>c) -3</b>. It is <b>b) -125</b>.</p>\n<h2>The idea</h2>\n<p>Unsigned, the 8 bits weigh 128, 64 and so on down to 1. Two's complement changes one weight: the top bit weighs -128 (CS:APP 2.2.3). To read a number, add the weights of its 1 bits:</p>\n<p>$$-128x_7 + 64x_6 + \\cdots + 2x_1 + x_0$$</p>\n<table><tr><th>Bits</th><th>Unsigned</th><th>Two's complement</th></tr><tr><td><code>00010010</code></td><td>18</td><td>18</td></tr><tr><td><code>11010010</code></td><td>210</td><td>-46</td></tr></table>\n<h2>Questions</h2>\n<section id='Q1'><p><b>Q1.</b> Any pattern that starts with 1, like <code>10110100</code>, is negative. Why?</p></section>\n<h2>Guess for next time (not graded)</h2>\n<section id='G'><p><code>00000110</code> is 6. Which steps turn it into the bits of -6?</p></section>"
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/02/questions",
+  "doc_id": "Q1",
+  "data": {
+   "id": "Q1",
+   "type": "text",
+   "redo": false,
+   "hints": [],
+   "options": [],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "the top bit is -128 and the rest add up to at most 127",
+     "text": "Right: 64 + 32 + ... + 1 is 127, so the sum stays below 0 (CS:APP 2.2.3)."
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/02/questions",
+  "doc_id": "G",
+  "data": {
+   "id": "G",
+   "type": "mc",
+   "redo": false,
+   "hints": [],
+   "options": [
+    "flip the top bit",
+    "flip every bit",
+    "flip every bit, then add one",
+    "add one, then flip every bit"
+   ],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "b",
+     "text": "Not graded. Lesson 03 shows the answer."
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons",
+  "doc_id": "03",
+  "data": {
+   "title": "Negation",
+   "kind": "lesson",
+   "script": "const start = [0, 0, 0, 0, 0, 1, 1, 0];\nlet bits = start.slice();\nconst value = b => b.reduce((sum, x, i) => sum + x * (i === 0 ? -128 : 2 ** (7 - i)), 0);\nconst show = () => {\n  root.querySelector(\"#neg-bits\").textContent = bits.join(\"\");\n  root.querySelector(\"#neg-value\").textContent = value(bits);\n};\nroot.querySelector(\"#neg-flip\").addEventListener(\"click\", () => { bits = bits.map(x => 1 - x); show(); });\nroot.querySelector(\"#neg-add\").addEventListener(\"click\", () => {\n  let i = 7;\n  while (i >= 0 && bits[i] === 1) bits[i--] = 0;\n  if (i >= 0) bits[i] = 1;\n  show();\n});\nroot.querySelector(\"#neg-reset\").addEventListener(\"click\", () => { bits = start.slice(); show(); });\nshow();",
+   "pass": null,
+   "html": "<h2>Your guess</h2>\n<p>Last time: which steps turn <code>00000110</code> (6) into the bits of -6? You said <b>b) flip every bit</b>. It is <b>c) flip every bit, then add one</b>.</p>\n<h2>The idea</h2>\n<p>Add x to its flip, written ~x. Each column holds one 1, so the sum is <code>11111111</code>, which is -1 (CS:APP 2.3.3).</p>\n<svg viewBox='0 0 300 120' width='300' height='120' role='img' aria-label='00000110 plus its flip 11111001 is 11111111, which is -1'><rect width='300' height='120' rx='8' fill='#fff'/><g font-family='ui-monospace, Menlo, monospace' font-size='20' fill='#1b1c1e'><text x='24' y='34'>x</text><text x='200' y='34' text-anchor='end'>00000110</text><text x='216' y='34'>6</text><text x='24' y='64'>+ ~x</text><text x='200' y='64' text-anchor='end'>11111001</text><text x='216' y='64'>-7</text><line x1='90' y1='76' x2='204' y2='76' stroke='#1b1c1e' stroke-width='2'/><text x='200' y='104' text-anchor='end'>11111111</text><text x='216' y='104'>-1</text></g></svg>\n<p>So ~x is $-x - 1$, one short of $-x$. Add one to close the gap:</p>\n<p>$${\\sim}x + 1 = -x$$</p>\n<p>Try it on 6:</p>\n<div class='neg-control'><p><code id='neg-bits'>00000110</code> is <b id='neg-value'>6</b></p><p><button type='button' id='neg-flip'>Flip every bit</button> <button type='button' id='neg-add'>Add one</button> <button type='button' id='neg-reset'>Start over</button></p></div>\n<h2>Review</h2>\n<section id='R1'><p><b>R1.</b> In 8-bit two's complement, which number is <code>11111110</code>?</p></section>\n<h2>Questions</h2>\n<section id='Q1'><p><b>Q1.</b> <code>00010100</code> is 20. Write the 8 bits of -20.</p></section>\n<section id='Q2'><p><b>Q2.</b> Why is ~x always one less than -x?</p></section>\n<section id='Q3'><p><b>Q3.</b> Sam negates <code>10000000</code> (-128) and gets <code>10000000</code> again. Sam says the rule is broken. What is wrong with that?</p></section>\n<h2>Guess for next time (not graded)</h2>\n<section id='G'><p>Add <code>01111111</code> (127) and <code>00000001</code> (1) in 8 bits. Which number do the 8 bits hold?</p></section>"
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/03/questions",
+  "doc_id": "R1",
+  "data": {
+   "id": "R1",
+   "type": "mc",
+   "rule": "r02",
+   "redo": false,
+   "hints": [],
+   "feedback": [],
+   "options": [
+    "254",
+    "-2",
+    "-126",
+    "-1"
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/03/questions",
+  "doc_id": "Q1",
+  "data": {
+   "id": "Q1",
+   "type": "number",
+   "redo": false,
+   "feedback": [],
+   "options": [],
+   "hints": [
+    "Do what you did to 6 above: flip every bit of <code>00010100</code>, then add one."
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/03/questions",
+  "doc_id": "Q2",
+  "data": {
+   "id": "Q2",
+   "type": "text",
+   "redo": false,
+   "hints": [],
+   "options": [],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "x plus ~x is 11111111, and that is -1, so ~x is -1 - x",
+     "text": "Right: you used x + ~x = -1, the step the rule rests on (CS:APP 2.3.3)."
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/03/questions",
+  "doc_id": "Q3",
+  "data": {
+   "id": "Q3",
+   "type": "text",
+   "redo": true,
+   "hints": [],
+   "options": [],
+   "feedback": [
+    {
+     "attempt": 1,
+     "answer": "Sam forgot to add one",
+     "text": "<p>You wrote \"Sam forgot to add one\". Trace it: flip <code>10000000</code> to get <code>01111111</code>, then add one to get <code>10000000</code>. Sam did add one.</p><p>So can 8 bits hold +128? (CS:APP 2.3.3)</p>"
+    }
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "lessons/03/questions",
+  "doc_id": "G",
+  "data": {
+   "id": "G",
+   "type": "mc",
+   "redo": false,
+   "hints": [],
+   "feedback": [],
+   "options": [
+    "128",
+    "-128",
+    "0",
+    "an error, since 128 does not fit"
+   ]
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "01-Q1",
+  "data": {
+   "lesson": "01",
+   "question": "Q1",
+   "type": "mc",
+   "answer": "a",
+   "attempt": 1,
+   "savedAt": "2026-10-07T18:02:11.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "01-Q2",
+  "data": {
+   "lesson": "01",
+   "question": "Q2",
+   "type": "number",
+   "answer": "128",
+   "attempt": 1,
+   "savedAt": "2026-10-07T18:02:40.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "01-G",
+  "data": {
+   "lesson": "01",
+   "question": "G",
+   "type": "mc",
+   "answer": "c",
+   "attempt": 1,
+   "savedAt": "2026-10-07T18:03:05.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "02-Q1",
+  "data": {
+   "lesson": "02",
+   "question": "Q1",
+   "type": "text",
+   "answer": "the top bit is -128 and the rest add up to at most 127",
+   "attempt": 1,
+   "savedAt": "2026-10-09T17:40:12.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "02-G",
+  "data": {
+   "lesson": "02",
+   "question": "G",
+   "type": "mc",
+   "answer": "b",
+   "attempt": 1,
+   "savedAt": "2026-10-09T17:41:30.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "03-Q2",
+  "data": {
+   "lesson": "03",
+   "question": "Q2",
+   "type": "text",
+   "answer": "x plus ~x is 11111111, and that is -1, so ~x is -1 - x",
+   "attempt": 1,
+   "savedAt": "2026-10-11T16:20:03.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "answers",
+  "doc_id": "03-Q3",
+  "data": {
+   "lesson": "03",
+   "question": "Q3",
+   "type": "text",
+   "answer": "Sam forgot to add one",
+   "attempt": 1,
+   "savedAt": "2026-10-11T16:21:47.000Z",
+   "recorded": true
+  }
+ },
+ {
+  "op": "set",
+  "collection": "requests",
+  "doc_id": "01-mgh0w3k2",
+  "data": {
+   "kind": "done",
+   "lesson": "01",
+   "question": null,
+   "at": "2026-10-07T18:03:20.000Z",
+   "sent": false,
+   "threadId": null,
+   "claimedAt": "2026-10-07T18:03:30.000Z",
+   "claimedBy": "demo-session",
+   "handled": true,
+   "handledAt": "2026-10-07T18:05:02.000Z"
+  }
+ },
+ {
+  "op": "set",
+  "collection": "requests",
+  "doc_id": "02-mgjlq7a1",
+  "data": {
+   "kind": "done",
+   "lesson": "02",
+   "question": null,
+   "at": "2026-10-09T17:42:00.000Z",
+   "sent": false,
+   "threadId": null,
+   "claimedAt": "2026-10-09T17:42:10.000Z",
+   "claimedBy": "demo-session",
+   "handled": true,
+   "handledAt": "2026-10-09T17:44:31.000Z"
+  }
+ },
+ {
+  "op": "set",
+  "collection": "requests",
+  "doc_id": "03-mgm6p2c9",
+  "data": {
+   "kind": "hint",
+   "lesson": "03",
+   "question": "Q1",
+   "at": "2026-10-11T16:18:40.000Z",
+   "sent": false,
+   "threadId": null,
+   "claimedAt": "2026-10-11T16:18:50.000Z",
+   "claimedBy": "demo-session",
+   "handled": true,
+   "handledAt": "2026-10-11T16:19:10.000Z"
+  }
+ },
+ {
+  "op": "set",
+  "collection": "requests",
+  "doc_id": "03-mgm6t0f4",
+  "data": {
+   "kind": "done",
+   "lesson": "03",
+   "question": null,
+   "at": "2026-10-11T16:22:05.000Z",
+   "sent": false,
+   "threadId": null,
+   "claimedAt": "2026-10-11T16:22:15.000Z",
+   "claimedBy": "demo-session",
+   "handled": true,
+   "handledAt": "2026-10-11T16:24:48.000Z"
+  }
+ }
+]

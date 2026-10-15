@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- tutor lesson page -->
+<style>
+body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.5 system-ui, sans-serif; color: #111; background: #fff; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #999; padding: .25rem .6rem; text-align: left; }
+section { margin: 1.5rem 0; }
+pre.answer { background: #f2f2f2; padding: .5rem .8rem; white-space: pre-wrap; }
+pre.answer::before { content: "Answer"; display: block; font: bold .8rem system-ui, sans-serif; color: #555; }
+blockquote.feedback { margin: .5rem 0; padding: .3rem 1rem; border-left: 4px solid #2a6; background: #eef8f1; }
+blockquote.feedback::before { content: "Feedback"; display: block; font-weight: bold; }
+p.hint { border-left: 4px solid #c90; padding-left: .8rem; }
+p.hint::before { content: "Hint: "; font-weight: bold; }
+p.pass { font-weight: bold; color: #174; }
+</style>
+<title>02 Counting steps in one loop</title>
+<h1>02 Counting steps in one loop</h1>
+<p>Part of <a href="goal.md">Counting Loop Steps</a>. Answer in the chat (<code>1: ...</code>, <code>g: c</code>), add <code>sure</code> or <code>guess</code> after any answer, and say <code>done</code> when finished.</p>
+
+<h2>Your guess</h2>
+<p>Last time: a body of 3 steps runs once per item, over n items. How many steps in all? You said <b>b) n</b>. It is <b>c) 3n</b>.</p>
+<img src="img/02-steps.svg" alt="n boxes, 3 steps in each">
+<ul>
+<li>a) 3 counts one pass of the body.</li>
+<li>b) n counts the passes but not the steps in each.</li>
+<li>c) 3n: 3 steps in each of n passes.</li>
+<li>d) n cubed multiplies n by itself three times.</li>
+</ul>
+
+<h2>The idea</h2>
+<p>To compare two pieces of code, you want a count that does not depend on the machine. Count passes, then steps per pass, and multiply: n passes of 3 steps is 3n (notes 3). For big-O, drop the fixed factor: 3n is O(n). A <code>range(a, b)</code> loop makes b - a passes (notes 1).</p>
+
+<h2>Questions</h2>
+<section id="Q1">
+<p><b>Q1.</b> How many times does the body of <code>for i in range(4, 20):</code> run?</p>
+<pre class="answer">16</pre>
+</section>
+<section id="Q2">
+<p><b>Q2.</b> A loop <code>for x in items:</code> has 2 steps in its body, and items holds n things. How many steps in all, and what is its big-O?</p>
+</section>
+<section id="Q3">
+<p><b>Q3.</b> Lee says <code>for i in range(0, n, 2):</code> with a 1-step body is O(n/2), so it beats O(n). What is wrong?</p>
+</section>
+
+<h2>Guess for next time (not graded)</h2>
+<section id="G">
+<p>How many times does the inner line run?</p>
+<pre><code>for i in range(3):
+    for j in range(4):
+        print(i, j)</code></pre>
+<ul>
+<li>a) 7</li>
+<li>b) 12</li>
+<li>c) 3</li>
+<li>d) 4</li>
+</ul>
+</section>

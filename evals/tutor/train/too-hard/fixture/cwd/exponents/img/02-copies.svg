@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="150" viewBox="0 0 380 150">
+  <rect width="380" height="150" fill="white"/>
+  <g fill="#9cc" stroke="#222">
+    <rect x="20" y="40" width="40" height="40"/><rect x="65" y="40" width="40" height="40"/><rect x="110" y="40" width="40" height="40"/>
+    <rect x="190" y="40" width="40" height="40"/><rect x="235" y="40" width="40" height="40"/>
+  </g>
+  <g font-size="16" fill="#111">
+    <text x="20" y="28">2 to the 3</text>
+    <text x="190" y="28">2 to the 2</text>
+    <text x="35" y="66">2</text><text x="80" y="66">2</text><text x="125" y="66">2</text>
+    <text x="205" y="66">2</text><text x="250" y="66">2</text>
+    <text x="20" y="120">3 + 2 = 5 twos in all: 2 to the 5</text>
+  </g>
+</svg>

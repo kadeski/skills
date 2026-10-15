@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="170" viewBox="0 0 380 170">
+  <rect width="380" height="170" fill="white"/>
+  <text x="20" y="26" font-size="16" fill="#111">2 x 2 x 5 = 20 cubes, 50 g in all</text>
+  <g fill="#fc9" stroke="#222">
+    <rect x="20" y="40" width="34" height="34"/><rect x="54" y="40" width="34" height="34"/><rect x="88" y="40" width="34" height="34"/><rect x="122" y="40" width="34" height="34"/><rect x="156" y="40" width="34" height="34"/>
+    <rect x="20" y="74" width="34" height="34"/><rect x="54" y="74" width="34" height="34"/><rect x="88" y="74" width="34" height="34"/><rect x="122" y="74" width="34" height="34"/><rect x="156" y="74" width="34" height="34"/>
+  </g>
+  <text x="205" y="80" font-size="16" fill="#111">front 10 cubes,</text>
+  <text x="205" y="100" font-size="16" fill="#111">10 more behind</text>
+  <text x="20" y="150" font-size="16" fill="#111">50 g / 20 cm^3 = 2.5 g per cm^3</text>
+</svg>
