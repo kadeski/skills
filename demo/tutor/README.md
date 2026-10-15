@@ -3,7 +3,7 @@
 A plain goal page around `plugins/tutor/skills/tutor/tutor.js`, and one sample goal to load into it. Use it to test `tutor.js` by hand on desktop and phone. It does not ship.
 
 - `index.html` - the page: slots for title, goal, status, plan, reviews and lesson, plus its own look.
-- `seed.json` - the sample goal as `ArtifactData` `batch` writes: `goal/main`, three lessons (01 and 02 passed, 03 open with a review, a redo, a hint, a lesson script and math), answers and handled requests.
+- `seed.json` - the sample goal as `ArtifactData` `batch` writes: `goal/main`, three lessons (01 and 02 passed, 03 open with a review, a redo, a hint, a lesson script and math), answers and handled requests, one of them a Hint request from a page before `tutor.js` 6, kept to check old data still shows.
 
 ## Publish and seed
 

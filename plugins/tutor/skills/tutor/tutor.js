@@ -6,8 +6,8 @@
  *   changes, since it stands for the skill's version too. The tutor skill keeps the version each goal
  *   page was published with in goal/main.tutorJs and republishes older pages with this file, so a
  *   newer tutor.js must keep working with pages and documents written for older ones. A session whose
- *   tutor.js is older than the page's leaves the page's requests alone, and the text Done, Hint and
- *   Show me send names VERSION, so an older or skill-less session stops too.
+ *   tutor.js is older than the page's leaves the page's requests alone, and the text Done sends names
+ *   VERSION, so an older or skill-less session stops too.
  *
  * PUBLISH
  *   Artifact publish with files: {"tutor.js": "<this skill's folder>/tutor.js"} and
@@ -24,25 +24,29 @@
  *
  * LESSON FRAGMENT (lessons/<nn>.html) - one section per question, id = the question id:
  *   <section id="Q1"><p><b>Q1.</b> ...prompt...</p></section>     (R1 for reviews, G for the guess)
- *   tutor.js adds to each section a <div class="tutor-q"> holding, in order:
+ *   tutor.js labels each section "Lesson <nn>, <id>" (aria-label) and marks it data-comment-target, so a
+ *   comment anywhere in it anchors to the section and its location names the lesson and question.
+ *   It adds to each section a <div class="tutor-q"> holding, in order:
  *     .tutor-attempt > .answer + blockquote.feedback   one per feedback entry
  *     .hint                                            one per entry in hints
- *     .solution                                        the question's solution, the answer to Show me; with no
- *                                                      solution after a handled Show me, the last hint
+ *     .solution                                        the question's solution; with none, after a Show me an
+ *                                                      older page asked for and the tutor handled, the last hint
  *     .tutor-controls                                  .tutor-options > button.tutor-option[aria-pressed], or .tutor-input
- *     .tutor-q-actions                                 one button (Hint, then Show me once a hint was asked), .tutor-note
- *   A .tutor-note for a request a Claude session claimed and has not handled holds span.tutor-wait, three
- *   animated dots. A request nobody claimed within CLAIM_WAIT, or claimed longer than CLAIM_LIMIT ago,
+ *     .tutor-q-actions                                 .tutor-note, for an answer that did not save
+ *   After the fragment: p.pass (when the lesson passed), .tutor-actions (Done, .tutor-note) and ul.tutor-tips,
+ *   which tells the learner to ask for help with a comment sent to Claude.
+ *   Done's .tutor-note, while a Claude session has claimed the request and not handled it, holds span.tutor-wait,
+ *   three animated dots. A request nobody claimed within CLAIM_WAIT, or claimed longer than CLAIM_LIMIT ago,
  *   gets a note to run /tutor instead.
- *   After the fragment: p.pass (when the lesson passed) and .tutor-actions (Too easy, Too hard, Done, .tutor-note).
  *   Math: $...$ and $$...$$, rendered as MathML by KaTeX, so the page needs no KaTeX stylesheet.
  *   lessons/<nn>.script runs once per render of the fragment, with `root` = the lesson's container.
  *
  * DATA - reads goal/main, lessons, lessons/<nn>/questions, answers and requests of the lesson shown.
  *   Writes only answers/<nn>-<id> (set: lesson, question, type, answer, attempt, savedAt, recorded: false)
- *   and requests/<nn>-<base36 ms> (kind, lesson, question, at, sent, threadId, claimedAt: null, claimedBy: null,
- *   handled: false, handledAt). The tutor sets claimedAt and claimedBy (its session) when it starts on a
- *   request, and handled when it is done.
+ *   and requests/<nn>-<base36 ms> (kind: "done", lesson, question: null, at, sent, threadId, claimedAt: null,
+ *   claimedBy: null, handled: false, handledAt). Pages before VERSION 6 also wrote the kinds hint, showme, easy
+ *   and hard. The tutor sets claimedAt and claimedBy (its session) when it starts on a request, and handled
+ *   when it is done.
  *   Never goal or lessons: rules do not limit the owner, and the learner is the owner.
  *
  * LOCKS - from documents only, so two open devices agree:
@@ -53,7 +57,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 5;
+  const VERSION = 6;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -106,10 +110,11 @@
 :where(.tutor-option[aria-pressed="true"]){outline:2px solid;outline-offset:-1px}
 :where(.tutor-input){box-sizing:border-box;width:100%;padding:.5rem;border:1px solid;border-radius:8px;background:none;color:inherit;font:inherit}
 :where(textarea.tutor-input){min-height:4.5em;field-sizing:content}
-:where(.tutor-option:disabled,.tutor-input:disabled,.tutor-q-actions button:disabled,.tutor-actions button:disabled){opacity:.6;cursor:default}
+:where(.tutor-option:disabled,.tutor-input:disabled,.tutor-actions button:disabled){opacity:.6;cursor:default}
 :where(.tutor-q-actions,.tutor-actions){display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
 :where(.tutor-actions){margin-top:1.25rem}
 :where(.tutor-note){font-size:.85em;opacity:.8}
+:where(.tutor-tips){margin:1rem 0 0;padding-left:1.2em;font-size:.9em;opacity:.8}
 :where(.tutor-wait){display:inline-flex;gap:.3em;padding:.3em 0;vertical-align:middle}
 :where(.tutor-wait i){width:.5em;height:.5em;border-radius:50%;background:currentColor;animation:tutor-wait 1.2s ease-in-out infinite}
 :where(.tutor-wait i:nth-child(2)){animation-delay:.15s}
@@ -303,11 +308,13 @@
       const body = el("div", { class: "tutor-lesson", "data-lesson": id, "data-kind": lesson.kind || "lesson", html: lesson.html || "" });
       const pass = el("p", { class: "pass", hidden: true });
       const actions = el("div", { class: "tutor-actions" },
-        el("button", { type: "button", "data-kind": "easy", onclick: e => request("easy", null, e.currentTarget) }, "Too easy"),
-        el("button", { type: "button", "data-kind": "hard", onclick: e => request("hard", null, e.currentTarget) }, "Too hard"),
         el("button", { type: "button", "data-kind": "done", class: "tutor-done", onclick: e => done(e.currentTarget) }, "Done"),
         el("p", { class: "tutor-note", role: "status" }));
-      node.append(body, pass, actions);
+      const tips = el("ul", { class: "tutor-tips" },
+        el("li", {}, "Stuck on a question? Comment on it and send it to Claude, for a hint or the answer."),
+        el("li", {}, "Too easy or too hard? Say so in a comment sent to Claude."),
+        el("li", {}, "On a phone, turn on Send to Claude before you post."));
+      node.append(body, pass, actions, tips);
       typeset(body);
       if (lesson.script) runScript(lesson.script, body);
     });
@@ -325,6 +332,7 @@
     const open = ids.some(qid => !questionState(S.questions.get(qid), S.answers.get(qid), lesson).closed);
     actions.hidden = !!lesson.pass || S.readOnly || !open && !pendingDone;
     actions.querySelectorAll("button").forEach(b => { b.disabled = S.busy || !!pendingDone; });
+    box.querySelector(".tutor-tips").hidden = S.readOnly;
     const st = !S.notes.lesson && pendingDone ? requestNote(pendingDone, "Done", "grading", "Grading usually takes a minute or two.") : { msg: S.notes.lesson || "" };
     setNote(actions.querySelector(".tutor-note"), st.msg, st.waiting);
   }
@@ -374,6 +382,10 @@
   function renderQuestion(body, qid, q, a, lesson, pendingDone) {
     let section = body.querySelector(`section#${CSS.escape(qid)}`);
     if (!section) { section = el("section", { id: qid }); body.append(section); }
+    if (!section.hasAttribute("data-comment-target")) {
+      section.setAttribute("aria-label", `Lesson ${S.shown}, ${qid}`);
+      section.setAttribute("data-comment-target", "");
+    }
     let box = section.querySelector(":scope > .tutor-q");
     if (!box) {
       box = el("div", { class: "tutor-q" },
@@ -400,9 +412,8 @@
     });
 
     // An older tutor may have written a Show me answer into hints: then the last hint is the answer.
-    const asks = S.requests.filter(r => r.question === qid && (r.kind === "hint" || r.kind === "showme"));
     const allHints = Array.isArray(q.hints) ? q.hints : [];
-    const fallback = !q.solution && allHints.length > 0 && asks.some(r => r.kind === "showme" && r.handled);
+    const fallback = !q.solution && allHints.length > 0 && S.requests.some(r => r.question === qid && r.kind === "showme" && r.handled);
     const hints = fallback ? allHints.slice(0, -1) : allHints;
     const solution = q.solution || (fallback ? allHints[allHints.length - 1] : null);
     keyed(box.querySelector(".tutor-hints"), JSON.stringify([hints, solution]), node => {
@@ -420,25 +431,12 @@
     const saver = S.savers.get(qid);
     if (saver && saver.attempt !== st.attempt) { saver.attempt = st.attempt; saver.last = undefined; }
 
-    // One button: Hint first, then Show me, then none. It waits while the last ask is unhandled.
-    const step = st.closed || S.readOnly || solution || asks.some(r => r.kind === "showme" && r.handled) ? "none"
-      : asks.length ? "showme" : "hint";
     const acts = box.querySelector(".tutor-q-actions");
-    keyed(acts, step, node => {
-      if (step !== "none") node.append(el("button", { type: "button", "data-kind": step,
-        onclick: e => request(step, qid, e.currentTarget) }, step === "hint" ? "Hint" : "Show me"));
+    keyed(acts, String(st.closed || S.readOnly), node => {
       if (!st.closed && !S.readOnly) node.append(el("span", { class: "tutor-note", role: "status" }));
     });
-    const asked = asks.filter(r => !r.handled).pop();
-    acts.querySelectorAll("button").forEach(b => { b.disabled = locked || !!asked; });
     const note = acts.querySelector(".tutor-note");
-    if (note) {
-      const what = asked && (asked.kind === "hint" ? "hint" : "answer");
-      const st = !S.notes[qid] && asked ? requestNote(asked, `${what[0].toUpperCase()}${what.slice(1)} request`, `writing the ${what}`,
-        `The ${what} usually takes about a minute.`)
-        : { msg: S.notes[qid] || "" };
-      setNote(note, st.msg, st.waiting);
-    }
+    if (note) setNote(note, S.notes[qid] || "", false);
   }
 
   function answerView(type, answer, options) {
@@ -526,17 +524,16 @@
 
   function note(key, msg) { S.notes[key] = msg; schedule(); }
 
-  // ---------- requests: Hint, Show me, Too easy, Too hard, Done ----------
+  // ---------- Done ----------
 
   async function canSend() {
     if (!S.comments) return "off";
     try { return await S.comments.canSendToClaude(); } catch (e) { return "off"; }
   }
 
-  function claudeText(kind, lesson, qid, id) {
-    const what = { done: `Done with lesson ${lesson}`, hint: `Hint for ${qid} in lesson ${lesson}`, showme: `Show me the answer to ${qid} in lesson ${lesson}` }[kind];
-    return `${what}. Use the tutor skill (/tutor) on this goal: the request is requests/${id}`
-      + (kind === "done" ? `, and the answers are answers/${lesson}-*.` : ".")
+  function claudeText(lesson, id) {
+    return `Done with lesson ${lesson}. Use the tutor skill (/tutor) on this goal: the request is requests/${id},`
+      + ` and the answers are answers/${lesson}-*.`
       // Read by whatever session gets it, so the check is spelled out in full: old sessions lack the skill's own.
       + ` First check the skill: this page needs tutor.js VERSION ${VERSION} or higher, from the VERSION line in the`
       + ` tutor.js file in the tutor skill's folder. If the tutor skill is not loaded here, or its VERSION is lower,`
@@ -545,46 +542,40 @@
   }
 
   // Save the request first, so it is there with or without a watching session; then send.
-  async function request(kind, qid, button) {
+  async function done(button) {
     if (S.busy || !S.db || S.readOnly) return;
-    const lesson = S.shown, key = qid || "lesson";
-    const sends = kind === "done" || kind === "hint" || kind === "showme";
+    const lesson = S.shown;
     S.busy = true;
-    note(key, "Saving...");
+    note("lesson", "Saving...");
     try {
-      const anchor = sends && S.comments ? await S.comments.anchorFor(button).catch(() => null) : null;
-      const can = sends ? canSend() : null;
-      if (kind === "done") {
-        const results = await Promise.allSettled([...S.savers.values()].map(s => s.flush()));
-        if (results.some(r => r.status === "rejected")) { note(key, "An answer did not save. Try Done again."); return; }
-        if (!hasNewAnswer(S.lessons.get(lesson) || {})) { note(key, NOTHING_NEW); return; }
-      }
+      const anchor = S.comments ? await S.comments.anchorFor(button).catch(() => null) : null;
+      const can = canSend();
+      const results = await Promise.allSettled([...S.savers.values()].map(s => s.flush()));
+      if (results.some(r => r.status === "rejected")) { note("lesson", "An answer did not save. Try Done again."); return; }
+      if (!hasNewAnswer(S.lessons.get(lesson) || {})) { note("lesson", NOTHING_NEW); return; }
       const id = `${lesson}-${Date.now().toString(36)}`;
       const ref = S.db.doc(`requests/${id}`);
       const at = now();
       try {
-        await ref.set({ kind, lesson, question: qid, at, sent: false, threadId: null, claimedAt: null, claimedBy: null, handled: false, handledAt: null });
+        await ref.set({ kind: "done", lesson, question: null, at, sent: false, threadId: null, claimedAt: null, claimedBy: null, handled: false, handledAt: null });
       } catch (e) {
-        note(key, `Not saved (${errCode(e)}). Try again.`);
+        note("lesson", `Not saved (${errCode(e)}). Try again.`);
         return;
       }
-      if (sends && anchor && await can === "available") {
-        note(key, "Sending to Claude...");
+      if (anchor && await can === "available") {
+        note("lesson", "Sending to Claude...");
         try {
-          const r = await S.comments.sendToClaude({ anchor, text: claudeText(kind, lesson, qid, id) });
+          const r = await S.comments.sendToClaude({ anchor, text: claudeText(lesson, id) });
           await ref.update({ sent: true, threadId: r.threadId }).catch(() => {});
         } catch (e) { /* claude_unavailable and the rest: the saved request still stands */ }
       }
-      // Done, Hint and Show me then show their state from the request document.
-      note(key, kind === "easy" ? "Noted: too easy. The tutor uses it at the next grading."
-        : kind === "hard" ? "Noted: too hard. The tutor uses it at the next grading." : "");
+      // Done then shows its state from the request document.
+      note("lesson", "");
     } finally {
       S.busy = false;
       schedule();
     }
   }
-
-  const done = button => request("done", null, button);
 
   // Done needs something to grade: an open question with an answer saved since its last grading.
   // The page's own last write counts too, in case its snapshot has not arrived yet.

@@ -24,10 +24,10 @@ In Claude Code the command is `/tutor:tutor`. The tutor makes a private page tit
 On the page:
 
 - Tap an option or type in the box under each question. Your answers save as you go, and you can change them until you press Done.
-- Hint gives a nudge on one question; press it again for Show me, which shows the answer. Too easy and Too hard change the level of the next lessons.
+- Stuck? Comment on the question and send it to Claude: ask for a hint or the answer, or say the lesson is too easy or too hard. The tutor writes a hint or the answer under the question and replies in the comment. On a phone, turn on Send to Claude before you post.
 - Done locks your answers and sends them to the tutor. Feedback appears under each answer without a reload. A question to redo opens again under its feedback.
 
-If a Claude Code session is watching the page, Done starts the grading at once. Otherwise the request waits on the page, and the next `/tutor` run grades it. You can also ask in the chat: for a hint, to see the answer, too easy, too hard, or done.
+If a Claude Code session is watching the page, Done and comments sent to Claude reach it at once. Otherwise they wait, and the next `/tutor` run handles them. You can also ask in the chat: for a hint, to see the answer, too easy, too hard, or done.
 
 ## License
 
