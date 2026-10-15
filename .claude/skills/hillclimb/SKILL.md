@@ -6,7 +6,7 @@ argument-hint: "<skill> [goal: score | cost] [rounds: N]"
 
 # Hillclimb
 
-Improve `plugins/<plugin>/skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.md` first for how runs and grading work.
+Improve `plugins/<plugin>/skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.md` first for how runs and grading work. If it says the skill's evals are paused, stop and say so: a run would cost money and grade nothing.
 
 ## Rules that keep the score honest
 

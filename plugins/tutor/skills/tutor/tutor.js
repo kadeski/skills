@@ -2,15 +2,17 @@
  * tutor.js - the fixed behavior of a tutor goal page. Claude designs the page around it;
  * this file does every job that must not break. Do not edit it per goal.
  *
- * VERSION - bump it on every change to this file, and also when the meaning of data the tutor writes
- *   changes, since it stands for the skill's version too. The tutor skill keeps the version each goal
- *   page was published with in goal/main.tutorJs and republishes older pages with this file, so a
- *   newer tutor.js must keep working with pages and documents written for older ones. A session whose
- *   tutor.js is older than the page's leaves the page's requests alone, and the text Done sends names
- *   VERSION, so an older or skill-less session stops too.
+ * VERSION - bump it on every change to this file or to look.css, and also when the meaning of data the
+ *   tutor writes changes, since it stands for the skill's version too. The tutor skill keeps the version
+ *   each goal page was published with in goal/main.tutorJs and republishes older pages with this file and
+ *   look.css, so a newer tutor.js must keep working with pages and documents written for older ones. A
+ *   session whose tutor.js is older than the page's leaves the page's requests alone, and the text Done
+ *   sends names VERSION, so an older session stops too. A session that cannot use the skill, like Claude
+ *   Code's automatic comment reply, writes nothing and says a watching session or a /tutor run grades it.
  *
  * PUBLISH
- *   Artifact publish with files: {"tutor.js": "<this skill's folder>/tutor.js"} and
+ *   Copy this file into a scratch folder, since the Artifact tool sends only files under the working or
+ *   scratchpad folder. Artifact publish with files: {"tutor.js": "<scratch folder>/tutor.js"} and
  *   capabilities: {db: {rules: [{path: "goal", write: "owner"}, {path: "lessons", write: "owner"}]}, comments: {}}
  *   The page loads it once, at the end of <body>:  <script src="tutor.js"></script>
  *
@@ -57,7 +59,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 6;
+  const VERSION = 7;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -534,11 +536,15 @@
   function claudeText(lesson, id) {
     return `Done with lesson ${lesson}. Use the tutor skill (/tutor) on this goal: the request is requests/${id},`
       + ` and the answers are answers/${lesson}-*.`
-      // Read by whatever session gets it, so the check is spelled out in full: old sessions lack the skill's own.
-      + ` First check the skill: this page needs tutor.js VERSION ${VERSION} or higher, from the VERSION line in the`
-      + ` tutor.js file in the tutor skill's folder. If the tutor skill is not loaded here, or its VERSION is lower,`
-      + ` write nothing to this goal and leave the request unclaimed. In Claude Code, stop watching this page.`
-      + ` Then reply only: "This session's tutor is older than the page. Update the tutor plugin, then run /tutor in a new Claude Code session."`;
+      // Read by whatever session gets it, so the checks are spelled out in full: old sessions lack the skill's own,
+      // and Claude Code's automatic comment reply, which often answers first, runs without the skill at all.
+      + ` If you cannot use the tutor skill here, write nothing to this goal and leave the request unclaimed. Reply only:`
+      + ` "Saved. If a Claude Code session is watching this page, it grades this in a minute or two. If not, ask Claude to run /tutor."`
+      + ` If you can, check it first: this page needs tutor.js VERSION ${VERSION} or higher, from the VERSION line in the`
+      + ` tutor.js file in the tutor skill's folder. A skill with no tutor.js file (tutor 2.x) or with a lower VERSION is older:`
+      + ` write nothing to this goal and leave the request unclaimed. In Claude Code, stop watching this page. Then reply only,`
+      + ` with acknowledge_duplicate: true if a Claude reply is already in the thread:`
+      + ` "This session's tutor is older than the page. Update the tutor plugin, then run /tutor in a new Claude Code session."`;
   }
 
   // Save the request first, so it is there with or without a watching session; then send.

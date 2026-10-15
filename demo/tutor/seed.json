@@ -44,7 +44,8 @@
      "gapDays": 2
     }
    ],
-   "misconceptions": []
+   "misconceptions": [],
+   "tutorJs": 7
   }
  },
  {
@@ -208,6 +209,7 @@
   "data": {
    "id": "R1",
    "type": "mc",
+   "rule": "r02",
    "redo": false,
    "hints": [],
    "feedback": [],

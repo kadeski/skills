@@ -2,6 +2,8 @@
 
 Scored test cases for the skills in this repo, and the tools to improve a skill against them without fooling yourself. The method follows Anthropic's post on [automating eval design and hillclimbing](https://claude.dev/blog/automating-eval-design-and-hillclimbing/): cases drawn from real use, hard for a reason you can name, graded by checks where possible and by a judge on checkable claims where not, and split into a train set you may study and a test set you may not.
 
+**The tutor evals are paused until #52.** The cases and `evals/tutor/lib.py` were written for the 2.x file-based tutor, and `lib.py`, `tools/md2html.py` and `tools/math_render.py` fail on import since `head.html` is gone. The commands below do not work for tutor until then.
+
 ## Run
 
 ```

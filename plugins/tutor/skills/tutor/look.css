@@ -46,3 +46,4 @@ svg .lbl { font-family: var(--lab); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* end of look.css */
