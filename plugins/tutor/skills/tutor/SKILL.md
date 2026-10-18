@@ -2,6 +2,7 @@
 name: tutor
 description: Tutor for one goal at a time, as one claude.ai page per goal. Short lessons - a picture, few words, questions - answered on the page and graded when the learner presses Done, with passed rules coming back as spaced review. Use when someone wants to learn or practice a topic over several sessions.
 argument-hint: "<topic or goal link> [source: path or url]"
+disable-model-invocation: true
 ---
 
 # Tutor
@@ -74,7 +75,7 @@ Load the `artifact-design` skill, then write one HTML page for the goal. The loo
 - **Slots:** empty elements `tutor.js` fills: `data-tutor="title"`, `"goal"`, `"status"`, `"plan"`, `"reviews"` and `"lesson"`. End the body with `<script src="tutor.js"></script>`, and add no other script.
 - **Style** what `tutor.js` adds: question sections (`section#Q1`, `section[id^="R"]`, `section#G`), `.tutor-option[aria-pressed]`, `.tutor-input`, `.answer`, `.feedback`, `.hint`, `.solution` (labelled as the answer), `.pass`, `.tutor-actions` with `.tutor-done`, `.tutor-note`, `.tutor-tips`, `.tutor-plan-item[aria-current]` and `.tutor-review-date`. Its own defaults are bare, so the page's CSS wins. Light and dark themes both.
 - **Publish:** copy `tutor.js` from this skill's folder into a scratch folder next to the page, since the `Artifact` tool sends only files under the working or scratchpad folder. Publish the page with `files: {"tutor.js": "<scratch folder>/tutor.js"}` and `capabilities: {db: {rules: [{path: "goal", write: "owner"}, {path: "lessons", write: "owner"}]}, comments: {}}`.
-- **Republish** to change the page's look (only when the learner asks) or to update its `tutor.js`. In a session that has not published it, first read it with the `Artifact` tool, then read it again with `path: "index.html"`, which saves the page's source to a file, and list its files (`scope: "files"`): the tool refuses to publish over a version or replace a file it has not seen. Make the saved page's `<style>` start with this skill's `look.css`: an older copy at its top runs from the `look.css` comment to the `end of look.css` comment, or, in copies without that comment, to the end of the first `prefers-reduced-motion` block after it. Replace it whole, or add one if there is none. Then publish to its link from that saved file, with the new `files` entry, and leave out `capabilities` and `icon` so the page keeps them. After a `tutor.js` update, set `tutorJs` in `goal/main`.
+- **Republish** to change the page's look (only when the learner asks) or to update its `tutor.js`. In a session that has not published it, first read it with the `Artifact` tool, then read it again with `path: "index.html"`, which saves the page's source to a file, and list its files (`scope: "files"`): the tool refuses to publish over a version or replace a file it has not seen. Leave an older `look.css` copy at the top of its `<style>` as it is, unless the learner asked for the new look: then replace it whole with this skill's `look.css`, or add one if there is none. That copy runs from the `look.css` comment to the `end of look.css` comment, or, in copies without that comment, to the end of the first `prefers-reduced-motion` block after it. Then publish to its link from that saved file, with the new `files` entry, and leave out `capabilities` and `icon` so the page keeps them. After a `tutor.js` update, set `tutorJs` in `goal/main`.
 
 If a publish fails, say why in the last line.
 
@@ -86,7 +87,7 @@ About 5 minutes, one idea. If you cannot draw it, split it.
 - **Concept lesson.** The reveal, then under 120 words of prose that opens with the problem the idea solves, so each step reads as one the learner could have found, then 2 or 3 questions on a new case or new numbers, never the lesson's own example: explain why it works there, apply it, and find the mistake in a wrong claim, given as the claim itself or a case that went wrong, never as something a named person says. At least one asks for an answer in the learner's own words, but the question does not say "in your own words". Never yes/no.
 - **Drill.** A picture or table of the rules with none of the items worked, then 5 or 6 mc or number items. The first reuses the previous lesson's example. Test only rules from passed lessons.
 
-**Pictures.** Inline SVG in the lesson's `html`, drawn with the lesson's real numbers. Set width and height equal to the viewBox, width at most 400 and text at least 14 so it reads on a phone. Draw the idea, not sentences in boxes:
+**Pictures.** Load the `artifact-diagramming` skill; where it differs from this one, this one wins, and the lesson's prose is the caption. Inline SVG in the lesson's `html`, drawn with the lesson's real numbers. Set width and height equal to the viewBox, width at most 400 and text at least 14 so it reads on a phone. Draw the idea, not sentences in boxes:
 
 - The learner can count the answer in the picture: 3 shirts and 2 pants show all 6 outfits.
 - Things are objects: a donut is a circle, a seat is a square, an empty gap is a dashed slot.
@@ -94,7 +95,7 @@ About 5 minutes, one idea. If you cannot draw it, split it.
 - The result comes last, in bold `--blue`, like the bottom line of a sum.
 - Name a group with a letter or word on its shapes, never by its color.
 
-Write each color as its `look.css` name with the light value as fallback, like `fill="var(--blue, #2456A6)"`. The page sets the real values, so the picture follows light and dark. Draw no background: the page's paper shows through. A real object keeps its own colors in plain hex: piano keys stay white and black, the Sun stays orange. Labels get `class="lbl"` for the label font. Before writing it, save it to a scratch file, render it (`rsvg-convert -b '#F6F7F4' -o /tmp/<name>.png <name>.svg`), look at the PNG, and fix anything wrong, clipped or hard to read. The PNG shows only the light colors and stand-in fonts, so leave room at the edges. A black shape is a color with no fallback. If `rsvg-convert` is missing, say so in the last line. A worked table whose last column gives the reason for each row counts as a picture for procedures.
+Write each color as its `look.css` name with the light value as fallback, like `fill="var(--blue, #3A5F8F)"`. The page sets the real values, so the picture follows light and dark. Draw no background: the page's paper shows through. A real object keeps its own colors in plain hex: piano keys stay white and black, the Sun stays orange. Labels get `class="lbl"` for the label font. Before writing it, save it to a scratch file, render it (`rsvg-convert -b '#F7F7F5' -o /tmp/<name>.png <name>.svg`), look at the PNG, and fix anything wrong, clipped or hard to read. The PNG shows only the light colors and stand-in fonts, so leave room at the edges. A black shape is a color with no fallback. If `rsvg-convert` is missing, say so in the last line. A worked table whose last column gives the reason for each row counts as a picture for procedures.
 
 **Control.** When a concept lesson's idea has something to vary, add one control under its picture that works on the lesson's own example: flip the top bit's weight between +128 and -128 and watch `11010010` read 210 or -46. It is not a calculator, so it never answers the lesson's questions. Its markup goes in `html` and its code in `script`, which `tutor.js` runs with `root` set to the lesson's container. Plain JavaScript, no libraries, no network, and it looks up elements only inside `root`. The picture stays, so the lesson still teaches if the script fails. Animate only when the idea itself changes, like atoms decaying or a note moving: CSS transitions on fill, opacity or transform, which `look.css` turns off for reduced motion. Drills, reviews and lesson 01 get no control. Keep the script short.
 
@@ -157,7 +158,7 @@ A rule is named by the lesson that taught it: `{"id": "r02", "text": "the top bi
   ],
   "rules": [],
   "misconceptions": [{"rule": "02 Q3", "wrong": "thinks each 1 bit adds more minus, so all ones is the most negative", "seen": ["02 Q3"]}],
-  "tutorJs": 7
+  "tutorJs": 8
 }
 ```
 

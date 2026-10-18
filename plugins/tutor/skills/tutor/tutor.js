@@ -59,7 +59,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 7;
+  const VERSION = 8;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
