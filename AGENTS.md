@@ -10,13 +10,13 @@ Each plugin has a manifest per agent:
 
 `name` and `version` must match in all three. Bump the version in all of them together. A plugin may ship for Claude Code only: it then has only `.claude-plugin/plugin.json` and is listed only in the Claude Code marketplace. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
 
-Each plugin is listed in every marketplace at the root:
+Each plugin is listed in every marketplace at the root (a Claude Code only plugin in Claude Code's alone):
 
 - Claude Code: `.claude-plugin/marketplace.json` (Grok Build and `npx skills` read it too)
 - Codex: `.agents/plugins/marketplace.json`
 - Cursor: `.cursor-plugin/marketplace.json`
 
-To add a plugin, create its folder, add it to all three marketplaces and to the list in `README.md`.
+To add a plugin, create its folder, add it to the marketplaces it ships in (all three, or only Claude Code's) and to the list in `README.md`.
 
 Before committing, run `scripts/check.sh`.
 

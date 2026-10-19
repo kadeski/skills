@@ -19,7 +19,7 @@ If you installed `kadeski-skills@kadeski`, remove it first: `/plugin uninstall k
 /tutor <topic> [source: path or url]
 ```
 
-In Claude Code the command is `/tutor:tutor`. The tutor makes a private page titled `Tutor: <goal>` and gives you its link. Run `/tutor` again to continue: it finds your goal pages by that title, or give it a page's link. Goals from tutor 2.x, kept in folders with a `goal.md`, do not carry over yet.
+In Claude Code the command is `/tutor:tutor`. The tutor makes a private page titled `Tutor: <goal>` and gives you its link. Run `/tutor` again to continue: it finds your goal pages by that title, or give it a page's link. Goals from tutor 2.x, kept in folders with a `goal.md`, do not carry over yet ([issue 49](https://github.com/kadeski/skills/issues/49)).
 
 On the page:
 

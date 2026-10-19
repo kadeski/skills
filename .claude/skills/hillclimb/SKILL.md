@@ -19,7 +19,7 @@ Improve `plugins/<plugin>/skills/<skill>/SKILL.md` against `evals/<skill>/`. Rea
 ## Setup
 
 1. Goal: the user's, or score by default. For cost: same score with a cheaper `--model` or a shorter skill.
-2. Baseline: the newest full run of the current SKILL.md in `evals/results/` (its fingerprint matches `sha256` of the file), else `evals/run.py run <skill>`.
+2. Baseline: the newest full run of the current skill in `evals/results/` (the `skill_sha256` in its `summary.json`, a hash of every file in the skill folder, matches the current one), else `evals/run.py run <skill>`.
 3. Check the ruler before climbing:
    - `evals/run.py rejudge <baseline>`. If more than 1 in 10 verdicts flip, the claims are too vague: report which, and stop.
    - A case that scores 1.0 on every run has no headroom; one that swings widely between runs is noise. Note both.
@@ -39,4 +39,4 @@ Stop after the round limit (default 5), or after 3 rounds in a row with nothing 
 
 ## Finish
 
-Report the start and end scores for train and test with their bands, and each kept edit. Recommend merging only if test rose beyond noise. Merging a SKILL.md change means bumping the version in all three of the plugin's manifests and running `scripts/check.sh`. Do not commit unless asked.
+Report the start and end scores for train and test with their bands, and each kept edit. Recommend merging only if test rose beyond noise. Merging a SKILL.md change means bumping the version in each of the plugin's manifests and running `scripts/check.sh`. Do not commit unless asked.

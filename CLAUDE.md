@@ -33,4 +33,4 @@ Rules that span these files:
 
 - Never read `evals/<skill>/test/` or `evals/results/*/test/` while editing a skill, and never put case content into a skill.
 - After changing cases or graders, make a new baseline; old scores no longer compare.
-- The tutor evals are paused: the cases and `evals/tutor/lib.py` were written for the older file-based tutor (`goal.md`, lesson files, `head.html`) and do not match the artifact-based skill yet.
+- The tutor evals are paused until #52: the cases and `evals/tutor/lib.py` were written for the older file-based tutor (`goal.md`, lesson files, `head.html`) and do not match the artifact-based skill yet.

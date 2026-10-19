@@ -1,6 +1,6 @@
 # skills
 
-Agent skills by Kaden Staker. Some plugins work only in Claude Code; the others also work in Codex, Cursor, Gemini CLI, Grok Build and any agent that reads `SKILL.md` files.
+Agent skills by Kaden Staker. Each plugin says below which agents it works in: Claude Code only, or also Codex, Cursor, Gemini CLI, Grok Build and any agent that reads `SKILL.md` files.
 
 Each plugin lives in `plugins/<name>/` and has its own README with install steps for the agents it supports. In Claude Code, add this repo as a marketplace once, then install the plugins you want:
 

@@ -87,7 +87,7 @@
     {
      "attempt": 1,
      "answer": "a",
-     "text": "Right: 8 + 4 + 1 = 13."
+     "text": "The 1s in \"00001101\" sit under 8, 4 and 1, and 8 + 4 + 1 = 13."
     }
    ]
   }
@@ -106,7 +106,7 @@
     {
      "attempt": 1,
      "answer": "128",
-     "text": "Right: seven doublings of 1."
+     "text": "$2^7$ is seven doublings of 1: 2, 4, 8, 16, 32, 64, \"128\"."
     }
    ]
   }
@@ -161,7 +161,7 @@
     {
      "attempt": 1,
      "answer": "the top bit is -128 and the rest add up to at most 127",
-     "text": "Right: 64 + 32 + ... + 1 is 127, so the sum stays below 0 (CS:APP 2.2.3)."
+     "text": "64 + 32 + ... + 1 is 127, so with the top bit's -128 the sum stays below 0. You put it as \"the rest add up to at most 127\" (CS:APP 2.2.3)."
     }
    ]
   }
@@ -197,9 +197,9 @@
   "data": {
    "title": "Negation",
    "kind": "lesson",
-   "script": "const start = [0, 0, 0, 0, 0, 1, 1, 0];\nlet bits = start.slice();\nconst value = b => b.reduce((sum, x, i) => sum + x * (i === 0 ? -128 : 2 ** (7 - i)), 0);\nconst show = () => {\n  root.querySelector(\"#neg-bits\").textContent = bits.join(\"\");\n  root.querySelector(\"#neg-value\").textContent = value(bits);\n};\nroot.querySelector(\"#neg-flip\").addEventListener(\"click\", () => { bits = bits.map(x => 1 - x); show(); });\nroot.querySelector(\"#neg-add\").addEventListener(\"click\", () => {\n  let i = 7;\n  while (i >= 0 && bits[i] === 1) bits[i--] = 0;\n  if (i >= 0) bits[i] = 1;\n  show();\n});\nroot.querySelector(\"#neg-reset\").addEventListener(\"click\", () => { bits = start.slice(); show(); });\nshow();",
+   "script": "const start = [0, 0, 0, 0, 0, 1, 1, 0];\nlet bits = start.slice();\nconst value = b => b.reduce((sum, x, i) => sum + x * (i === 0 ? -128 : 2 ** (7 - i)), 0);\nconst show = () => {\n  root.querySelector('[id=\"03-bits\"]').textContent = bits.join(\"\");\n  root.querySelector('[id=\"03-value\"]').textContent = value(bits);\n};\nroot.querySelector('[id=\"03-flip\"]').addEventListener(\"click\", () => { bits = bits.map(x => 1 - x); show(); });\nroot.querySelector('[id=\"03-add\"]').addEventListener(\"click\", () => {\n  let i = 7;\n  while (i >= 0 && bits[i] === 1) bits[i--] = 0;\n  if (i >= 0) bits[i] = 1;\n  show();\n});\nroot.querySelector('[id=\"03-reset\"]').addEventListener(\"click\", () => { bits = start.slice(); show(); });\nshow();",
    "pass": null,
-   "html": "<h2>Your guess</h2>\n<p>Last time: which steps turn <code>00000110</code> (6) into the bits of -6? You said <b>b) flip every bit</b>. It is <b>c) flip every bit, then add one</b>.</p>\n<h2>The idea</h2>\n<p>Add x to its flip, written ~x. Each column holds one 1, so the sum is <code>11111111</code>, which is -1 (CS:APP 2.3.3).</p>\n<svg viewBox='0 0 300 120' width='300' height='120' role='img' aria-label='00000110 plus its flip 11111001 is 11111111, which is -1'><rect width='300' height='120' rx='8' fill='#fff'/><g font-family='ui-monospace, Menlo, monospace' font-size='20' fill='#1b1c1e'><text x='24' y='34'>x</text><text x='200' y='34' text-anchor='end'>00000110</text><text x='216' y='34'>6</text><text x='24' y='64'>+ ~x</text><text x='200' y='64' text-anchor='end'>11111001</text><text x='216' y='64'>-7</text><line x1='90' y1='76' x2='204' y2='76' stroke='#1b1c1e' stroke-width='2'/><text x='200' y='104' text-anchor='end'>11111111</text><text x='216' y='104'>-1</text></g></svg>\n<p>So ~x is $-x - 1$, one short of $-x$. Add one to close the gap:</p>\n<p>$${\\sim}x + 1 = -x$$</p>\n<p>Try it on 6:</p>\n<div class='neg-control'><p><code id='neg-bits'>00000110</code> is <b id='neg-value'>6</b></p><p><button type='button' id='neg-flip'>Flip every bit</button> <button type='button' id='neg-add'>Add one</button> <button type='button' id='neg-reset'>Start over</button></p></div>\n<h2>Review</h2>\n<section id='R1'><p><b>R1.</b> In 8-bit two's complement, which number is <code>11111110</code>?</p></section>\n<h2>Questions</h2>\n<section id='Q1'><p><b>Q1.</b> <code>00010100</code> is 20. Write the 8 bits of -20.</p></section>\n<section id='Q2'><p><b>Q2.</b> Why is ~x always one less than -x?</p></section>\n<section id='Q3'><p><b>Q3.</b> Sam negates <code>10000000</code> (-128) and gets <code>10000000</code> again. Sam says the rule is broken. What is wrong with that?</p></section>\n<h2>Guess for next time (not graded)</h2>\n<section id='G'><p>Add <code>01111111</code> (127) and <code>00000001</code> (1) in 8 bits. Which number do the 8 bits hold?</p></section>"
+   "html": "<h2>Your guess</h2>\n<p>Last time: which steps turn <code>00000110</code> (6) into the bits of -6? You said <b>b) flip every bit</b>. It is <b>c) flip every bit, then add one</b>.</p>\n<h2>The idea</h2>\n<p>Add x to its flip, written ~x. Each column holds one 1, so the sum is <code>11111111</code>, which is -1 (CS:APP 2.3.3).</p>\n<svg viewBox='0 0 300 120' width='300' height='120' role='img' aria-label='00000110 plus its flip 11111001 is 11111111, which is -1'><g font-family='ui-monospace, Menlo, monospace' font-size='20' fill='var(--ink, #1F2328)'><text class='lbl' x='24' y='34'>x</text><text x='200' y='34' text-anchor='end'>00000110</text><text x='216' y='34'>6</text><text class='lbl' x='24' y='64'>+ ~x</text><text x='200' y='64' text-anchor='end'>11111001</text><text x='216' y='64'>-7</text><line x1='90' y1='76' x2='204' y2='76' stroke='var(--ink, #1F2328)' stroke-width='2'/><text x='200' y='104' text-anchor='end'>11111111</text><text x='216' y='104'>-1</text></g></svg>\n<p>So ~x is $-x - 1$, one short of $-x$. Add one to close the gap:</p>\n<p>$${\\sim}x + 1 = -x$$</p>\n<p>Try it on 6:</p>\n<div class='neg-control'><p><code id='03-bits'>00000110</code> is <b id='03-value'>6</b></p><p><button type='button' id='03-flip'>Flip every bit</button> <button type='button' id='03-add'>Add one</button> <button type='button' id='03-reset'>Start over</button></p></div>\n<h2>Review</h2>\n<section id='R1'><p><b>R1.</b> In 8-bit two's complement, which number is <code>11111110</code>?</p></section>\n<h2>Questions</h2>\n<section id='Q1'><p><b>Q1.</b> <code>00010100</code> is 20. Write the 8 bits of -20.</p></section>\n<section id='Q2'><p><b>Q2.</b> Why is ~x always one less than -x?</p></section>\n<section id='Q3'><p><b>Q3.</b> Sam negates <code>10000000</code> (-128) and gets <code>10000000</code> again. Sam says the rule is broken. What is wrong with that?</p></section>\n<h2>Guess for next time (not graded)</h2>\n<section id='G'><p>Add <code>01111111</code> (127) and <code>00000001</code> (1) in 8 bits. Which number do the 8 bits hold?</p></section>"
   }
  },
  {
@@ -250,7 +250,7 @@
     {
      "attempt": 1,
      "answer": "x plus ~x is 11111111, and that is -1, so ~x is -1 - x",
-     "text": "Right: you used x + ~x = -1, the step the rule rests on (CS:APP 2.3.3)."
+     "text": "x + ~x = -1 is the step the rule rests on, and you used it: \"x plus ~x is 11111111, and that is -1\" (CS:APP 2.3.3)."
     }
    ]
   }
