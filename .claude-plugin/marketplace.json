@@ -8,6 +8,10 @@
   },
   "plugins": [
     {
+      "name": "doc-lint",
+      "source": "./plugins/doc-lint"
+    },
+    {
       "name": "tutor",
       "source": "./plugins/tutor"
     }

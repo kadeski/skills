@@ -1,0 +1,18 @@
+{
+  "name": "doc-lint",
+  "version": "1.0.0",
+  "description": "Audits a project's plan and design docs for broken links, stale numbers, contradictions between files, closed issues still listed as open, and open work with no issue, then reports the findings without fixing them.",
+  "author": {
+    "name": "Kaden Staker"
+  },
+  "repository": "https://github.com/kadeski/skills",
+  "license": "MIT",
+  "keywords": [
+    "docs",
+    "documentation",
+    "lint",
+    "audit",
+    "planning",
+    "issues"
+  ]
+}
