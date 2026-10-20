@@ -20,7 +20,16 @@ GROUP_WORD = re.compile(r"\b(wrong|stale|missing)\b", re.I)
 LIST_ITEM = re.compile(r"^(\s*)(?:[-*+]|\d+[.)])\s+(.*)$")
 HEADING = re.compile(r"^(#{1,6})\s+(.*)$")
 NONE = re.compile(r"^[\s*_`]*(none|nothing|n/a|no findings?)\b", re.I)
-DOC = (".md", ".markdown", ".txt", ".rst", ".adoc")
+# "None." or "None found:" says the group is empty even when a note after it cites
+# file:line; "None of the anchors in x.md:3 resolve" is still a finding.
+NONE_SAID = re.compile(r"^[\s*_`]*(none|nothing)( found| to report)?\s*([.:;,!]|[-–—]\s)", re.I)
+ZERO = re.compile(r"\(\s*0\b|\b(wrong|stale|missing)\b\W{0,4}0\b", re.I)  # "Missing (0)", "Stale: 0"
+# A paragraph that introduces a list of things that checked out: "I also checked
+# these and they are fine:", "Several other claims agree with the code:".
+FINE = re.compile(r"\b(fine|resolve[sd]?|match(es|ed)?|agree[sd]?|correct|clean|ok|okay|consistent"
+                  r"|check(s|ed)? out)\b", re.I)
+NOT_FINE = re.compile(r"\b(not|no|never|none|nothing|broken|missing|wrong|stale|fail\w*)\b|n't\b", re.I)
+DOC =(".md", ".markdown", ".txt", ".rst", ".adoc")
 
 
 def norm(path):
@@ -69,7 +78,8 @@ def parse(final):
     """Findings in the report. A group starts at a heading, bold line or list item
     that names one group; a finding is a list item, a deeper heading or a table row
     below it. Text before the first group and after a non-group heading is skipped,
-    and so are notes in a group that says it has none ("None. All links resolve.")."""
+    and so are notes in a group that says it has none ("None. All links resolve.",
+    "**Missing (0)**") and lists after a paragraph saying the items checked out."""
     findings, group, level, base, cur, blank, empty = [], None, None, None, None, False, False
 
     def start(text, g):
@@ -90,9 +100,11 @@ def parse(final):
         head_text = h.group(2) if h else (item.group(2) if item else (bold.group(0) if bold else None))
         g = lone_group(head_text, bool(h)) if head_text is not None and not LOC.search(s) else None
         if g:
-            group, level, base, cur, empty = g, len(h.group(1)) if h else None, None, None, False
+            group, level, base, cur = g, len(h.group(1)) if h else None, None, None
+            empty = bool(ZERO.search(head_text))
             continue
-        if group and not cur and NONE.match(item.group(2) if item else s) and not (item and LOC.search(s)):
+        text = item.group(2) if item else s
+        if group and not cur and (NONE_SAID.match(text) or NONE.match(text) and not (item and LOC.search(s))):
             empty = True
             continue
         if h:
@@ -103,6 +115,10 @@ def parse(final):
             continue
         if bold and not LOC.search(s):
             group, cur = None, None
+            continue
+        if (group and not item and after_blank and not line[:1].isspace() and s.endswith(":")
+                and FINE.search(s) and not NOT_FINE.search(s)):
+            empty, cur = True, None
             continue
         if s.startswith("|"):
             cells = [c.strip(" *_`") for c in s.strip("|").split("|")]
