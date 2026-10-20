@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: status-table
+description: "The status table says a phase is in progress while its own section says it is done, and one open decision has no issue while every other open item cites one. With no tracker the skill must still flag the orphan, since the docs do cite issues."
+tags: [doc-lint-train]
+execution:
+  max_turns: 80
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+  prompt: "/doc-lint:doc-lint"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'

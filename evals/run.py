@@ -33,10 +33,10 @@ EVALS = ROOT / "evals"
 sys.path.insert(0, str(EVALS))
 from seed import seed  # noqa: E402
 
-JUDGE_SYSTEM = """You grade one run of an AI tutor skill. You get the learner's \
-message, the tutor's final reply, and every file the run created or changed \
-(changed files show the before and after). Rule on each claim from this \
-evidence alone. A claim passes only if the evidence clearly shows it is true; \
+JUDGE_SYSTEM = """You grade one run of an AI skill. You get the user's \
+message, the agent's final reply, every file the run created or changed \
+(changed files show the before and after), and any reference files the case \
+adds. Rule on each claim from this evidence alone. A claim passes only if the evidence clearly shows it is true; \
 if it is unclear or missing, it fails. Give a one-sentence reason that points \
 at the evidence."""
 
@@ -114,11 +114,11 @@ class Run:
         self.claims.append({"id": cid, "text": text})
 
     def show(self, rel):
-        """Give the judge an unchanged file too, such as the learner's source notes."""
+        """Give the judge an unchanged file too, such as a doc the reply should cite."""
         self.shown.append(rel)
 
     def evidence(self):
-        parts = [f"## Learner's message\n\n{self.prompt}", f"## Tutor's final reply\n\n{self.final}"]
+        parts = [f"## User's message\n\n{self.prompt}", f"## Agent's final reply\n\n{self.final}"]
         for f in self.new_files():
             if f.endswith((".md", ".html", ".svg", ".txt")):
                 parts.append(f"## New file: {f}\n\n````\n{unstyled(f, self.read(f))}\n````")

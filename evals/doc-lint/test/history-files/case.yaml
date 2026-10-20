@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: history-files
+description: "The status table says a workstream is blocked while its section says it was unblocked. A run log and the changelog hold an older, slower number that a current doc has replaced; both are history files and must not be called stale."
+tags: [doc-lint-test]
+execution:
+  max_turns: 80
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+  prompt: "/doc-lint:doc-lint"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
