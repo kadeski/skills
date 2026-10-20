@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## The tutor plugin
 
-The only plugin today, Claude-only. Three files ship in `plugins/tutor/skills/tutor/`:
+Claude-only. Three files ship in `plugins/tutor/skills/tutor/`:
 
 - `SKILL.md` - what the agent does each run. Each goal is one claude.ai artifact titled `Tutor: <goal>`, and all state lives in that artifact's database (written with `ArtifactData`). The data model table in "The goal page" is the contract between the skill and the page.
 - `tutor.js` - the fixed page runtime, published as a file next to each goal page. Its header comment is the full contract: slots, the classes it adds, what it reads and writes, and lock rules. The page itself is designed per goal and holds no lesson content.
