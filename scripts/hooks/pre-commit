@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Runs scripts/check.sh and blocks the commit if it fails. Turn it on once per clone with
+# `git config core.hooksPath scripts/hooks`. It checks the working tree, so unstaged changes
+# count too. `git commit --no-verify` skips it.
+exec scripts/check.sh

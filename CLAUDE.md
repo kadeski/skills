@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- `scripts/check.sh` - run before every commit. Needs `jq` and the `claude` CLI. It checks that manifests agree on `name` and `version`, that each marketplace lists the right plugins (a plugin with only `.claude-plugin/plugin.json` is Claude-only and must be listed only in `.claude-plugin/marketplace.json`), that each `SKILL.md` `name` matches its folder, and runs `claude plugin validate --strict` on every plugin and the repo.
+- `scripts/check.sh` - run before every commit. Needs `jq` and the `claude` CLI. It checks that manifests agree on `name` and `version`, that each marketplace lists the right plugins (a plugin with only `.claude-plugin/plugin.json` is Claude-only and must be listed only in `.claude-plugin/marketplace.json`), that each `SKILL.md` `name` matches its folder, that the tutor `VERSION` matches its copies (see below), and runs `claude plugin validate --strict` on every plugin and the repo. It also warns, without failing, when a plugin's tracked files differ from origin/main (as last fetched) but its version does not.
+- `scripts/hooks/pre-commit` runs `scripts/check.sh` and blocks the commit if it fails. Turn it on once per clone with `git config core.hooksPath scripts/hooks` (this covers every worktree). It checks the working tree, so unstaged changes count too. `git commit --no-verify` skips it.
 - Evals (see `evals/README.md`):
   - `evals/run.py dry <skill> -v` - grade untouched fixtures, no agent or judge, free.
   - `evals/run.py run <skill> --split train --case <glob> --runs 1` - one case.
@@ -23,7 +24,7 @@ Claude-only. Three files ship in `plugins/tutor/skills/tutor/`:
 
 Rules that span these files:
 
-- `tutor.js` has a `VERSION` constant. Bump it on every change to `tutor.js` or `look.css`, and also when the meaning of data the skill writes changes. Bump `goal/main.tutorJs` in `demo/tutor/seed.json` and in the `SKILL.md` example with it. The skill stores the version each page was published with in `goal/main.tutorJs`, republishes older pages, and refuses to touch a page newer than itself. A new `tutor.js` must keep working with documents written for older versions.
+- `tutor.js` has a `VERSION` constant. Bump it on every change to `tutor.js` or `look.css`, and also when the meaning of data the skill writes changes. Bump `goal/main.tutorJs` in `demo/tutor/seed.json` and in the `SKILL.md` example with it; `scripts/check.sh` fails if the three differ. The skill stores the version each page was published with in `goal/main.tutorJs`, republishes older pages, and refuses to touch a page newer than itself. A new `tutor.js` must keep working with documents written for older versions.
 - A change to the data model touches the table in `SKILL.md`, the `DATA` section of the `tutor.js` header, and `demo/tutor/seed.json`.
 - The plugin `version` in `.claude-plugin/plugin.json` is separate from `VERSION`; bump it on each release.
 
