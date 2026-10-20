@@ -1,0 +1,3 @@
+# Defaults for one node.
+max_uploads = 32
+chunk_mb = 8
