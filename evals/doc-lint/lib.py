@@ -25,10 +25,14 @@ NONE = re.compile(r"^[\s*_`]*(none|nothing|n/a|no findings?)\b", re.I)
 NONE_SAID = re.compile(r"^[\s*_`]*(none|nothing)( found| to report)?\s*([.:;,!]|[-–—]\s)", re.I)
 ZERO = re.compile(r"\(\s*0\b|\b(wrong|stale|missing)\b\W{0,4}0\b", re.I)  # "Missing (0)", "Stale: 0"
 # A paragraph that introduces a list of things that checked out: "I also checked
-# these and they are fine:", "Several other claims agree with the code:".
+# these and they are fine:", "Several other claims agree with the code:", "I found
+# no mismatch in these:".
 FINE = re.compile(r"\b(fine|resolve[sd]?|match(es|ed)?|agree[sd]?|correct|clean|ok|okay|consistent"
                   r"|check(s|ed)? out)\b", re.I)
 NOT_FINE = re.compile(r"\b(not|no|never|none|nothing|broken|missing|wrong|stale|fail\w*)\b|n't\b", re.I)
+# "no mismatch", "no problems", "no differences" say the items checked out. Not
+# "no issue": open work with no issue is a finding.
+NO_PROBLEM = re.compile(r"\b(no|zero|without)\s+(mismatch|problem|difference|discrepanc)\w*", re.I)
 DOC =(".md", ".markdown", ".txt", ".rst", ".adoc")
 
 
@@ -79,7 +83,8 @@ def parse(final):
     that names one group; a finding is a list item, a deeper heading or a table row
     below it. Text before the first group and after a non-group heading is skipped,
     and so are notes in a group that says it has none ("None. All links resolve.",
-    "**Missing (0)**") and lists after a paragraph saying the items checked out."""
+    "**Missing (0)**") and lists after a paragraph saying the items checked out
+    ("These agree with the code:", "I found no mismatch in these:")."""
     findings, group, level, base, cur, blank, empty = [], None, None, None, None, False, False
 
     def start(text, g):
@@ -116,8 +121,9 @@ def parse(final):
         if bold and not LOC.search(s):
             group, cur = None, None
             continue
+        rest = NO_PROBLEM.sub(" ", s)
         if (group and not item and after_blank and not line[:1].isspace() and s.endswith(":")
-                and FINE.search(s) and not NOT_FINE.search(s)):
+                and (FINE.search(rest) or rest != s) and not NOT_FINE.search(rest)):
             empty, cur = True, None
             continue
         if s.startswith("|"):
