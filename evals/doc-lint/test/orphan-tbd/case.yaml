@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: orphan-tbd
+description: "One roadmap item is TBD with no issue while every other open item cites one, and a doc in docs/ is missing from the index AGENTS.md names."
+tags: [doc-lint-test]
+execution:
+  max_turns: 80
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+  prompt: "/doc-lint:doc-lint"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
