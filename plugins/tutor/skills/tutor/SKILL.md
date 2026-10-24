@@ -158,7 +158,7 @@ A rule is named by the lesson that taught it: `{"id": "r02", "text": "the top bi
   ],
   "rules": [],
   "misconceptions": [{"rule": "02 Q3", "wrong": "thinks each 1 bit adds more minus, so all ones is the most negative", "seen": ["02 Q3"]}],
-  "tutorJs": 10
+  "tutorJs": 11
 }
 ```
 
