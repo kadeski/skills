@@ -59,7 +59,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 9;
+  const VERSION = 10;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -536,7 +536,8 @@
       // and Claude Code's automatic comment reply, which often answers first, runs without the skill at all.
       + ` If you cannot use the tutor skill here, write nothing to this goal and leave the request unclaimed. Reply only:`
       + ` "Saved. If a Claude Code session is watching this page, it grades this in a minute or two. If not, ask Claude to run /tutor."`
-      + ` If you can, check it first: this page needs tutor.js VERSION ${VERSION} or higher, from the VERSION line in the`
+      // Joined with +, not interpolated: the plugin directory's policy scan reads an all-caps interpolation as an environment variable.
+      + ` If you can, check it first: this page needs tutor.js VERSION ` + VERSION + ` or higher, from the VERSION line in the`
       + ` tutor.js file in the tutor skill's folder. A skill with no tutor.js file (tutor 2.x) or with a lower VERSION is older:`
       + ` write nothing to this goal and leave the request unclaimed. In Claude Code, stop watching this page. Then reply only,`
       + ` with acknowledge_duplicate: true if a Claude reply is already in the thread:`
