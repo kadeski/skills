@@ -2,8 +2,8 @@
 # Checks that every plugin's manifests agree, every marketplace lists every plugin it
 # should, and every skill is well formed. A plugin with only .claude-plugin/plugin.json
 # is Claude-only: it is listed in the Claude Code marketplace and no other. Also checks
-# that the tutor.js VERSION moves with the copies of it, and warns when a plugin changed
-# but its version did not.
+# that the tutor.js VERSION moves with the copies of it and that no plugin substitutes a
+# credential-like name, and warns when a plugin changed but its version did not.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -56,6 +56,11 @@ for p in $plugins; do
     [ "$name" = "$sdir" ] || err "$skill: name '$name' does not match folder '$sdir'"
     sed -n '2,/^---$/p' "$skill" | grep -q '^description: ' || err "$skill: missing description"
   done
+
+  # The plugin directory holds a plugin with a credential-like name inside a ${...} substitution,
+  # even a JavaScript template literal (MCP_FORWARDS_CREDENTIAL_ENV). ${user_config.*} is allowed.
+  hits=$(git grep -n -o -i -E '\$\{[^}]*(key|token|secret|password|auth)[^}]*\}' -- "$dir" | grep -v -i -F ':${user_config.' || true)
+  [ -z "$hits" ] || { err "$dir: credential-like name in a \${...} substitution, which the plugin directory holds; rename it:"; echo "$hits"; }
 
   claude plugin validate "$dir" --strict || fail=1
 done
