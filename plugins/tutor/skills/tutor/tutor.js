@@ -362,8 +362,6 @@
     });
   }
 
-  // Keep names like key or token out of the substitutions here: the plugin directory's credential check can
-  // read one as a forwarded credential and hold the plugin.
   function runScript(code, root) {
     const global = "__tutorRoot" + Date.now().toString(36);
     window[global] = root;
