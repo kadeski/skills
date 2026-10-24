@@ -59,7 +59,7 @@
 (() => {
   "use strict";
 
-  const VERSION = 8;
+  const VERSION = 9;
   const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
   const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
@@ -168,10 +168,6 @@
     document.documentElement.dataset.tutorJs = VERSION;
     renderStatus();
     use("comments").then(c => { S.comments = c; });
-    use("user").then(async u => {
-      const can = u && u.can ? await Promise.resolve(u.can("data.write")).catch(() => null) : null;
-      if (can === false) { S.readOnly = true; schedule(); }
-    });
     use("db").then(db => {
       S.db = db;
       if (!db) { S.failed = "nodb"; renderStatus(); return; }
