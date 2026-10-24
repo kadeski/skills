@@ -59,9 +59,9 @@
 (() => {
   "use strict";
 
-  const VERSION = 12;
-  // No SRI hash for now, as a plugin directory test (see the tutor 3.1.5 commit). Put integrity back after it.
-  const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.js";
+  const VERSION = 13;
+  const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
+  const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
   const SAVE_DELAY = 600;
   const NOTHING_NEW = "Answer a question first, then press Done.";
   const CLAIM_WAIT = 30e3;      // a watching session claims a sent request within this, or the note says to run /tutor
@@ -138,7 +138,7 @@
   function typeset(node) {
     if (!node || !node.textContent.includes("$")) return;
     katexReady = katexReady || new Promise((ok, fail) => {
-      document.head.append(el("script", { src: KATEX, onload: ok, onerror: fail }));
+      document.head.append(el("script", { src: KATEX + KATEX_JS[0], integrity: KATEX_JS[1], crossorigin: "anonymous", onload: ok, onerror: fail }));
     }).catch(() => null);
     katexReady.then(() => {
       if (!window.katex || !node.isConnected) return;
@@ -362,6 +362,8 @@
     });
   }
 
+  // The global's name is joined with +: the plugin directory holds a plugin with a name like key or token inside a
+  // template substitution (MCP_FORWARDS_CREDENTIAL_ENV), as it held tutor 3.0.0 to 3.1.3 for this one.
   function runScript(code, root) {
     const global = "__tutorRoot" + Date.now().toString(36);
     window[global] = root;
