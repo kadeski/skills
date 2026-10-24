@@ -59,9 +59,9 @@
 (() => {
   "use strict";
 
-  const VERSION = 11;
-  const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/";
-  const KATEX_JS = ["katex.min.js", "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk"];
+  const VERSION = 12;
+  // No SRI hash for now, as a plugin directory test (see the tutor 3.1.5 commit). Put integrity back after it.
+  const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.js";
   const SAVE_DELAY = 600;
   const NOTHING_NEW = "Answer a question first, then press Done.";
   const CLAIM_WAIT = 30e3;      // a watching session claims a sent request within this, or the note says to run /tutor
@@ -138,7 +138,7 @@
   function typeset(node) {
     if (!node || !node.textContent.includes("$")) return;
     katexReady = katexReady || new Promise((ok, fail) => {
-      document.head.append(el("script", { src: KATEX + KATEX_JS[0], integrity: KATEX_JS[1], crossorigin: "anonymous", onload: ok, onerror: fail }));
+      document.head.append(el("script", { src: KATEX, onload: ok, onerror: fail }));
     }).catch(() => null);
     katexReady.then(() => {
       if (!window.katex || !node.isConnected) return;
@@ -362,8 +362,6 @@
     });
   }
 
-  // Keep names like key or token out of the substitutions here: the plugin directory's credential check can
-  // read one as a forwarded credential and hold the plugin.
   function runScript(code, root) {
     const global = "__tutorRoot" + Date.now().toString(36);
     window[global] = root;
