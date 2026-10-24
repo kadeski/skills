@@ -1,6 +1,6 @@
 {
   "name": "tutor",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "description": "Tutor for one goal at a time, on one claude.ai page per goal. Short lessons - a picture, few words, questions - answered on the page and graded when you press Done, with passed rules coming back as spaced review.",
   "author": {
     "name": "Kaden Staker"
