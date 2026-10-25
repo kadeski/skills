@@ -28,6 +28,8 @@ To stop Claude Code asking before each Study tool call, allow the whole Study se
 
 Claude can also look up what you studied when it would help an answer, without changing anything.
 
+To see the `/study` plan as a task list on models newer than Opus 4.7, Sonnet 4.6 and Haiku 4.5, which leave Claude Code's task tools out by default, start Claude Code with `CLAUDE_CODE_ENABLE_TODO_TOOLS=1 claude` (or set that variable under `env` in `~/.claude/settings.json`).
+
 Pictures and demos are saved in the goal's folder and opened in your browser. If Python Playwright is installed, Claude checks them by rendering them first; otherwise it says it skipped the check.
 
 ## License
