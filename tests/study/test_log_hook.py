@@ -504,7 +504,7 @@ class CompactTest(HookTest):
         self.assertEqual(
             self.context("compact", fixture("session_start_compact.json"), "SessionStart"),
             f'Study is on. Goal "Two-step equations" ({GOAL}), phase probing, open question q1 "{CHECK}". '
-            f'Reread {self.root("skills/study/probe.md")} before going on.',
+            f'Reread {self.root("skills/study/probe.md")} and {self.root("skills/study/questions.md")} before going on.',
         )
 
     def test_planning(self):

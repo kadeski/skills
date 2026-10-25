@@ -21,7 +21,7 @@ EVENTS = {"answer": "PostToolUse", "prompt": "UserPromptSubmit", "compact": "Ses
 CONFIDENCE_HEADER = "Confidence"
 # Relative to the plugin root. A status not listed (done, or a missing goal.json) gets SKILL.md.
 PHASE_FILES = {
-    "probing": ["skills/study/probe.md"],
+    "probing": ["skills/study/probe.md", "skills/study/questions.md"],
     "planning": ["skills/study/plan.md"],
     "teaching": ["skills/study/teach.md", "skills/study/questions.md"],
 }

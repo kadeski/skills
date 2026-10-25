@@ -99,7 +99,7 @@ class FilesTest(StoreTest):
             self.assertEqual(len(f.read().splitlines()), 160)
 
     def test_bad_ids_refused(self):
-        for bad in ("../x", "a/b", "", ".hidden", None):
+        for bad in ("../x", "a/b", "", ".hidden", "abc\n", None):
             with self.assertRaises(store.StoreError):
                 self.s.goal_rel(bad)
 

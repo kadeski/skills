@@ -32,7 +32,7 @@ CONFIDENCE = {"Guessing": 10, "Unsure": 40, "Fairly sure": 70, "Sure": 95}
 VERDICTS = ("right", "partly", "wrong", "dontKnow", "skipped")
 
 _ALPHABET = string.ascii_lowercase + string.digits
-_SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+_SAFE_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*")
 _TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 _random = random.SystemRandom()
 
@@ -90,7 +90,7 @@ def new_id(prefix, taken=()):
 
 def check_id(value, what="id"):
     """Returns `value` if it is safe as a file name part, else raises StoreError."""
-    if not isinstance(value, str) or not _SAFE_ID.match(value):
+    if not isinstance(value, str) or not _SAFE_ID.fullmatch(value):
         raise StoreError(f"{what} {value!r} is not valid: use letters, digits, '-' and '_' only")
     return value
 
@@ -283,7 +283,7 @@ class Store:
         base = self.path("goals")
         if base.is_dir():
             for d in base.iterdir():
-                if _SAFE_ID.match(d.name):
+                if _SAFE_ID.fullmatch(d.name):
                     goal = self.read_goal(d.name)
                     if goal:
                         goals.append(goal)
@@ -306,7 +306,7 @@ class Store:
             return []
         keyed = []
         for p in folder.glob("*.jsonl"):
-            if _SAFE_ID.match(p.stem):
+            if _SAFE_ID.fullmatch(p.stem):
                 entries = self.read_jsonl(str(p.relative_to(self.root)))
                 keyed.append(((entries[0].get("at") if entries else "") or "", p.stem))
         return [log_id for _, log_id in sorted(keyed)]

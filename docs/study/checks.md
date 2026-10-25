@@ -18,6 +18,8 @@ Other findings:
 
 - UserPromptSubmit also fires for prompts the learner didn't type: a background agent's `<task-notification>` arrives as a prompt. The hook must not log those as the learner's words or link them to a free-text question (`contracts.md` section 6).
 - Under `--plugin-dir` the plugin id is `study@inline`; tool names stay `mcp__plugin_study_study__<tool>`.
+- Claude Code 2.1.310 first sends `server/discover` (the newest MCP spec has no `initialize`), gets `-32601` from our server, then falls back to `initialize` at `2025-11-25`. The server keeps the `initialize` handshake.
+- Placeholders such as `${CLAUDE_SESSION_ID}` and `${CLAUDE_PLUGIN_ROOT}` are filled in only in `SKILL.md`, not in files a skill reads later, so each `SKILL.md` states both values once.
 
 ## Still to check by hand
 
