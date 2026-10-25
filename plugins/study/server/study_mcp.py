@@ -181,7 +181,9 @@ TOOLS = [
          "free_text": {"type": "boolean", "description": "True for a question answered in chat."},
      }, ["session_id", "kind", "question", "explanation", "key"]),
     ("record_verdict",
-     "Grade an answer: a free-text answer, or an \"Other\" answer to a multiple-choice question.",
+     "Grade an answer: a free-text answer, or an \"Other\" answer to a multiple-choice question. "
+     "Refused for a question code already graded or the server closed as skipped; a later "
+     "record_verdict replaces your earlier one.",
      {
          "session_id": _SESSION,
          "question_id": _text("The question id, like q3."),
@@ -190,7 +192,7 @@ TOOLS = [
          "confidence": _CONFIDENCE,
      }, ["session_id", "question_id", "verdict"]),
     ("record_answer",
-     "Log a free-text answer the hook missed.",
+     "Log a free-text answer the hook missed. Refused when the question already has an answer.",
      {
          "session_id": _SESSION,
          "question_id": _text("The question id, like q3."),
@@ -481,6 +483,11 @@ class Server:
         except ValueError as e:
             self.log_error(f"unreadable message ({e}): {line[:200]!r}")
             return _rpc_error(None, -32700, "Parse error: send one JSON-RPC message per line")
+        if isinstance(message, list):  # a batch, which 2025-03-26 servers must accept
+            if not message:
+                return _rpc_error(None, -32600, "Invalid Request: an empty batch")
+            replies = [r for r in (self.handle(m) for m in message) if r is not None]
+            return replies or None
         return self.handle(message)
 
     def handle(self, message):
@@ -686,7 +693,13 @@ class Server:
         }
 
     def _begin(self, session_id, mode, goal_id):
-        """Starts a new log with a start entry and points the session's marker at it."""
+        """Starts a new log with a start entry and points the session's marker at it.
+
+        A log the session was still writing gets its end entry first.
+        """
+        previous = self.store.read_marker(session_id)
+        if previous is not None:
+            self.store.append_log(previous.get("goal"), previous["log"], {"type": "end"})
         log_id = self.store.new_log_id(goal_id)
         self.store.append_log(goal_id, log_id, {"type": "start", "claudeSession": session_id, "goal": goal_id})
         self.store.write_marker(session_id, {"mode": mode, "goal": goal_id, "log": log_id, "started": store.now()})
@@ -821,6 +834,9 @@ class Server:
                     problems.append(f"leave {store.IDK!r} out of options: the server adds it")
                 elif label.casefold() in seen:
                     problems.append(f"option {label!r} is listed twice")
+                elif multi and ", " in label:
+                    problems.append(f"option {label!r} holds \", \", which joins the picks of a multi-select "
+                                    "answer: reword it without the comma")
                 seen.add(label.casefold())
             for k in key:
                 if k not in labels:
@@ -869,6 +885,10 @@ class Server:
     def tool_record_verdict(self, session_id, question_id, verdict, note=None, confidence=None):
         marker = self._marker(session_id)
         self._question(marker, question_id)
+        for e in self._entries(marker):
+            if e.get("type") == "verdict" and e.get("question") == question_id and e.get("by") != "teacher":
+                how = "graded by code" if e.get("by") == "code" else "closed as skipped"
+                raise ToolError(f"{question_id} was already {how} ({e.get('verdict')}): don't grade it again")
         self.store.append_log(marker.get("goal"), marker["log"], {
             "type": "verdict", "question": question_id, "verdict": verdict, "by": "teacher",
             "note": note, "confidence": confidence,
@@ -878,6 +898,8 @@ class Server:
     def tool_record_answer(self, session_id, question_id, text, confidence=None):
         marker = self._marker(session_id)
         self._question(marker, question_id)
+        if any(e.get("type") == "answer" and e.get("question") == question_id for e in self._entries(marker)):
+            raise ToolError(f"{question_id} already has an answer logged: grade it with record_verdict")
         self.store.append_log(marker.get("goal"), marker["log"], {
             "type": "answer", "question": question_id, "picked": None, "other": None,
             "confidence": confidence, "notes": None, "freeText": text,

@@ -34,7 +34,7 @@ Use multiple choice when the idea comes down to telling a few options apart. Use
 
    - `kind` is `probe`, `predict` or `check`. `step_id` is required for `predict` and `check` and left out for `probe`.
    - `options`: 2 to 4 distinct, non-empty labels. Each wrong option is a real wrong idea a learner might hold, ideally one the probe found. Keep options alike in length and form. No "all of the above".
-   - `key`: a list of labels copied exactly from `options`. `multi: true` only when the key has more than one label.
+   - `key`: a list of labels copied exactly from `options`. `multi: true` only when the key has more than one label. With `multi: true`, no label may hold ", ": that is how the picks of a multi-select answer are joined.
    - The server adds "I don't know" when there are 3 or fewer options, shuffles them, and returns `{"question_id": "q3", "options": [...]}`.
    - `"closed": "q2"` in the result means an earlier question had no answer and was logged as skipped. Expect that only when you meant to drop it.
    - An error lists what to fix. Fix it and call again.

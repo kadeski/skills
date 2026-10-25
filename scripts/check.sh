@@ -81,6 +81,7 @@ if ! out=$(python3 -m unittest discover -s tests/study 2>&1); then
   err "tests/study failed:"; echo "$out"
 fi
 for f in $(git ls-files -co --exclude-standard -- 'plugins/study/*.py'); do
+  [ -e "$f" ] || continue  # tracked but deleted in the working tree
   python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read(), feature_version=(3, 9))' "$f" 2>&1 \
     || err "$f does not parse as Python 3.9"
 done

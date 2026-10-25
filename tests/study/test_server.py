@@ -122,6 +122,16 @@ class ProtocolTest(ServerTest):
         self.assertEqual(self.srv.handle([1, 2])["error"]["code"], -32600)
         self.assertEqual(self.srv.handle({"jsonrpc": "2.0", "id": "x"})["id"], "x")
 
+    def test_batches(self):
+        replies = self.srv.handle_line(json.dumps([
+            {"jsonrpc": "2.0", "id": 1, "method": "ping"},
+            {"jsonrpc": "2.0", "method": "notifications/initialized"},
+            {"jsonrpc": "2.0", "id": 2, "method": "nope"},
+        ]))
+        self.assertEqual([(r["id"], "result" in r) for r in replies], [(1, True), (2, False)])
+        self.assertIsNone(self.srv.handle_line('[{"jsonrpc": "2.0", "method": "notifications/initialized"}]'))
+        self.assertEqual(self.srv.handle_line("[]")["error"]["code"], -32600)
+
     def test_tools_list(self):
         tools = self.rpc("tools/list")["result"]["tools"]
         names = [t["name"] for t in tools]
@@ -260,6 +270,16 @@ class SessionTest(ServerTest):
         self.assertFalse((self.root / "active" / f"{SID}.json").exists())
         self.assertEqual(self.log(out["goal"]["id"], out["session"]["log"])[-1]["type"], "end")
         self.assertEqual(self.ok("end_session", session_id=SID), {"ended": None})
+
+    def test_starting_again_ends_the_live_log(self):
+        first = self.study()
+        gid, old_log = first["goal"]["id"], first["session"]["log"]
+        second = self.ok("start_session", session_id=SID, goal_id=gid)
+        self.assertNotEqual(second["session"]["log"], old_log)
+        self.assertEqual(self.log(gid, old_log)[-1]["type"], "end")
+        practice = self.ok("start_session", session_id=SID, mode="practice")
+        self.assertEqual(self.log(gid, second["session"]["log"])[-1]["type"], "end")
+        self.assertEqual(self.ok("end_session", session_id=SID), {"ended": practice["session"]["log"]})
 
     def test_tools_need_a_live_marker(self):
         gid, log_id = self.planned()
@@ -477,6 +497,23 @@ class QuestionTest(ServerTest):
         self.assertIn("confidence must be one of 10, 40, 70, 95", error)
         self.assertIn("No question 'q9'", self.bad("record_verdict", session_id=SID, question_id="q9", verdict="right"))
         self.assertIn("No question 'q9'", self.bad("record_answer", session_id=SID, question_id="q9", text="t"))
+        self.assertIn("already has an answer", self.bad("record_answer", session_id=SID, question_id="q1", text="t"))
+
+    def test_code_and_server_verdicts_are_final(self):
+        gid, log_id = self.planned()
+        self.ok("pose_question", **self.mc())
+        self.ok("pose_question", **self.mc())  # closes q1 as skipped
+        self.s.append_log(gid, log_id, {"type": "answer", "question": "q2", "picked": ["Subtract 2 from both sides"]})
+        self.s.append_log(gid, log_id, {"type": "verdict", "question": "q2", "verdict": "right", "by": "code"})
+        self.assertIn("closed as skipped", self.bad("record_verdict", session_id=SID, question_id="q1", verdict="right"))
+        self.assertIn("graded by code", self.bad("record_verdict", session_id=SID, question_id="q2", verdict="wrong"))
+
+    def test_multi_labels_may_not_hold_a_comma(self):
+        self.planned()
+        options = ["x = 2, y = 3", "x = 3"]
+        error = self.bad("pose_question", **self.mc(options=options, key=options, multi=True))
+        self.assertIn("'x = 2, y = 3' holds \", \"", error)
+        self.ok("pose_question", **self.mc(options=options, key=["x = 3"]))
 
 
 class PracticeTest(ServerTest):

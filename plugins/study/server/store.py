@@ -278,14 +278,21 @@ class Store:
         return goal
 
     def list_goals(self):
-        """Every goal.json, most recently updated first."""
+        """Every readable goal.json, most recently updated first.
+
+        A goal.json that is not valid JSON is left out, so one damaged goal hides only itself;
+        read_goal on its id still says what is wrong.
+        """
         goals = []
         base = self.path("goals")
         if base.is_dir():
             for d in base.iterdir():
                 if _SAFE_ID.fullmatch(d.name):
-                    goal = self.read_goal(d.name)
-                    if goal:
+                    try:
+                        goal = self.read_goal(d.name)
+                    except StoreError:
+                        continue
+                    if isinstance(goal, dict):
                         goals.append(goal)
         goals.sort(key=lambda g: g.get("updated") or "", reverse=True)
         return goals

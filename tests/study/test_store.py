@@ -113,6 +113,10 @@ class GoalsAndLogsTest(StoreTest):
         b = self.s.new_goal_id("B")
         self.s.write_goal({"id": b, "title": "B"})
         self.assertEqual([g["id"] for g in self.s.list_goals()], [b, a])
+        self.s.path(self.s.goal_rel(a, "goal.json")).write_text("{not json")
+        self.assertEqual([g["id"] for g in self.s.list_goals()], [b])
+        with self.assertRaises(store.StoreError):
+            self.s.read_goal(a)
 
     def test_logs_ordered_by_first_entry(self):
         self.s.write_goal({"id": "g-0000"})
