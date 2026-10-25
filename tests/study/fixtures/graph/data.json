@@ -1,0 +1,75 @@
+{
+  "goals": [
+    {
+      "id": "two-step-equations-k3f9",
+      "title": "Two-step equations",
+      "goal": "Solve ax + b = c for x and say why each step keeps the equation true",
+      "status": "teaching",
+      "probe": null,
+      "created": "2026-10-20T18:00:00Z",
+      "updated": "2026-10-23T18:40:00Z",
+      "doneAt": null
+    },
+    {
+      "id": "how-plants-make-sugar-m2x8",
+      "title": "How plants make sugar",
+      "goal": "Explain where the parts of a sugar molecule come from in photosynthesis",
+      "status": "done",
+      "probe": null,
+      "created": "2026-10-22T09:00:00Z",
+      "updated": "2026-10-24T17:00:00Z",
+      "doneAt": "2026-10-24T17:00:00Z"
+    }
+  ],
+  "plans": {
+    "two-step-equations-k3f9": {
+      "goal": "two-step-equations-k3f9",
+      "version": 1,
+      "steps": [
+        {"id": "s1", "title": "Balance", "claim": "Doing the same thing to both sides keeps an equation true", "dependsOn": []},
+        {"id": "s2", "title": "Undo in reverse", "claim": "Undo the last operation first", "dependsOn": ["s1"]},
+        {"id": "s3", "title": "Solve for x", "claim": "x = (c - b) / a", "dependsOn": ["s2"]}
+      ]
+    }
+  },
+  "sources": [
+    {"id": "src_n0t3", "path": "/Users/learner/notes/old-algebra-notes.md", "sha256": "1111", "at": "2026-10-19T08:00:00Z"},
+    {"id": "src_n0t3", "path": "/Users/learner/notes/algebra-notes.md", "sha256": "2222", "at": "2026-10-21T08:00:00Z"}
+  ],
+  "propositions": [
+    {"op": "add", "id": "p_eq01", "statement": "An equation says two amounts are equal", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-21-a1b2", "step": "s1"}]},
+    {"op": "add", "id": "p_bal2", "statement": "Doing the same thing to both sides keeps an equation true", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-21-a1b2", "step": "s1"}]},
+    {"op": "alias", "id": "p_bal2", "text": "Whatever you do to one side, do to the other"},
+    {"op": "add", "id": "p_inv1", "statement": "Addition and subtraction undo each other", "sources": [{"source": "src_n0t3"}]},
+    {"op": "add", "id": "p_inv2", "statement": "Multiplication and division undo each other", "sources": [{"source": "src_n0t3"}]},
+    {"op": "source", "id": "p_inv1", "source": {"goal": "two-step-equations-k3f9", "log": "2026-10-21-a1b2", "step": "s2"}},
+    {"op": "add", "id": "p_last", "statement": "Undo the last operation done to x first", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-21-a1b2", "step": "s2"}]},
+    {"op": "add", "id": "p_sub3", "statement": "Subtracting b from both sides of ax + b = c gives ax = c - b", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-23-c3d4", "step": "s3"}]},
+    {"op": "add", "id": "p_div4", "statement": "Dividing both sides of ax = c - b by a gives x = (c - b) / a", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-23-c3d4", "step": "s3"}]},
+    {"op": "alias", "id": "p_div4", "text": "x = (c - b) / a"},
+    {"op": "add", "id": "p_gone", "statement": "Dividing by zero is fine if you are careful", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-23-c3d4", "step": "s3"}]},
+    {"op": "delete", "id": "p_gone"},
+    {"op": "add", "id": "p_co2", "statement": "Leaves take in carbon dioxide from the air", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s1"}]},
+    {"op": "add", "id": "p_h2o", "statement": "Roots take up water from the soil", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s1"}]},
+    {"op": "add", "id": "p_lite", "statement": "Chlorophyll absorbs light energy", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s2"}]},
+    {"op": "add", "id": "p_split", "statement": "Light energy splits water, which releases oxygen", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s2"}]},
+    {"op": "add", "id": "p_sugr", "statement": "Plants build sugar from carbon dioxide and the hydrogen from water", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s3"}]},
+    {"op": "alias", "id": "p_sugr", "text": "Sugar's carbon comes from the air, not the soil"},
+    {"op": "add", "id": "p_rate", "statement": "Oxygen after h hours = rate x h + oxygen at the start", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s4"}]},
+    {"op": "add", "id": "p_hrs", "statement": "Hours to reach an amount of oxygen = (amount - start) / rate", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s4"}]},
+    {"op": "add", "id": "p_html", "statement": "In HTML, </script> ends a script block", "sources": [{"source": "src_n0t3"}]},
+    {"op": "alias", "id": "p_html", "text": "<!-- starts an HTML comment"},
+    {"op": "alias", "id": "p_html", "text": "Notes from http://example.com/html-notes"}
+  ],
+  "chains": [
+    {"op": "add", "id": "c_bal1", "premises": ["p_eq01"], "conclusion": "p_bal2", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-21-a1b2", "step": "s1"}]},
+    {"op": "add", "id": "c_ord2", "premises": ["p_inv1", "p_inv2"], "conclusion": "p_last", "sources": [{"source": "src_n0t3"}]},
+    {"op": "source", "id": "c_ord2", "source": {"goal": "two-step-equations-k3f9", "log": "2026-10-21-a1b2", "step": "s2"}},
+    {"op": "add", "id": "c_sub3", "premises": ["p_bal2", "p_last", "p_inv1"], "conclusion": "p_sub3", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-23-c3d4", "step": "s3"}]},
+    {"op": "add", "id": "c_div4", "premises": ["p_bal2", "p_sub3", "p_inv2"], "conclusion": "p_div4", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-23-c3d4", "step": "s3"}]},
+    {"op": "add", "id": "c_gone", "premises": ["p_gone"], "conclusion": "p_div4", "sources": [{"goal": "two-step-equations-k3f9", "log": "2026-10-23-c3d4", "step": "s3"}]},
+    {"op": "add", "id": "c_split", "premises": ["p_lite", "p_h2o"], "conclusion": "p_split", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s2"}]},
+    {"op": "add", "id": "c_sugr", "premises": ["p_co2", "p_split"], "conclusion": "p_sugr", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s3"}]},
+    {"op": "add", "id": "c_hrs", "premises": ["p_rate", "p_div4"], "conclusion": "p_hrs", "sources": [{"goal": "how-plants-make-sugar-m2x8", "log": "2026-10-24-e5f6", "step": "s4"}]}
+  ]
+}
