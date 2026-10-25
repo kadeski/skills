@@ -1,0 +1,8 @@
+{
+  "session_id": "0d6c6a5e-1f2b-4c3d-9e8f-7a6b5c4d3e2f",
+  "transcript_path": "/Users/learner/.claude/projects/-Users-learner-algebra/0d6c6a5e-1f2b-4c3d-9e8f-7a6b5c4d3e2f.jsonl",
+  "cwd": "/Users/learner/algebra",
+  "permission_mode": "default",
+  "hook_event_name": "UserPromptSubmit",
+  "prompt": "You take 3 away from both sides first, because the + 3 was the last thing done to x. Pretty sure."
+}
