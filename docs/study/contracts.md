@@ -9,7 +9,7 @@ Each slice owns its files and touches nothing else. Everything not listed is the
 | Slice | Owns |
 |---|---|
 | server | `plugins/study/server/study_mcp.py`, `tests/study/test_server.py` |
-| hook | `plugins/study/scripts/log_hook.py`, `tests/study/test_log_hook.py`, `tests/study/fixtures/hook/` |
+| hook | `plugins/study/scripts/log_hook.py`, `plugins/study/hooks/hooks.json`, `tests/study/test_log_hook.py`, `tests/study/fixtures/hook/` |
 | graph page | `plugins/study/server/graph_page.py` (replace the stub), `plugins/study/skills/graph/SKILL.md`, `tests/study/test_graph_page.py`, `tests/study/fixtures/graph/` |
 | teach | `plugins/study/skills/study/` (all six files), `plugins/study/agents/extractor.md` |
 | practice | `plugins/study/skills/practice/`, `plugins/study/skills/import-notes/`, `plugins/study/skills/record/` |
@@ -28,7 +28,9 @@ Rules for every slice:
 
 ## 2. Session ids
 
-Skills pass `${CLAUDE_SESSION_ID}` as `session_id` to every tool that takes one. The hook reads `session_id` from its stdin. The marker `<data>/active/<session_id>.json` joins them. (`checks.md` says whether the two match; if not, the fallback there applies.)
+Skills pass `${CLAUDE_SESSION_ID}` as `session_id` to every tool that takes one. The hook reads `session_id` from its stdin. The marker `<data>/active/<session_id>.json` joins them. `checks.md` confirms the two are the same UUID.
+
+Skills also know the plugin root as `${CLAUDE_PLUGIN_ROOT}`. They declare no `hooks:` in frontmatter: the hooks are plugin-wide (section 6).
 
 ## 3. Server tools
 
@@ -105,7 +107,11 @@ Use `store.now()` times, `store.open_question` for the open question, `store.gra
 
 The hook owns these messages; the skills tell the teacher how to read them. Output is `{"hookSpecificOutput": {"hookEventName": "<event>", "additionalContext": "<text>"}}`.
 
-Assumed AskUserQuestion PostToolUse input, until `checks.md` confirms it:
+Registration: `plugins/study/hooks/hooks.json`, plugin-wide, because skill frontmatter hooks don't get the data folder, don't survive a resume and don't fire on compaction (`checks.md`). It registers `python3 -I "${CLAUDE_PLUGIN_ROOT}/scripts/log_hook.py" <answer|prompt|compact>` for PostToolUse with matcher `AskUserQuestion`, UserPromptSubmit, and SessionStart with matcher `compact`. Every Claude Code session with the plugin enabled runs it, so with no live marker it must exit fast and silent. The data folder is `store.resolve_data_dir()` (the env var, else `~/Study`).
+
+Prompts the learner didn't type also reach UserPromptSubmit, for example a background agent's `<task-notification>…</task-notification>`. A prompt that is one XML-like element (it starts with `<name` and ends with `</name>`, after trimming) is not logged and never linked to a question.
+
+AskUserQuestion PostToolUse input. `questions` and `answers` are confirmed (`checks.md`); `annotations`, multi-select joining and "Other" are assumed until the hand check:
 
 ```json
 {
@@ -147,4 +153,6 @@ Builders call it for a desktop width and again with `--width 390`, and with `--d
 
 ## 9. Agents
 
-Plugin agents live in `plugins/study/agents/` and have `model: sonnet` and `background: true`. They name Study tools by full name, for example `mcp__plugin_study_study__graph_find`. Each one's final message is its result: short, no preamble.
+Plugin agents live in `plugins/study/agents/` and have `model: sonnet` and `background: true`. They name Study tools by full name, for example `mcp__plugin_study_study__graph_find`; a background plugin agent can call them (`checks.md`). Each one's final message is its result: short, no preamble.
+
+`${CLAUDE_PLUGIN_ROOT}` is not relied on inside agent files. The teacher's spawn prompt for visual-maker and demo-builder gives `plugin root: <path>` (from the skill's `${CLAUDE_PLUGIN_ROOT}`), `output path: <abs path>` and the brief; the builders run `python3 -I <plugin root>/scripts/shot.py`. The extractor's spawn prompt gives `goal`, `log` and `step` ids and the step's teaching text copied as taught (or `source` id and `path` for notes).
