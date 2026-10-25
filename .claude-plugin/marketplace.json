@@ -12,6 +12,10 @@
       "source": "./plugins/doc-lint"
     },
     {
+      "name": "study",
+      "source": "./plugins/study"
+    },
+    {
       "name": "tutor",
       "source": "./plugins/tutor"
     }

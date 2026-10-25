@@ -1,0 +1,26 @@
+{
+  "name": "study",
+  "version": "0.1.0",
+  "description": "Learn one goal at a time in a Claude Code chat: probe where you are, plan the shortest path, learn one step at a time with checks, practice later, and build a knowledge graph that carries across sessions.",
+  "author": {
+    "name": "Kaden Staker"
+  },
+  "repository": "https://github.com/kadeski/skills",
+  "license": "MIT",
+  "keywords": [
+    "learning",
+    "tutor",
+    "education",
+    "practice",
+    "knowledge-graph",
+    "study"
+  ],
+  "userConfig": {
+    "data_dir": {
+      "type": "directory",
+      "title": "Data folder",
+      "description": "Where Study keeps your goals, answers and knowledge graph.",
+      "default": "~/Study"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "study": {
+      "command": "python3",
+      "args": ["-I", "${CLAUDE_PLUGIN_ROOT}/server/study_mcp.py", "--data-dir", "${user_config.data_dir}"]
+    }
+  }
+}
