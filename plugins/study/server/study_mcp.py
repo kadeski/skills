@@ -445,7 +445,7 @@ def gap_days(conclude, previous):
 
 
 def due_state(data):
-    """target id -> {"due": datetime, "gap": days, "outcome": latest outcome}, from problems.jsonl."""
+    """target id -> {"due": datetime, "gap": days, "outcome", "mode"} of its latest conclude, from problems.jsonl."""
     lines = data.read_jsonl("practice/problems.jsonl")
     commits = {line.get("id"): line for line in lines if line.get("type") == "commit"}
     state = {}
@@ -459,7 +459,8 @@ def due_state(data):
             continue
         for target in commit.get("targets") or []:
             gap = gap_days(line, state.get(target, {}).get("gap"))
-            state[target] = {"due": at + timedelta(days=gap), "gap": gap, "outcome": line.get("outcome")}
+            state[target] = {"due": at + timedelta(days=gap), "gap": gap, "outcome": line.get("outcome"),
+                             "mode": commit.get("mode")}
     return state
 
 
@@ -667,12 +668,19 @@ class Server:
         picked = set(matched)
         chain_ids = [cid for cid, c in chains.items()
                      if topic is None or c.get("conclusion") in picked or any(p in picked for p in c.get("premises", []))]
+        state = due_state(self.store)
+
+        def last(target):
+            s = state.get(target, {})
+            return {"lastMode": s.get("mode"), "lastOutcome": s.get("outcome")}
+
         return {
             "session": {"log": log_id, "mode": "practice"},
             "due": self.tool_due_list()["due"],
             "candidates": {
-                "propositions": [{"id": pid, "statement": props[pid]["statement"]} for pid in matched[:CANDIDATES_CAP]],
-                "chains": [_chain_view(chains[cid], props) for cid in chain_ids[:CANDIDATES_CAP]],
+                "propositions": [dict({"id": pid, "statement": props[pid]["statement"]}, **last(pid))
+                                 for pid in matched[:CANDIDATES_CAP]],
+                "chains": [dict(_chain_view(chains[cid], props), **last(cid)) for cid in chain_ids[:CANDIDATES_CAP]],
             },
             "paths": {"media": str(media.absolute())},
         }
@@ -936,10 +944,10 @@ class Server:
         for target, s in due_state(self.store).items():
             statement = _statement(target, props, chains)
             if s["due"] <= now and statement is not None:
-                rows.append((s["due"], target, statement, s["outcome"]))
+                rows.append((s["due"], target, statement, s["outcome"], s["mode"]))
         rows.sort(key=lambda r: (r[0], r[1]))
-        return {"due": [{"target": t, "statement": st, "due": _time(d), "lastOutcome": o}
-                        for d, t, st, o in rows[:limit]]}
+        return {"due": [{"target": t, "statement": st, "due": _time(d), "lastOutcome": o, "lastMode": m}
+                        for d, t, st, o, m in rows[:limit]]}
 
     # Graph (spec section 8, contracts section 5)
 

@@ -33,8 +33,8 @@ Call `start_session({session_id: "${CLAUDE_SESSION_ID}", mode: "practice", topic
 From the result, keep:
 
 - `session.log` - this sitting's log id.
-- `due` - targets due now, longest overdue first, each with `statement` and `lastOutcome`. This list covers the whole graph, even with a topic; with a topic, take the due targets that fit it first.
-- `candidates` - propositions (`id`, `statement`) and chains (`id`, `premises`, `conclusion`) that match the topic, or the whole graph. At most 50 of each. For a chain's statements, call `graph_chains({node_id: "<its conclusion id>"})`.
+- `due` - targets due now, longest overdue first, each with `statement`, `lastOutcome` and `lastMode`. This list covers the whole graph, even with a topic; with a topic, take the due targets that fit it first.
+- `candidates` - propositions (`id`, `statement`) and chains (`id`, `premises`, `conclusion`) that match the topic, or the whole graph. At most 50 of each. Each also has `lastMode` and `lastOutcome`, null when never practiced. For a chain's statements, call `graph_chains({node_id: "<its conclusion id>"})`.
 
 If `due` and `candidates` are both empty:
 

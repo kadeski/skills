@@ -14,11 +14,13 @@ Each target goes through three modes, in this order:
 
 Within a sitting, track each target's mode yourself. A clean solve moves a target to the next mode. Anything else keeps it in the same mode.
 
-Across sittings, the tools don't say which mode a target last had. Use this instead:
+Across sittings, each `due` row and candidate carries `lastMode` and `lastOutcome`: the mode and outcome of the target's latest problem, or null when it was never practiced. Start the target from them:
 
-- A proposition whose `lastOutcome` is `solved`: discrimination.
-- Any other proposition: recall.
-- A chain: composition, once none of its premises is in `due`.
+- Never practiced: recall for a proposition, composition for a chain.
+- `lastOutcome` is `solved`: the mode after `lastMode`. Composition stays composition.
+- Anything else: `lastMode` again.
+
+A proposition that moves past discrimination goes on through composition, which targets a chain: practice a chain it belongs to. Take a chain only once none of its premises is in `due`.
 
 ## Choosing the next target
 

@@ -563,13 +563,18 @@ class PracticeTest(ServerTest):
 
 class DueTest(ServerTest):
     def history(self, target, concludes, start=None):
-        """Writes one problem per conclude for `target`; each conclude is (days after start, fields)."""
+        """Writes one problem per conclude for `target`; each conclude is (days after start, fields).
+
+        A `mode` in fields goes on the commit instead (default recall).
+        """
         start = start or datetime(2026, 1, 1, tzinfo=timezone.utc)
         for i, (day, fields) in enumerate(concludes):
             pid = f"pr_{target[-4:]}{i}"
             at = _t(start + timedelta(days=day))
+            fields = dict(fields)
+            mode = fields.pop("mode", "recall")
             self.s.append_jsonl("practice/problems.jsonl", {"type": "commit", "id": pid, "at": at, "log": "l",
-                                                           "targets": [target], "solution": "s"})
+                                                           "mode": mode, "targets": [target], "solution": "s"})
             self.s.append_jsonl("practice/problems.jsonl", dict({"type": "conclude", "id": pid, "at": at,
                                                                  "rung": None, "retest": False}, **fields))
         return study_mcp.due_state(self.s)[target]
@@ -600,14 +605,17 @@ class DueTest(ServerTest):
     def test_due_list(self):
         a, b, c, d = self.props("Idea a", "Idea b", "Idea c", "Idea d")
         now = datetime.now(timezone.utc)
-        self.history(a, [(0, {"outcome": "movedOn"})], start=now - timedelta(days=5))
+        self.history(a, [(0, {"outcome": "solved"}), (1, {"outcome": "movedOn", "mode": "discrimination"})],
+                     start=now - timedelta(days=6))
         self.history(b, [(0, {"outcome": "surrendered"})], start=now - timedelta(days=2))
         self.history(c, [(0, {"outcome": "solved"})], start=now - timedelta(days=2))  # due in 1 day
         self.history("p_gone", [(0, {"outcome": "movedOn"})], start=now - timedelta(days=5))
         due = self.ok("due_list")["due"]
         self.assertEqual([x["target"] for x in due], [a, b])  # longest overdue first; d never practiced
-        self.assertEqual(set(due[0]), {"target", "statement", "due", "lastOutcome"})
-        self.assertEqual((due[0]["statement"], due[0]["lastOutcome"]), ("Idea a", "movedOn"))
+        self.assertEqual(set(due[0]), {"target", "statement", "due", "lastOutcome", "lastMode"})
+        self.assertEqual((due[0]["statement"], due[0]["lastOutcome"], due[0]["lastMode"]),
+                         ("Idea a", "movedOn", "discrimination"))  # the latest problem's
+        self.assertEqual(due[1]["lastMode"], "recall")
         self.assertEqual([x["target"] for x in self.ok("due_list", limit=1)["due"]], [a])
         self.assertIn("at least 1", self.bad("due_list", limit=0))
         self.assertEqual(self.ok("start_session", session_id=SID, mode="practice")["due"], due)
@@ -619,6 +627,23 @@ class DueTest(ServerTest):
         cid = next(iter(self.s.graph()[1]))
         self.history(cid, [(0, {"outcome": "movedOn"})], start=datetime.now(timezone.utc) - timedelta(days=2))
         self.assertEqual(self.ok("due_list")["due"][0]["statement"], "Idea a -> Idea b")
+
+    def test_candidates_carry_the_last_practice(self):
+        a, b = self.props("Idea a", "Idea b")
+        self.ok("graph_merge", origin={"source": self.source()}, propositions=[],
+                chains=[{"premises": [a], "conclusion": b}])
+        cid = next(iter(self.s.graph()[1]))
+        self.history(a, [(0, {"outcome": "solved", "mode": "discrimination"})], start=datetime.now(timezone.utc))
+        self.history(cid, [(0, {"outcome": "movedOn", "mode": "composition"})], start=datetime.now(timezone.utc))
+        out = self.ok("start_session", session_id=SID, mode="practice")
+        self.assertEqual(out["due"], [])  # practiced, but not due yet
+        props = {p["id"]: p for p in out["candidates"]["propositions"]}
+        self.assertEqual(props[a], {"id": a, "statement": "Idea a", "lastMode": "discrimination", "lastOutcome": "solved"})
+        self.assertEqual((props[b]["lastMode"], props[b]["lastOutcome"]), (None, None))  # never practiced
+        chain = out["candidates"]["chains"][0]
+        self.assertEqual(set(chain), {"id", "premises", "conclusion", "lastMode", "lastOutcome"})
+        self.assertEqual((chain["lastMode"], chain["lastOutcome"]), ("composition", "movedOn"))
+        self.assertEqual(set(self.ok("graph_chains")["chains"][0]), {"id", "premises", "conclusion"})
 
 
 class GraphTest(ServerTest):
