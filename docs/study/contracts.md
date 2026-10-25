@@ -67,7 +67,7 @@ Additions to spec section 9: `session_id` on `save_probe`, `save_plan`, `finish_
 - `graph_find({pattern})`: `{"matches": [{"id", "statement", "aliases"}]}`, at most 50. Case-insensitive. A pattern with no `*` matches as a substring; a pattern with `*` must match the whole statement or alias, with `*` standing for any run of characters (so `*both sides*` searches inside).
 - `graph_chains({node_id?})`: `{"chains": [{"id", "premises": [{"id", "statement"}], "conclusion": {"id", "statement"}}]}`, all, or those using `node_id` as a premise or conclusion.
 - `graph_merge({origin, propositions, chains})`: see section 5.
-- `register_source({path})`: `{"source_id", "changed", "path"}`. The same absolute path (symlinks resolved) keeps its source id; `changed` is true when its sha256 differs from the last line for that id or it was never registered, and then a line is appended.
+- `register_source({path, force?})`: `{"source_id", "changed", "path"}`. The same absolute path (symlinks resolved) keeps its source id; `changed` is true when its sha256 differs from the last line for that id, it was never registered, or `force` is true, and then a line is appended. The line is written before extraction, so `/import-notes --force` is how a file whose extractor failed gets retried.
 - `read_session({goal_id?, log_id?})`: `{"goal", "log", "entries"}`; with no `log_id`, the goal's newest log; `goal_id` null with a `log_id` reads a practice log.
 - `open_graph_page({goal_id?})`: calls `graph_page.build(store, goal_id)` and opens the file. Returns `{"path"}`.
 - `open_in_browser({path})`: opens a file inside the data folder (after resolving symlinks); refuses any other path. Returns `{"opened": "<abs path>"}`.

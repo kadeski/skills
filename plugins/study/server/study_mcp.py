@@ -279,8 +279,9 @@ TOOLS = [
      }, ["origin", "propositions", "chains"]),
     ("register_source",
      "Register a notes file before extracting it. The same path keeps its source id; changed is "
-     "true when the file is new or differs from its last import.",
-     {"path": _text("The file's absolute path.")}, ["path"]),
+     "true when the file is new or differs from its last import, or with force.",
+     {"path": _text("The file's absolute path."),
+      "force": {"type": "boolean", "description": "True to import it again even when unchanged."}}, ["path"]),
     ("read_session",
      "A session log's entries: the goal's newest log, or log_id. goal_id null with a log_id reads a practice log.",
      {"goal_id": _GOAL_ID, "log_id": _text("A log id, like 2026-10-25-a1b2.")}, []),
@@ -1108,7 +1109,7 @@ class Server:
         problems.append("origin must be {goal, log, step} for a taught step or {source} for imported notes")
         return {}
 
-    def tool_register_source(self, path):
+    def tool_register_source(self, path, force=False):
         given = Path(os.path.expanduser(path))
         if not given.is_absolute():
             raise ToolError(f"path {path!r} must be absolute")
@@ -1129,7 +1130,7 @@ class Server:
             if line.get("path") == str(real):
                 source_id = line.get("id")
         last = [line for line in lines if source_id and line.get("id") == source_id]
-        changed = not last or last[-1].get("sha256") != sha
+        changed = force or not last or last[-1].get("sha256") != sha
         if source_id is None:
             source_id = store.new_id("src_", taken={line.get("id") for line in lines})
         if changed:

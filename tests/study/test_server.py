@@ -784,6 +784,18 @@ class SourceAndPageTest(ServerTest):
         self.assertIn("must be absolute", self.bad("register_source", path="notes.md"))
         self.assertIn("is not a file", self.bad("register_source", path=self.tmp.name))
 
+    def test_force_reimports_an_unchanged_file(self):
+        notes = Path(self.tmp.name) / "notes.md"
+        notes.write_text("one\n")
+        first = self.ok("register_source", path=str(notes))
+        self.assertFalse(self.ok("register_source", path=str(notes), force=False)["changed"])
+        forced = self.ok("register_source", path=str(notes), force=True)
+        self.assertEqual((forced["source_id"], forced["changed"]), (first["source_id"], True))
+        lines = self.s.read_jsonl("graph/sources.jsonl")
+        self.assertEqual([line["sha256"] for line in lines], [lines[0]["sha256"]] * 2)
+        self.assertFalse(self.ok("register_source", path=str(notes))["changed"])
+        self.assertIn("force must be true or false", self.bad("register_source", path=str(notes), force="yes"))
+
     def test_read_session(self):
         self.assertIn("pass goal_id, log_id", self.bad("read_session"))
         practice = self.ok("start_session", session_id=SID, mode="practice")["session"]["log"]
