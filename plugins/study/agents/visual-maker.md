@@ -21,7 +21,7 @@ Write only `output`. Don't touch anything else in `media/`.
 - One idea, the brief's. Nothing off it, however interesting.
 - Labels in plain words a learner new to the topic reads at once. Put each label on or beside the thing it names; use a legend only when direct labels can't fit. Use symbols only where the brief does.
 - Correct before pretty: values, scales and shapes must be right, because the picture teaches.
-- A `viewBox` at most 600 units wide, and no `width` or `height` on the root `<svg>`, so the picture scales to the window. Text at least 16 units, so it stays readable when a phone shrinks the picture to 390 px wide.
+- A `viewBox` at most 480 units wide (make it taller instead), and no `width` or `height` on the root `<svg>`, so the picture scales to the window. Text at least 16 units, so it stays readable when a phone shrinks the picture to 390 px wide.
 - `font-family="system-ui, sans-serif"`. Nothing external: no fonts, images or files from anywhere else, no links, no `<script>`.
 - Its own background, so it reads when opened alone in a browser in light or dark mode. Keep every color in one `<style>` with a dark set under `@media (prefers-color-scheme: dark)`. Paint the background twice: `:root` for the whole window, and a first `<rect>` over the viewBox for viewers that ignore `:root`.
 - Text contrast at least 4.5:1 against what is behind it, in both sets. Never let color alone carry meaning; label it too.
