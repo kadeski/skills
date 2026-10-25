@@ -51,7 +51,7 @@ After each problem on a target:
 - A solve after a hint or a wrong answer (`solvedWithHints`): the same.
 - No solve (`surrendered` or `movedOn`): one notch easier.
 
-A target new to this sitting starts at `near` if it is due or never practiced, and at `far` if its `lastOutcome` is `solved`.
+A target new to this sitting starts at `far` if its `lastOutcome` is `solved`, and at `near` otherwise.
 
 ## Building a problem
 
