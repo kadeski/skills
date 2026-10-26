@@ -1,0 +1,76 @@
+{
+  "session_id": "0d6c6a5e-1f2b-4c3d-9e8f-7a6b5c4d3e2f",
+  "transcript_path": "/Users/learner/.claude/projects/-Users-learner-algebra/0d6c6a5e-1f2b-4c3d-9e8f-7a6b5c4d3e2f.jsonl",
+  "cwd": "/Users/learner/algebra",
+  "permission_mode": "default",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "AskUserQuestion",
+  "tool_input": {
+    "questions": [
+      {
+        "question": "In 2x + 3 = 11, which part do you undo first?",
+        "header": "Check",
+        "options": [
+          {"label": "the + 3", "description": "Subtract 3 from both sides"},
+          {"label": "the 2x", "description": "Divide both sides by 2"},
+          {"label": "the = 11", "description": "Move 11 to the left"},
+          {"label": "I don't know", "description": "Say so, and we look at it together"}
+        ],
+        "multiSelect": false
+      },
+      {
+        "question": "How sure are you?",
+        "header": "Confidence",
+        "options": [
+          {"label": "Guessing", "description": ""},
+          {"label": "Unsure", "description": ""},
+          {"label": "Fairly sure", "description": ""},
+          {"label": "Sure", "description": ""}
+        ],
+        "multiSelect": false
+      }
+    ],
+    "answers": {
+      "In 2x + 3 = 11, which part do you undo first?": "the 2x",
+      "How sure are you?": "Sure"
+    },
+    "annotations": {
+      "In 2x + 3 = 11, which part do you undo first?": {"notes": "The 2 is stuck to the x, so it goes first"}
+    }
+  },
+  "tool_response": {
+    "questions": [
+      {
+        "question": "In 2x + 3 = 11, which part do you undo first?",
+        "header": "Check",
+        "options": [
+          {"label": "the + 3", "description": "Subtract 3 from both sides"},
+          {"label": "the 2x", "description": "Divide both sides by 2"},
+          {"label": "the = 11", "description": "Move 11 to the left"},
+          {"label": "I don't know", "description": "Say so, and we look at it together"}
+        ],
+        "multiSelect": false
+      },
+      {
+        "question": "How sure are you?",
+        "header": "Confidence",
+        "options": [
+          {"label": "Guessing", "description": ""},
+          {"label": "Unsure", "description": ""},
+          {"label": "Fairly sure", "description": ""},
+          {"label": "Sure", "description": ""}
+        ],
+        "multiSelect": false
+      }
+    ],
+    "answers": {
+      "In 2x + 3 = 11, which part do you undo first?": "the 2x",
+      "How sure are you?": "Sure"
+    },
+    "annotations": {
+      "In 2x + 3 = 11, which part do you undo first?": {"notes": "The 2 is stuck to the x, so it goes first"}
+    }
+  },
+  "tool_use_id": "toolu_01Q8xVb3mWn5Kp2Rt7Yc4LdE",
+  "duration_ms": 41873
+}
