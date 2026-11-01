@@ -1,6 +1,6 @@
 {
   "name": "study",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Learn one goal at a time in a Claude Code chat: probe where you are, plan the shortest path, learn one step at a time with checks, practice later, and build a knowledge graph that carries across sessions.",
   "author": {
     "name": "Kaden Staker"

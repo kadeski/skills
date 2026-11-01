@@ -36,7 +36,6 @@ OUTCOMES = ("solved", "solvedWithHints", "movedOn", "surrendered")
 RUNGS = ("R0", "R1", "R2", "R3", "R4", "R5")
 MISS_CLASSES = ("cue", "discrimination", "execution", "careless", "structural")
 TEACHER_VERDICTS = tuple(v for v in store.VERDICTS if v != "skipped")
-CONFIDENCES = sorted(store.CONFIDENCE.values())
 
 _TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 _random = random.SystemRandom()
@@ -76,10 +75,6 @@ def _enum(values, description):
 
 _SESSION = _text("The Claude Code session id: the skill's ${CLAUDE_SESSION_ID}.")
 _GOAL_ID = _text("A goal id, like two-step-equations-k3f9.")
-_CONFIDENCE = {
-    "type": "integer", "enum": CONFIDENCES,
-    "description": "The learner's confidence: 10 Guessing, 40 Unsure, 70 Fairly sure, 95 Sure. Omit when not given.",
-}
 
 TOOLS = [
     ("start_session",
@@ -189,7 +184,6 @@ TOOLS = [
          "question_id": _text("The question id, like q3."),
          "verdict": _enum(TEACHER_VERDICTS, "right, partly, wrong or dontKnow."),
          "note": {"type": "string", "description": "What was right or missing."},
-         "confidence": _CONFIDENCE,
      }, ["session_id", "question_id", "verdict"]),
     ("record_answer",
      "Log a free-text answer the hook missed. Refused when the question already has an answer.",
@@ -197,7 +191,6 @@ TOOLS = [
          "session_id": _SESSION,
          "question_id": _text("The question id, like q3."),
          "text": _text("The learner's answer as they wrote it."),
-         "confidence": _CONFIDENCE,
      }, ["session_id", "question_id", "text"]),
     ("commit_problem",
      "Practice: commit a problem and its model solution before showing it. Refused while this "
@@ -882,7 +875,7 @@ class Server:
         out.update(result)
         return out
 
-    def tool_record_verdict(self, session_id, question_id, verdict, note=None, confidence=None):
+    def tool_record_verdict(self, session_id, question_id, verdict, note=None):
         marker = self._marker(session_id)
         self._question(marker, question_id)
         for e in self._entries(marker):
@@ -891,18 +884,18 @@ class Server:
                 raise ToolError(f"{question_id} was already {how} ({e.get('verdict')}): don't grade it again")
         self.store.append_log(marker.get("goal"), marker["log"], {
             "type": "verdict", "question": question_id, "verdict": verdict, "by": "teacher",
-            "note": note, "confidence": confidence,
+            "note": note,
         })
         return {"question_id": question_id, "verdict": verdict}
 
-    def tool_record_answer(self, session_id, question_id, text, confidence=None):
+    def tool_record_answer(self, session_id, question_id, text):
         marker = self._marker(session_id)
         self._question(marker, question_id)
         if any(e.get("type") == "answer" and e.get("question") == question_id for e in self._entries(marker)):
             raise ToolError(f"{question_id} already has an answer logged: grade it with record_verdict")
         self.store.append_log(marker.get("goal"), marker["log"], {
             "type": "answer", "question": question_id, "picked": None, "other": None,
-            "confidence": confidence, "notes": None, "freeText": text,
+            "notes": None, "freeText": text,
         })
         return {"question_id": question_id}
 

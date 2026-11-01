@@ -28,7 +28,6 @@ FORMAT = 1
 MARKER_TTL = 24 * 3600
 DEFAULT_DATA_DIR = "~/Study"
 IDK = "I don't know"
-CONFIDENCE = {"Guessing": 10, "Unsure": 40, "Fairly sure": 70, "Sure": 95}
 VERDICTS = ("right", "partly", "wrong", "dontKnow", "skipped")
 
 _ALPHABET = string.ascii_lowercase + string.digits
@@ -460,13 +459,3 @@ def grade(question, picked):
     if picked & key:
         return "partly"
     return "wrong"
-
-
-def confidence_value(label):
-    """10 / 40 / 70 / 95 for a Confidence option label (any case), else None."""
-    if not isinstance(label, str):
-        return None
-    for name, value in CONFIDENCE.items():
-        if label.strip().lower() == name.lower():
-            return value
-    return None

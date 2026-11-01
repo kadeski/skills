@@ -38,7 +38,7 @@ Otherwise:
    - None matches, or the learner wants a new one: `start_session` with `goal_text` (the argument, in the learner's words) and a short `title`.
    - No argument and no goals: ask in chat what they want to learn.
 
-   Keep from the result: `session.log` (the log id), `goal`, `plan`, `lastSitting`, `graph`, and `paths.media`. On a continued goal, `lastSitting` and the plan's step statuses show where the lesson stopped: the current step, misconceptions found, answers that were right but unsure.
+   Keep from the result: `session.log` (the log id), `goal`, `plan`, `lastSitting`, `graph`, and `paths.media`. On a continued goal, `lastSitting` and the plan's step statuses show where the lesson stopped: the current step, misconceptions found, answers that were right but fragile.
 2. **No probe on file** (`goal.probe` is empty): probe. Read `probe.md` and `questions.md`.
 3. **No plan** (`plan` is null): plan. Read `plan.md`, `save_plan`, then create one task per step. A continued goal that has a plan recreates its tasks with their statuses: read the Tasks section of `plan.md` and do that before teaching.
 4. **Teach.** Read `teach.md` and `questions.md`.

@@ -18,7 +18,6 @@ import time
 
 MODES = ("answer", "prompt", "compact")
 EVENTS = {"answer": "PostToolUse", "prompt": "UserPromptSubmit", "compact": "SessionStart"}
-CONFIDENCE_HEADER = "Confidence"
 # Relative to the plugin root. A status not listed (done, or a missing goal.json) gets SKILL.md.
 PHASE_FILES = {
     "probing": ["skills/study/probe.md", "skills/study/questions.md"],
@@ -211,30 +210,19 @@ def on_answer(s, store, marker, data, raw):
 
     goal, log = marker.get("goal"), marker["log"]
     open_q = store.open_question(s.read_log(goal, log))
-    header = CONFIDENCE_HEADER.lower()
-    confidence_q = next((q for q in asked if (trimmed(q, "header") or "").lower() == header), None)
     graded_q = None
     if open_q is not None and trimmed(open_q) is not None:
-        matches = [q for q in asked if q is not confidence_q and trimmed(q) == trimmed(open_q)]
+        matches = [q for q in asked if trimmed(q) == trimmed(open_q)]
         graded_q = matches[0] if matches else None
-    if graded_q is None or lookup(answers, graded_q) is None:
-        graded_q = confidence_q = None  # an unpaired Confidence question is an `ask` like any other
 
     messages = []
     for q in asked:
-        if q is confidence_q:
-            continue
         answer = answer_text(lookup(answers, q))
         if answer is None:
             continue
         picked, other = parse_answer(answer, labels(q))
         if q is graded_q:
-            confidence = None
-            if confidence_q is not None:
-                confidence = store.confidence_value(answer_text(lookup(answers, confidence_q)))
-            note = notes(annotations, q)
-            message = log_graded(s, store, goal, log, open_q, answer, picked, other, confidence, note)
-            messages.append(message)
+            messages.append(log_graded(s, store, goal, log, open_q, answer, picked, other, notes(annotations, q)))
         else:
             s.append_log(goal, log, {
                 "type": "ask", "question": q.get("question"), "header": q.get("header"),
@@ -243,23 +231,19 @@ def on_answer(s, store, marker, data, raw):
     return "\n".join(messages) or None
 
 
-def log_graded(s, store, goal, log, question, answer, picked, other, confidence, note):
+def log_graded(s, store, goal, log, question, answer, picked, other, note):
     """Writes the `answer` entry and, for a picked option, the code's `verdict`. Returns the message."""
     qid = question["id"]
     free = is_free(question)
     s.append_log(goal, log, {
         "type": "answer", "question": qid, "picked": picked, "other": other,
-        "confidence": confidence, "notes": note, "freeText": answer if free else None,
+        "notes": note, "freeText": answer if free else None,
     })
     if free or other is not None:
         return f"{qid}: free-text answer via Other, grade it with record_verdict"
     verdict = store.grade(question, picked)
     s.append_log(goal, log, {"type": "verdict", "question": qid, "verdict": verdict, "by": "code"})
-    text = f"{qid}: {verdict} (picked {quoted(picked)}; key {quoted(question.get('key') or [])})"
-    if question.get("kind") != "predict":
-        names = {v: k for k, v in store.CONFIDENCE.items()}
-        text += f", confidence {names[confidence]}" if confidence in names else ", confidence not given"
-    return text
+    return f"{qid}: {verdict} (picked {quoted(picked)}; key {quoted(question.get('key') or [])})"
 
 
 # prompt
@@ -293,7 +277,7 @@ def on_prompt(s, store, marker, data, raw):
         return None
     s.append_log(goal, log, {
         "type": "answer", "question": open_q["id"], "picked": None, "other": None,
-        "confidence": None, "notes": None, "freeText": prompt,
+        "notes": None, "freeText": prompt,
     })
     return f"{open_q['id']}: free-text answer linked, grade it with record_verdict"
 

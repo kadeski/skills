@@ -17,22 +17,10 @@
           {"label": "I don't know", "description": "Say so, and we look at it together"}
         ],
         "multiSelect": false
-      },
-      {
-        "question": "How sure are you?",
-        "header": "Confidence",
-        "options": [
-          {"label": "Guessing", "description": ""},
-          {"label": "Unsure", "description": ""},
-          {"label": "Fairly sure", "description": ""},
-          {"label": "Sure", "description": ""}
-        ],
-        "multiSelect": false
       }
     ],
     "answers": {
-      "In 2x + 3 = 11, which part do you undo first?": "the 2x",
-      "How sure are you?": "Sure"
+      "In 2x + 3 = 11, which part do you undo first?": "the 2x"
     },
     "annotations": {
       "In 2x + 3 = 11, which part do you undo first?": {"notes": "The 2 is stuck to the x, so it goes first"}
@@ -50,22 +38,10 @@
           {"label": "I don't know", "description": "Say so, and we look at it together"}
         ],
         "multiSelect": false
-      },
-      {
-        "question": "How sure are you?",
-        "header": "Confidence",
-        "options": [
-          {"label": "Guessing", "description": ""},
-          {"label": "Unsure", "description": ""},
-          {"label": "Fairly sure", "description": ""},
-          {"label": "Sure", "description": ""}
-        ],
-        "multiSelect": false
       }
     ],
     "answers": {
-      "In 2x + 3 = 11, which part do you undo first?": "the 2x",
-      "How sure are you?": "Sure"
+      "In 2x + 3 = 11, which part do you undo first?": "the 2x"
     },
     "annotations": {
       "In 2x + 3 = 11, which part do you undo first?": {"notes": "The 2 is stuck to the x, so it goes first"}

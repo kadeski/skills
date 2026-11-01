@@ -206,12 +206,6 @@ class LogReadingTest(unittest.TestCase):
         self.assertEqual(store.grade(many, ["A", "C"]), "partly")
         self.assertEqual(store.grade(many, ["C"]), "wrong")
 
-    def test_confidence(self):
-        self.assertEqual(store.confidence_value("fairly sure"), 70)
-        self.assertEqual(store.confidence_value(" Sure "), 95)
-        self.assertIsNone(store.confidence_value("Very"))
-        self.assertIsNone(store.confidence_value(None))
-
     def test_ids(self):
         self.assertRegex(store.new_id("p_"), r"^p_[a-z0-9]{4}$")
         self.assertEqual(store.slug("!!!"), "goal")
