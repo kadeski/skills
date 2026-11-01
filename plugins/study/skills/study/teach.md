@@ -16,7 +16,7 @@ A step is a landmark. You cross it in several small moves, and each move goes th
 2. **Check it** with one graded `check`. Ask for the move in a new case, not the explanation's words back. A check they could pass by matching words proves nothing.
 3. **Read the answer and act** (`questions.md`, "Giving the verdict").
 
-**Predictions.** Before a step, or a move inside one, ask a `predict` when the learner can reason toward the idea from what they hold, or when the result would surprise them. A prediction has no confidence question. A wrong prediction gives the step its reason: show what really happens, then why.
+**Predictions.** Before a step, or a move inside one, ask a `predict` when the learner can reason toward the idea from what they hold, or when the result would surprise them. A wrong prediction gives the step its reason: show what really happens, then why.
 
 **Facts that can't be derived.** Some facts don't follow from anything the learner holds: a name, a convention, a measured value. State them plainly, with no caveats. Where you can, give the fact a reason to exist, the problem it answers: "We write 3x for 3 times x. Writing the times sign every time gets mixed up with the letter x."
 
@@ -24,7 +24,7 @@ A step is a landmark. You cross it in several small moves, and each move goes th
 
 A check that fails is repaired before anything is built on it.
 
-- **Find the break.** Which held idea does the move rest on, and which part didn't land? The wrong pick and the learner's notes usually show it.
+- **Find the break.** Which held idea does the move rest on, and which part didn't land? The wrong pick usually shows it. When it doesn't, ask the learner how they got their answer.
 - **A misconception:** show a case where the wrong idea gives an answer the learner can see is wrong, by checking it themselves. Then teach the right idea from there.
 - **A gap:** teach the missing move, smaller than before.
 - **Teach it another way:** a smaller move, a different example, a picture. Never the same words again.
@@ -33,9 +33,9 @@ A check that fails is repaired before anything is built on it.
 
 ## Moving on
 
-Move past a step when its claim is obvious to the learner: the latest check on it was right and sure, and every fragile answer in it has been checked again in a new form. Then do `SKILL.md` step 5: update the tasks and start the extractor.
+Move past a step when its claim is obvious to the learner: the latest check on it was right, and every fragile answer in it has been checked again in a new form. Then do `SKILL.md` step 5: update the tasks and start the extractor.
 
-**Fragile answers.** Keep a list of answers that were right but unsure. Check each one again later, in a new form. A check in a later step that draws on the earlier idea does this well.
+**Fragile answers.** Keep a list of answers that were right but rested on a guess or a shaky reason. Check each one again later, in a new form. A check in a later step that draws on the earlier idea does this well.
 
 ## Messages
 

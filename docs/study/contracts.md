@@ -58,8 +58,8 @@ Additions to spec section 9: `session_id` on `save_probe`, `save_plan`, `finish_
   - The question entry stores the final shuffled `options` and `key` as a list.
   - Closes any open question of this log as `skipped` (a `verdict` entry, `by: "server"`). The first question with a step sets the goal's status to `teaching`.
   - Returns `{"question_id": "q3", "options": [...]}` (no `options` for free text), plus `"closed": "q2"` when it closed one. Question ids are `q<n>`, numbered per log.
-- `record_verdict({session_id, question_id, verdict, note?, confidence?})`: `verdict` is `right`, `partly`, `wrong` or `dontKnow`. `confidence` is 10, 40, 70, 95 or null. Logs a `verdict` entry with `by: "teacher"`. Returns `{"question_id", "verdict"}`.
-- `record_answer({session_id, question_id, text, confidence?})`: logs an `answer` entry (`freeText: text`). Returns `{"question_id"}`.
+- `record_verdict({session_id, question_id, verdict, note?})`: `verdict` is `right`, `partly`, `wrong` or `dontKnow`. Logs a `verdict` entry with `by: "teacher"`. Returns `{"question_id", "verdict"}`.
+- `record_answer({session_id, question_id, text})`: logs an `answer` entry (`freeText: text`). Returns `{"question_id"}`.
 - `commit_problem({session_id, statement, mode, targets, cue_class, solution})`: `mode` is `recall`, `discrimination` or `composition`; `targets` are existing proposition or chain ids; `cue_class` is `near`, `far` or `bare` (the practice skill's values; the server takes any short text). Refused while this log has an open problem. Writes the `commit` line and a `problem` entry. Returns `{"problem_id": "pr_x7k2"}`.
 - `conclude_problem({session_id, problem_id, outcome, verdict, rung, miss_class?, retest})`: the problem must belong to this log; `solved` takes no rung and `solvedWithHints` needs one; `retest` is a boolean, "bring this target back in a new form". Writes the `conclude` line and a `conclude` entry. Returns `{"problem_id", "solution", "due": [{"target", "due"}]}`.
 - `due_list({limit?})`: `{"due": [{"target", "statement", "due", "lastOutcome", "lastMode"}]}`, due now, longest overdue first. `lastOutcome` and `lastMode` come from the target's latest concluded problem (its conclude and its commit). Targets never practiced are not due. After a clean solve the gap is double the gap the previous conclude set. A chain target's statement reads `premise + premise -> conclusion`.
@@ -78,14 +78,14 @@ The full MCP tool names are `mcp__plugin_study_study__<tool>`.
 
 Spec section 8 holds, with these additions:
 
-- `verdict` may carry `confidence` (when the teacher maps it from words), and `by` may be `server` (a question closed as `skipped`).
-- `answer` always has `picked`, `other`, `confidence`, `notes` and `freeText`. From AskUserQuestion, `picked` is a list of labels (empty for an "Other" answer); for a free-text answer linked from a prompt or given through `record_answer`, `picked` is null and the text is in `freeText`.
+- `verdict`'s `by` may be `server` (a question closed as `skipped`).
+- `answer` always has `picked`, `other`, `notes` and `freeText`. Entries written before confidence was dropped may also carry `confidence`; nothing reads it. From AskUserQuestion, `picked` is a list of labels (empty for an "Other" answer); for a free-text answer linked from a prompt or given through `record_answer`, `picked` is null and the text is in `freeText`.
 - `end` may carry `note` (from `finish_goal`).
 - `extracted` is logged in the origin's session log for a step origin, with `propositions` and `chains` as the lists of ids the merge touched; a source origin logs nothing.
 - Practice: `problem` is `{problem}` (the problem id) and `conclude` is `{problem, outcome, verdict}`. Lines in `practice/problems.jsonl` carry `type` (`commit` or `conclude`) and `at`.
 - Marker: `{"mode": "study" | "practice", "goal": "<goal id>" | null, "log": "<log id>", "started": "<time>"}`.
 
-Use `store.now()` times, `store.open_question` for the open question, `store.grade` for multiple choice, `store.confidence_value` for the Confidence labels, and `store.step_statuses` for step positions.
+Use `store.now()` times, `store.open_question` for the open question, `store.grade` for multiple choice, and `store.step_statuses` for step positions.
 
 ## 5. `graph_merge`
 
@@ -114,27 +114,27 @@ Registration: `plugins/study/hooks/hooks.json`, plugin-wide, because skill front
 
 Prompts the learner didn't type also reach UserPromptSubmit, for example a background agent's `<task-notification>…</task-notification>`. A prompt that is one XML-like element (it starts with `<name` and ends with `</name>`, after trimming) is not logged and never linked to a question. A slash command such as `/study stop` is logged as `learner` but never linked.
 
-AskUserQuestion PostToolUse input. `questions` and `answers` are confirmed (`checks.md`); `annotations`, multi-select joining and "Other" are assumed until the hand check:
+AskUserQuestion PostToolUse input, confirmed by the hand check in `checks.md`. No app fills `annotations` yet: the terminal sends it empty and the desktop app leaves it out.
 
 ```json
 {
   "session_id": "…", "hook_event_name": "PostToolUse", "tool_name": "AskUserQuestion",
   "tool_input": {
     "questions": [{"question": "…", "header": "…", "options": [{"label": "…", "description": "…"}], "multiSelect": false}],
-    "answers": {"<question text>": "<label> | <label>, <label> | <typed Other text>"},
+    "answers": {"<question text>": "<label> | <label>, <label> | [<label>, <label>] | <typed Other text>"},
     "annotations": {"<question text>": {"notes": "…"}}
   },
   "tool_response": "…"
 }
 ```
 
-Read `answers` and `annotations` from `tool_input`, else from `tool_response` (as a dict, or JSON text). A multi-select answer is labels joined by `", "`: an answer that equals a label is that label; otherwise split on `", "`, and if every part is a label those are the picks; otherwise it is "Other" text. When the input can't be parsed, append the raw input to `errors.log` and exit 0 with no output.
+Read `answers` and `annotations` from `tool_input`, else from `tool_response` (as a dict, or JSON text). A multi-select answer is labels joined by `", "` (the terminal) or a list of labels (the desktop app), which the hook joins the same way first: an answer that equals a label is that label; otherwise split on `", "`, and if every part is a label those are the picks; otherwise it is "Other" text. When the input can't be parsed, append the raw input to `errors.log` and exit 0 with no output.
 
-Matching: the graded question is the open question whose `question` text equals the asked question's text (whitespace trimmed). The confidence question has the header `Confidence` and options Guessing, Unsure, Fairly sure, Sure.
+Matching: the graded question is the open question whose `question` text equals the asked question's text (whitespace trimmed).
 
 Messages:
 
-- Multiple choice, graded by code: `q7: wrong (picked "B-side"; key "A-side"), confidence Sure`. Several labels: `picked "A", "B"; key "A", "C"`. No confidence answered on a `probe` or `check`: `confidence not given`. A `predict` has no confidence part.
+- Multiple choice, graded by code: `q7: wrong (picked "B-side"; key "A-side")`. Several labels: `picked "A", "B"; key "A", "C"`.
 - "Other" text on a graded question: `q7: free-text answer via Other, grade it with record_verdict`.
 - Free-text answer in chat (prompt hook): `q9: free-text answer linked, grade it with record_verdict`.
 - Compact (study): `Study is on. Goal "<title>" (<goal id>), phase <status>, current step <id> "<title>"[, open question q3 "<text>"]. Reread <phase file> before going on.` Practice: `Study practice is on (log <id>)[, open problem pr_x]. Reread skills/practice/method.md before going on.`

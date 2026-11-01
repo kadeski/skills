@@ -22,7 +22,6 @@ It rebuilds the method of [LearnHarness](https://github.com/amosblomqvist/learnh
 | Answer log | Hooks log every question and answer. The model adds verdicts through the MCP server. |
 | Data tools | A small stdio MCP server bundled with the plugin, Python standard library only. The only way the model writes data. |
 | Grading | The teacher commits the answer key before asking. Code grades multiple choice against it; the teacher grades free text. |
-| Confidence | Asked on probe questions and checks, not on predictions. Scale: Guessing / Unsure / Fairly sure / Sure, stored as 10 / 40 / 70 / 95. |
 | Plan view | Plan steps become Claude Code tasks. The plan, with dependencies, is saved in the goal's folder. |
 | Extraction | After each checked plan step, the teacher starts a background extractor subagent and passes it that step's teaching text. |
 | Graph view | `/graph` builds one self-contained HTML page and opens it in the browser. No network. |
@@ -37,8 +36,9 @@ It rebuilds the method of [LearnHarness](https://github.com/amosblomqvist/learnh
 
 These were not discussed. Change any of them before building.
 
-- One graded question per AskUserQuestion call (plus its confidence question), to keep one step, one check.
-- Free-text questions are asked in plain chat, because AskUserQuestion needs 2 to 4 options. Their confidence is asked in words.
+- One graded question per AskUserQuestion call, to keep one step, one check.
+- Free-text questions are asked in plain chat, because AskUserQuestion needs 2 to 4 options.
+- No confidence question. It adds a step to every answer. No app sends notes on an answer (`checks.md`), so the teacher asks for the learner's thinking in chat when it matters instead.
 - The server shuffles multiple-choice options and adds "I don't know" when there is room.
 - A SessionStart hook with matcher `compact` puts the current goal, phase and open question back after compaction.
 - Logging stops with `end_session` (`/study stop`), `finish_goal`, or a marker idle for 24 hours.
@@ -84,19 +84,19 @@ Each step has a title and one claim, the idea it makes obvious, plus the steps i
 
 - One reasoning step at a time. Each new fact follows from what the learner holds by a single step, so it lands as obvious too.
 - Some facts can't be derived from what the learner holds. State those plainly, with no caveats, and give them a reason to exist where you can (a problem they answer).
-- Where it helps, ask for a prediction before teaching a step. Predictions are graded but carry no confidence question; a wrong prediction is useful, not a failure.
+- Where it helps, ask for a prediction before teaching a step. Predictions are graded; a wrong prediction is useful, not a failure.
 - After every step, a check. A check that fails is repaired before anything is built on it.
 - No narration of the method ("now we will connect X to Y"). Every sentence teaches or it goes.
 - The teacher does the logistics: research, fact checks, sources. The learner's effort goes into the material.
 
 **Where the lesson is.** A question's step is a position, not a completion. The current step is the step of the latest question tied to a step; every earlier step is visited. Moving to a new step is the teacher's judgment that the last one is finished. The task list follows this: a step's task is `in_progress` while it is current and `completed` once the lesson moves past it.
 
-**Reading answers.** The learner's thinking is the main evidence, more than right or wrong:
+**Reading answers.** The learner's thinking is the main evidence, more than right or wrong. A picked option doesn't show it, so it comes from free-text and "Other" answers, and from asking in chat after the verdict when it matters: a wrong answer whose cause the teacher can't tell, or a right answer it doubts.
 
-- Right and sure: held.
-- Right but guessing: fragile. Check again later in a new form.
-- Wrong and sure: a misconception. Stop and repair it.
-- Wrong and unsure: a gap. Teach it.
+- Right, with a sound reason or none to read: held.
+- Right, but the reasoning shows a guess or a shaky reason: fragile. Check again later in a new form.
+- Wrong, and the answer or the reasoning shows a wrong idea: a misconception. Stop and repair it.
+- Wrong with no idea behind it, or "I don't know": a gap. Teach it.
 
 ### Practice
 
@@ -275,12 +275,12 @@ Model-invocable and read-only. Its description says when to use it: when an answ
 
 ## 5. Question protocol
 
-| Kind | When | Graded | Confidence | Asked with |
-|---|---|---|---|---|
-| `ask` | Any phase: goal, preferences, plan changes | No | No | AskUserQuestion; may group up to 4 |
-| `probe` | Probe | Yes | Yes | AskUserQuestion, or chat for free text |
-| `predict` | Before a step | Yes | No | AskUserQuestion |
-| `check` | After a step | Yes | Yes | AskUserQuestion, or chat for free text |
+| Kind | When | Graded | Asked with |
+|---|---|---|---|
+| `ask` | Any phase: goal, preferences, plan changes | No | AskUserQuestion; may group up to 4 |
+| `probe` | Probe | Yes | AskUserQuestion, or chat for free text |
+| `predict` | Before a step | Yes | AskUserQuestion |
+| `check` | After a step | Yes | AskUserQuestion, or chat for free text |
 
 `predict` and `check` must name a plan step. `probe` and `ask` must not.
 
@@ -292,19 +292,19 @@ Model-invocable and read-only. Its description says when to use it: when an answ
    - the options are 2 to 4 distinct, non-empty labels
    - `step_id` exists for `predict` and `check`
    It adds "I don't know" when there are 3 or fewer options, shuffles the options and returns `{question_id, options}`. A question still unanswered in this session is closed as `skipped`.
-2. The teacher calls AskUserQuestion with that question and the options in the returned order. For `probe` and `check` the same call adds a second question with the header `Confidence` and the options Guessing, Unsure, Fairly sure and Sure. The learner's notes on the answer are their thinking. Typing in "Other" counts as a free-text answer.
-3. The PostToolUse hook logs the answer. A picked option is graded by code against the key. The hook returns `additionalContext` with the verdict and confidence, for example `q7: wrong (picked "B-side", key "A-side"), confidence Sure`.
+2. The teacher calls AskUserQuestion with that question and the options in the returned order. Typing in "Other" counts as a free-text answer.
+3. The PostToolUse hook logs the answer. A picked option is graded by code against the key. The hook returns `additionalContext` with the verdict, for example `q7: wrong (picked "B-side"; key "A-side")`.
 4. For an "Other" answer, the teacher grades it and calls `record_verdict`.
 5. The teacher gives the verdict plainly, then repairs or moves on.
 
 ### A graded free-text question
 
 1. `pose_question` with `free_text: true` and `key` holding the model answer.
-2. The teacher asks it in chat and asks how sure the learner is.
+2. The teacher asks it in chat.
 3. The UserPromptSubmit hook links the learner's next message to the open question and adds `additionalContext`: `q9: free-text answer linked, grade it`.
-4. The teacher grades it and calls `record_verdict({question_id, verdict, note, confidence})`, with confidence mapped from the learner's words to 10 / 40 / 70 / 95, or null.
+4. The teacher grades it and calls `record_verdict({question_id, verdict, note})`.
 
-When AskUserQuestion's `kind: "text"` and `kind: "number"` ship (they are in the 2.1.308 build's tool types but not documented or exposed), free text and a real confidence slider move into the same call.
+When AskUserQuestion's `kind: "text"` ships (it is in the 2.1.308 build's tool types but not documented or exposed), free text moves into the same call.
 
 ## 6. Hooks
 
@@ -312,7 +312,7 @@ When AskUserQuestion's `kind: "text"` and `kind: "number"` ship (they are in the
 
 - It finds `<data>/active/<session_id>.json`. With no live marker (section 4), the session isn't studying: exit 0 with no output.
 - **answer:**
-  - Matches each answered question to the open question by text, and the `Confidence` question by header.
+  - Matches each answered question to the open question by text.
   - Appends an `answer` entry and, for multiple choice, a `verdict` entry with `by: "code"`.
   - Logs every other answered question, such as an ungraded `ask`, as an `ask` entry.
   - Prints `additionalContext`.
@@ -431,7 +431,7 @@ One JSON object per line, each with `n` (sequence number) and `at` (UTC time).
 |---|---|---|
 | `start` | `claudeSession`, `goal` | server |
 | `question` | `id`, `kind`, `step`, `question`, `options`, `multi`, `key`, `explanation`, `freeText` | server |
-| `answer` | `question`, `picked`, `other`, `confidence`, `notes`, `freeText` | hook |
+| `answer` | `question`, `picked`, `other`, `notes`, `freeText` | hook |
 | `verdict` | `question`, `verdict` (`right`, `partly`, `wrong`, `dontKnow`, `skipped`), `by` (`code`, `teacher`), `note` | hook or server |
 | `ask` | `question`, `header`, `options`, `picked`, `other`, `notes` | hook |
 | `learner` | `text` | hook |
@@ -481,8 +481,8 @@ Python 3.9 or newer, standard library only, MCP over stdio. Every tool checks it
 | `read_plan(goal_id)` | Steps with derived statuses |
 | `finish_goal(goal_id, note)` | Sets `done` and deletes the `active` marker |
 | `pose_question(...)` | Section 5 |
-| `record_verdict(question_id, verdict, note?, confidence?)` | Teacher grades |
-| `record_answer(question_id, text, confidence?)` | Fallback when a hook missed a free-text answer |
+| `record_verdict(question_id, verdict, note?)` | Teacher grades |
+| `record_answer(question_id, text)` | Fallback when a hook missed a free-text answer |
 | `commit_problem(session_id, statement, mode, targets, cue_class, solution)` | Refused while a problem is open |
 | `conclude_problem(problem_id, outcome, verdict, rung, miss_class?, retest)` | Returns the solution and new due dates |
 | `due_list(limit?)` | Targets due now, oldest first |
@@ -512,7 +512,7 @@ Python 3.9 or newer, standard library only, MCP over stdio. Every tool checks it
 - **Tests:** `tests/study/`, run with `python3 -m unittest discover tests/study`, and by `scripts/check.sh`. They cover:
   - `store.py`: atomic writes, appends under the lock, folding the graph log, refusing a newer format
   - every server check in section 9, including plan cycles, a key that isn't an option, a second open question and merge dedupe
-  - `log_hook.py`: no marker or a stale one means no output; matching an answer to its question; logging an unmatched answer as `ask`; multiple-choice grading; mapping the `Confidence` header; linking a free-text answer
+  - `log_hook.py`: no marker or a stale one means no output; matching an answer to its question; logging an unmatched answer as `ask`; multiple-choice grading; linking a free-text answer
   - `graph_page.py`: builds from a fixture, and the output holds no `http` URL
 - **Versions:** 0.1.0 until the first real use, 1.0.0 after.
 
@@ -545,7 +545,7 @@ Run these in a scratch copy of the plugin loaded with `claude --plugin-dir`. Eac
 
 ## 14. Later
 
-- A mod with a real confidence slider, thinking boxes and a plan pane. Or AskUserQuestion's `text` and `number` kinds if they ship first.
+- A mod with thinking boxes and a plan pane. Or AskUserQuestion's `text` kind if it ships first.
 - Skill evals, with the repo's runner and `/hillclimb`, or `claude plugin eval`.
 - Listing in Anthropic's plugin directory.
 - Importing a LearnHarness data folder.

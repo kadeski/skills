@@ -21,7 +21,6 @@ GOAL = "two-step-equations-k3f9"
 LOG = "2026-10-25-a1b2"
 CHECK = "In 2x + 3 = 11, which part do you undo first?"
 CHECK_OPTIONS = ["the + 3", "the 2x", "the = 11", store.IDK]
-CONFIDENCE_LABELS = ["Guessing", "Unsure", "Fairly sure", "Sure"]
 
 
 def fixture(name):
@@ -35,9 +34,6 @@ def asked(question, options, header="Check", multi=False):
         "question": question, "header": header, "multiSelect": multi,
         "options": [{"label": o, "description": ""} for o in options],
     }
-
-
-CONFIDENCE_Q = asked("How sure are you?", CONFIDENCE_LABELS, header="Confidence")
 
 
 class HookTest(unittest.TestCase):
@@ -238,9 +234,9 @@ class AnswerTest(HookTest):
     def test_fixture_answer_is_matched_and_graded(self):
         self.question("q1")
         text = self.context("answer", fixture("post_tool_use.json"), "PostToolUse")
-        self.assertEqual(text, 'q1: wrong (picked "the 2x"; key "the + 3"), confidence Sure')
+        self.assertEqual(text, 'q1: wrong (picked "the 2x"; key "the + 3")')
         self.assertEqual(self.entries(), [
-            {"type": "answer", "question": "q1", "picked": ["the 2x"], "other": None, "confidence": 95,
+            {"type": "answer", "question": "q1", "picked": ["the 2x"], "other": None,
              "notes": "The 2 is stuck to the x, so it goes first", "freeText": None},
             {"type": "verdict", "question": "q1", "verdict": "wrong", "by": "code"},
         ])
@@ -248,46 +244,23 @@ class AnswerTest(HookTest):
 
     def test_question_text_matches_with_whitespace_trimmed(self):
         self.question("q1", text="  " + CHECK + "\n")
-        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q],
-                                    {CHECK: "the + 3", "How sure are you?": "Guessing"})
-        self.assertEqual(self.context("answer", payload, "PostToolUse"),
-                         'q1: right (picked "the + 3"; key "the + 3"), confidence Guessing')
-
-    def test_confidence_header_mapping(self):
-        for n, (label, value) in enumerate(store.CONFIDENCE.items(), start=1):
-            with self.subTest(label=label):
-                self.question(f"q{n}")
-                payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q],
-                                            {CHECK: "the + 3", "How sure are you?": label})
-                text = self.context("answer", payload, "PostToolUse")
-                self.assertTrue(text.endswith(f", confidence {label}"), text)
-                self.assertEqual(self.entries()[0]["confidence"], value)
-
-    def test_confidence_typed_as_other_is_not_given(self):
-        self.question("q1")
-        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q],
-                                    {CHECK: "the + 3", "How sure are you?": "kind of sure"})
-        self.assertEqual(self.context("answer", payload, "PostToolUse"),
-                         'q1: right (picked "the + 3"; key "the + 3"), confidence not given')
-        self.assertIsNone(self.entries()[0]["confidence"])
-
-    def test_no_confidence_on_a_probe(self):
-        self.question("q1", kind="probe")
-        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS)], {CHECK: "the = 11"})
-        self.assertEqual(self.context("answer", payload, "PostToolUse"),
-                         'q1: wrong (picked "the = 11"; key "the + 3"), confidence not given')
-
-    def test_predict_has_no_confidence_part(self):
-        self.question("q1", kind="predict")
         payload = self.answer_input([asked(CHECK, CHECK_OPTIONS)], {CHECK: "the + 3"})
         self.assertEqual(self.context("answer", payload, "PostToolUse"), 'q1: right (picked "the + 3"; key "the + 3")')
 
+    def test_a_confidence_question_is_an_ask(self):
+        self.question("q1")
+        sure = asked("How sure are you?", ["Guessing", "Sure"], header="Confidence")
+        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), sure],
+                                    {CHECK: "the + 3", "How sure are you?": "Sure"})
+        self.assertEqual(self.context("answer", payload, "PostToolUse"), 'q1: right (picked "the + 3"; key "the + 3")')
+        self.assertEqual([e["type"] for e in self.entries()], ["answer", "verdict", "ask"])
+        self.assertEqual(self.entries()[2]["header"], "Confidence")
+
     def test_i_dont_know(self):
         self.question("q1")
-        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q],
-                                    {CHECK: store.IDK, "How sure are you?": "Unsure"})
+        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS)], {CHECK: store.IDK})
         self.assertEqual(self.context("answer", payload, "PostToolUse"),
-                         'q1: dontKnow (picked "I don\'t know"; key "the + 3"), confidence Unsure')
+                         'q1: dontKnow (picked "I don\'t know"; key "the + 3")')
         self.assertEqual(self.entries()[1]["verdict"], "dontKnow")
 
     def test_multi_select(self):
@@ -303,44 +276,47 @@ class AnswerTest(HookTest):
         for n, (answer, verdict) in enumerate(cases, start=1):
             with self.subTest(answer=answer):
                 self.question(f"q{n}", text=text, options=options, key=key)
-                payload = self.answer_input([asked(text, options, multi=True), CONFIDENCE_Q],
-                                            {text: answer, "How sure are you?": "Sure"})
+                payload = self.answer_input([asked(text, options, multi=True)], {text: answer})
                 message = self.context("answer", payload, "PostToolUse")
                 picked = ", ".join(f'"{p}"' for p in answer.split(", "))
                 self.assertEqual(message, f'q{n}: {verdict} (picked {picked}; key "subtract 3 from both sides", '
-                                          f'"divide both sides by 2"), confidence Sure')
+                                          f'"divide both sides by 2")')
                 self.assertEqual(self.entries()[0]["picked"], answer.split(", "))
+
+    def test_multi_select_as_a_list(self):
+        # The desktop app sends multi-select picks as a list; the terminal joins them with ", ".
+        options = ["the + 3", "the 2x", "the = 11", store.IDK]
+        self.question("q1", options=options, key=("the + 3", "the 2x"))
+        payload = self.answer_input([asked(CHECK, options, multi=True)], {CHECK: ["the + 3", "the 2x"]})
+        self.assertEqual(self.context("answer", payload, "PostToolUse"),
+                         'q1: right (picked "the + 3", "the 2x"; key "the + 3", "the 2x")')
+        self.assertEqual(self.entries()[0]["picked"], ["the + 3", "the 2x"])
 
     def test_label_holding_a_comma_is_one_pick(self):
         options = ["subtract 3, then divide by 2", "divide by 2, then subtract 3"]
         self.question("q1", options=options + [store.IDK], key=(options[0],))
-        payload = self.answer_input([asked(CHECK, options + [store.IDK]), CONFIDENCE_Q],
-                                    {CHECK: options[0], "How sure are you?": "Sure"})
+        payload = self.answer_input([asked(CHECK, options + [store.IDK])], {CHECK: options[0]})
         self.assertTrue(self.context("answer", payload, "PostToolUse").startswith("q1: right"))
         self.assertEqual(self.entries()[0]["picked"], [options[0]])
 
     def test_other_text_on_a_graded_question(self):
         self.question("q1")
-        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q],
-                                    {CHECK: "the 3, since it was added last", "How sure are you?": "Fairly sure"})
+        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS)], {CHECK: "the 3, since it was added last"})
         self.assertEqual(self.context("answer", payload, "PostToolUse"),
                          "q1: free-text answer via Other, grade it with record_verdict")
         self.assertEqual(self.entries(), [
             {"type": "answer", "question": "q1", "picked": [], "other": "the 3, since it was added last",
-             "confidence": 70, "notes": None, "freeText": None},
+             "notes": None, "freeText": None},
         ])
         self.assertEqual([q["id"] for q in store.ungraded(self.s.read_log(GOAL, LOG))], ["q1"])
 
     def test_unmatched_answer_is_logged_as_ask(self):
         self.question("q1", text="Which side do you change first?")
-        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q],
-                                    {CHECK: "the + 3", "How sure are you?": "Sure"})
+        payload = self.answer_input([asked(CHECK, CHECK_OPTIONS)], {CHECK: "the + 3"})
         self.silent("answer", payload)
         self.assertEqual(self.entries(), [
             {"type": "ask", "question": CHECK, "header": "Check", "options": CHECK_OPTIONS,
              "picked": ["the + 3"], "other": None, "notes": None},
-            {"type": "ask", "question": "How sure are you?", "header": "Confidence", "options": CONFIDENCE_LABELS,
-             "picked": ["Sure"], "other": None, "notes": None},
         ])
         self.assertEqual(store.open_question(self.s.read_log(GOAL, LOG))["id"], "q1")
 
@@ -349,18 +325,18 @@ class AnswerTest(HookTest):
         pace = asked("How fast should we go?", ["Slower", "Same", "Faster"], header="Pace")
         tools = asked("Which tools do you use?", ["Paper", "Calculator", "Graphing app"], header="Tools", multi=True)
         payload = self.answer_input(
-            [pace, asked(CHECK, CHECK_OPTIONS), CONFIDENCE_Q, tools],
-            {"How fast should we go?": "I would like more examples", CHECK: "the + 3", "How sure are you?": "Sure",
+            [pace, asked(CHECK, CHECK_OPTIONS), tools],
+            {"How fast should we go?": "I would like more examples", CHECK: "the + 3",
              "Which tools do you use?": "Paper, Calculator"},
             {"How fast should we go?": {"notes": "Step two lost me"}},
         )
         self.assertEqual(self.context("answer", payload, "PostToolUse"),
-                         'q1: right (picked "the + 3"; key "the + 3"), confidence Sure')
+                         'q1: right (picked "the + 3"; key "the + 3")')
         self.assertEqual(self.entries(after="start")[1:], [
             {"type": "ask", "question": "How fast should we go?", "header": "Pace",
              "options": ["Slower", "Same", "Faster"], "picked": [], "other": "I would like more examples",
              "notes": "Step two lost me"},
-            {"type": "answer", "question": "q1", "picked": ["the + 3"], "other": None, "confidence": 95,
+            {"type": "answer", "question": "q1", "picked": ["the + 3"], "other": None,
              "notes": None, "freeText": None},
             {"type": "verdict", "question": "q1", "verdict": "right", "by": "code"},
             {"type": "ask", "question": "Which tools do you use?", "header": "Tools",
@@ -377,7 +353,7 @@ class AnswerTest(HookTest):
     def test_answers_from_tool_response_json_text(self):
         self.question("q1")
         text = self.context("answer", fixture("post_tool_use_text_response.json"), "PostToolUse")
-        self.assertEqual(text, 'q1: right (picked "the + 3"; key "the + 3"), confidence Fairly sure')
+        self.assertEqual(text, 'q1: right (picked "the + 3"; key "the + 3")')
         self.assertEqual(self.entries()[0]["notes"], "Undo the last thing that was done to x")
 
     def test_answers_from_tool_response_dict(self):
@@ -424,8 +400,7 @@ class PromptTest(HookTest):
                          "q1: free-text answer linked, grade it with record_verdict")
         self.assertEqual(self.entries(), [
             {"type": "learner", "text": prompt},
-            {"type": "answer", "question": "q1", "picked": None, "other": None, "confidence": None, "notes": None,
-             "freeText": prompt},
+            {"type": "answer", "question": "q1", "picked": None, "other": None, "notes": None, "freeText": prompt},
         ])
         self.assertEqual([q["id"] for q in store.ungraded(self.s.read_log(GOAL, LOG))], ["q1"])
 

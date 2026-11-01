@@ -17,20 +17,9 @@
           {"label": "I don't know", "description": "Say so, and we look at it together"}
         ],
         "multiSelect": false
-      },
-      {
-        "question": "How sure are you?",
-        "header": "Confidence",
-        "options": [
-          {"label": "Guessing", "description": ""},
-          {"label": "Unsure", "description": ""},
-          {"label": "Fairly sure", "description": ""},
-          {"label": "Sure", "description": ""}
-        ],
-        "multiSelect": false
       }
     ]
   },
-  "tool_response": "{\"answers\": {\"In 2x + 3 = 11, which part do you undo first?\": \"the + 3\", \"How sure are you?\": \"Fairly sure\"}, \"annotations\": {\"In 2x + 3 = 11, which part do you undo first?\": {\"notes\": \"Undo the last thing that was done to x\"}}}",
+  "tool_response": "{\"answers\": {\"In 2x + 3 = 11, which part do you undo first?\": \"the + 3\"}, \"annotations\": {\"In 2x + 3 = 11, which part do you undo first?\": {\"notes\": \"Undo the last thing that was done to x\"}}}",
   "tool_use_id": "toolu_01Hn4Zr8sKq2Wm6Tx9Bv3PaJ"
 }

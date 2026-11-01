@@ -23,16 +23,16 @@ Bracket each strand, one graded `probe` question at a time:
 - **The floor** is something the learner reliably gets right.
 - **The ceiling** is something they get wrong or don't know.
 - Start near the top of what the goal needs, not at the basics. Most learners hold more than the basics, and every basic question spends their patience.
-- Right and sure: jump up. If they hold the strand at the level the goal needs, the strand is done.
-- Right but unsure: step up gently, and note that this part is shaky.
+- Right: jump up. If they hold the strand at the level the goal needs, the strand is done.
+- Right, but the reasoning shows a guess or a shaky reason: step up gently, and note that this part is shaky.
 - Wrong: come back down until they get one right. That pins the edge.
 - The edge is pinned when the floor and the ceiling are about one reasoning step apart.
 
 A wrong answer is one of three things. Tell them apart before you move on:
 
 - **A slip:** they hold the idea but misread or miscounted. The same idea in a new form goes right.
-- **A gap:** they never had the idea. It shows as "I don't know", or as a wrong answer they were unsure of.
-- **A misconception:** they hold a wrong idea, often sure of it, and it gives the same wrong answer each time. Dig into these most. Find the wrong rule in their own words: a free-text question ("How did you get that?") shows it best. A misconception left in place breaks every step built on top of it.
+- **A gap:** they never had the idea. It shows as "I don't know", or as a wrong answer with no idea behind it.
+- **A misconception:** they hold a wrong idea, and it gives the same wrong answer each time. Dig into these most. Find the wrong rule in their own words: a free-text question ("How did you get that?") shows it best. A misconception left in place breaks every step built on top of it.
 
 Never re-ask what an answer already showed. One answer often shows the edge of two strands. Count it for both.
 

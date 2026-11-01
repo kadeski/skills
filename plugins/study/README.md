@@ -2,7 +2,7 @@
 
 `study` is a Claude Code plugin that teaches you one goal across as many sessions as it takes. It first finds out what you already know, then plans the shortest path from there to the goal, then teaches one reasoning step at a time with a check after each step. Later you can practice what you learned, and everything you were taught goes into a knowledge graph that later sessions read.
 
-It works in a normal Claude Code chat: questions come as multiple choice (with a confidence question) or as plain chat. It runs in the terminal, the desktop app and VS Code.
+It works in a normal Claude Code chat: questions come as multiple choice or as plain chat. It runs in the terminal, the desktop app and VS Code.
 
 ## Install
 

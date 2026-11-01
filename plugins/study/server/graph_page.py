@@ -36,7 +36,8 @@ def page_data(store, goal_id=None):
 
     Each node's sources become `{"goal", "date", "step", "stepTitle"}` for a taught step (the
     date is the log id's date) or `{"file"}` for imported notes. Goals get a color slot in the
-    order they were created, so a goal keeps its color from one build to the next.
+    order they were created, so a new goal leaves the older goals' colors as they were. Deleting a
+    goal's folder moves the goals created after it to the next slot down.
     """
     props, chains = store.graph()
     goals = [g for g in store.list_goals() if isinstance(g, dict) and g.get("id")]

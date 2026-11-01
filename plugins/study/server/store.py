@@ -28,7 +28,6 @@ FORMAT = 1
 MARKER_TTL = 24 * 3600
 DEFAULT_DATA_DIR = "~/Study"
 IDK = "I don't know"
-CONFIDENCE = {"Guessing": 10, "Unsure": 40, "Fairly sure": 70, "Sure": 95}
 VERDICTS = ("right", "partly", "wrong", "dontKnow", "skipped")
 
 _ALPHABET = string.ascii_lowercase + string.digits
@@ -278,14 +277,21 @@ class Store:
         return goal
 
     def list_goals(self):
-        """Every goal.json, most recently updated first."""
+        """Every readable goal.json, most recently updated first.
+
+        A goal.json that is not valid JSON is left out, so one damaged goal hides only itself;
+        read_goal on its id still says what is wrong.
+        """
         goals = []
         base = self.path("goals")
         if base.is_dir():
             for d in base.iterdir():
                 if _SAFE_ID.fullmatch(d.name):
-                    goal = self.read_goal(d.name)
-                    if goal:
+                    try:
+                        goal = self.read_goal(d.name)
+                    except StoreError:
+                        continue
+                    if isinstance(goal, dict):
                         goals.append(goal)
         goals.sort(key=lambda g: g.get("updated") or "", reverse=True)
         return goals
@@ -453,13 +459,3 @@ def grade(question, picked):
     if picked & key:
         return "partly"
     return "wrong"
-
-
-def confidence_value(label):
-    """10 / 40 / 70 / 95 for a Confidence option label (any case), else None."""
-    if not isinstance(label, str):
-        return None
-    for name, value in CONFIDENCE.items():
-        if label.strip().lower() == name.lower():
-            return value
-    return None
