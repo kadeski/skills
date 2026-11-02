@@ -14,8 +14,8 @@
     {
       "name": "study",
       "source": {
-        "source": "github",
-        "repo": "kadeski/study",
+        "source": "url",
+        "url": "https://github.com/kadeski/study.git",
         "ref": "release"
       }
     },
