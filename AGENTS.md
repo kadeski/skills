@@ -2,6 +2,8 @@
 
 The repo is a marketplace, `kadeski`. Each plugin is a folder `plugins/<plugin>/` that ships on its own and is listed on its own in the Claude plugin directory. A plugin holds its skills in `skills/<name>/SKILL.md`, a `README.md` (its user doc and directory listing, at least 40 words) and a `LICENSE`. Keep anything that does not ship, such as evals and scripts, out of `plugins/`.
 
+A plugin may live in its own repository instead: `study` is in kadeski/study, and its marketplace entry is a `github` source on that repository's `release` branch. The directory follows a hook's Python script only at a repository root, which is why it moved.
+
 Each plugin has a manifest per agent:
 
 - Claude Code: `.claude-plugin/plugin.json` (Grok Build reads it too)

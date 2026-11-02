@@ -13,7 +13,11 @@
     },
     {
       "name": "study",
-      "source": "./plugins/study"
+      "source": {
+        "source": "github",
+        "repo": "kadeski/study",
+        "ref": "release"
+      }
     },
     {
       "name": "tutor",
