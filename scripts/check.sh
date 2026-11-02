@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Checks that every plugin's manifests agree, every marketplace lists every plugin it
 # should, and every skill is well formed. A plugin with only .claude-plugin/plugin.json
-# is Claude-only: it is listed in the Claude Code marketplace and no other. Also checks
+# is Claude-only: it is listed in the Claude Code marketplace and no other. A plugin in its
+# own repository (study) is listed with a github source and has no folder here. Also checks
 # that the tutor.js VERSION moves with the copies of it and that no plugin substitutes a
-# credential-like name, runs the study plugin's unit tests, and warns when a plugin changed
-# but its version did not.
+# credential-like name, and warns when a plugin changed but its version did not.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -27,7 +27,7 @@ multi_agent=$(for p in $plugins; do claude_only "$p" || echo "$p"; done)
 for m in "${marketplaces[@]}"; do
   expected=$plugins
   [ "$m" = .claude-plugin/marketplace.json ] || expected=$multi_agent
-  listed=$(jq -r '.plugins[].name' "$m" | sort)
+  listed=$(jq -r '.plugins[] | select((.source | type) != "object" or .source.source != "github") | .name' "$m" | sort)
   [ "$listed" = "$expected" ] || err "$m lists '$(echo $listed)', expected '$(echo $expected)'"
   for p in $expected; do
     src=$(jq -r --arg p "$p" '.plugins[] | select(.name == $p) | .source | if type == "object" then .path else . end' "$m")
@@ -75,16 +75,6 @@ seed=$(jq -r '.[] | select(.collection == "goal" and .doc_id == "main") | .data.
 example=$(sed -n 's/.*"tutorJs": *\([0-9][0-9]*\).*/\1/p' "$tutor/SKILL.md" | sort -u)
 [ -n "$js" ] && [ "$seed" = "$js" ] && [ "$example" = "$js" ] \
   || err "tutor.js VERSION is '$js' in $tutor/tutor.js, goal/main.tutorJs is '$seed' in demo/tutor/seed.json and the example tutorJs is '$(echo $example)' in $tutor/SKILL.md; bump them together"
-
-# Study's unit tests. Its Python must also parse as Python 3.9, the oldest it supports.
-if ! out=$(python3 -m unittest discover -s tests/study 2>&1); then
-  err "tests/study failed:"; echo "$out"
-fi
-for f in $(git ls-files -co --exclude-standard -- 'plugins/study/*.py'); do
-  [ -e "$f" ] || continue  # tracked but deleted in the working tree
-  python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read(), feature_version=(3, 9))' "$f" 2>&1 \
-    || err "$f does not parse as Python 3.9"
-done
 
 # A plugin whose files changed since this branch left origin/main needs a version bump to
 # ship. Compares the working tree's tracked files with origin/main as last fetched.
