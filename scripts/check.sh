@@ -2,7 +2,7 @@
 # Checks that every plugin's manifests agree, every marketplace lists every plugin it
 # should, and every skill is well formed. A plugin with only .claude-plugin/plugin.json
 # is Claude-only: it is listed in the Claude Code marketplace and no other. A plugin in its
-# own repository (study) is listed with a github source and has no folder here. Also checks
+# own repository (study) is listed with a github or url source and has no folder here. Also checks
 # that the tutor.js VERSION moves with the copies of it and that no plugin substitutes a
 # credential-like name, and warns when a plugin changed but its version did not.
 set -euo pipefail
@@ -27,7 +27,7 @@ multi_agent=$(for p in $plugins; do claude_only "$p" || echo "$p"; done)
 for m in "${marketplaces[@]}"; do
   expected=$plugins
   [ "$m" = .claude-plugin/marketplace.json ] || expected=$multi_agent
-  listed=$(jq -r '.plugins[] | select((.source | type) != "object" or .source.source != "github") | .name' "$m" | sort)
+  listed=$(jq -r '.plugins[] | select((.source | type) != "object" or (.source.source | IN("github", "url") | not)) | .name' "$m" | sort)
   [ "$listed" = "$expected" ] || err "$m lists '$(echo $listed)', expected '$(echo $expected)'"
   for p in $expected; do
     src=$(jq -r --arg p "$p" '.plugins[] | select(.name == $p) | .source | if type == "object" then .path else . end' "$m")
