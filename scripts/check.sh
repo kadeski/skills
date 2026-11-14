@@ -17,6 +17,16 @@ fail=0
 err() { echo "FAIL: $*"; fail=1; }
 warn() { echo "WARN: $*"; }
 
+# Strict validation, with one warning let through: a plugin with no version, which ships every
+# commit as a release (sdlc). The missing-icon note never changes the validator's result.
+validate() {
+  local out
+  out=$(claude plugin validate "$1" --strict 2>&1) && { echo "$out"; return 0; }
+  echo "$out"
+  echo "$out" | grep -q -F 'version: No version specified' || return 1
+  ! echo "$out" | grep -F '❯' | grep -v -F -e 'version: No version specified' -e 'ICON_MISSING' | grep -q .
+}
+
 for f in "${marketplaces[@]}"; do
   jq -e . "$f" >/dev/null || err "$f is not valid JSON"
 done
@@ -64,7 +74,7 @@ for p in $plugins; do
   hits=$(git grep -n -o -i -E '\$\{[^}]*(key|token|secret|password|auth)[^}]*\}' -- "$dir" | grep -v -i -F ':${user_config.' || true)
   [ -z "$hits" ] || { err "$dir: credential-like name in a \${...} substitution, which the plugin directory holds; rename it:"; echo "$hits"; }
 
-  claude plugin validate "$dir" --strict || fail=1
+  validate "$dir" || fail=1
 done
 
 # The page runtime's VERSION, the demo seed's goal/main.tutorJs and the SKILL.md example
@@ -82,14 +92,15 @@ if base=$(git merge-base HEAD origin/main 2>/dev/null); then
   for p in $plugins; do
     f=plugins/$p/.claude-plugin/plugin.json
     git cat-file -e "$base:$f" 2>/dev/null || continue
-    version=$(jq -r .version "$f") || continue
+    version=$(jq -r '.version // empty' "$f") || continue
+    [ -n "$version" ] || continue
     if ! git diff --quiet "$base" -- "plugins/$p" && [ "$(git show "$base:$f" | jq -r .version)" = "$version" ]; then
       warn "plugins/$p changed since origin/main but its version is still $version"
     fi
   done
 fi
 
-claude plugin validate . --strict || fail=1
+validate . || fail=1
 
 [ "$fail" -eq 0 ] && echo "All checks passed."
 exit "$fail"

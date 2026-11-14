@@ -1,0 +1,16 @@
+{
+  "name": "sdlc",
+  "displayName": "SDLC",
+  "description": "Spec, build test-first, verify, debug and keep lessons, with a gate that refuses a finished turn or a ticked task while the repo's .claude/checks.json checks fail.",
+  "author": {
+    "name": "Kaden Staker"
+  },
+  "repository": "https://github.com/kadeski/skills",
+  "license": "MIT",
+  "keywords": [
+    "spec",
+    "tdd",
+    "review",
+    "hooks"
+  ]
+}

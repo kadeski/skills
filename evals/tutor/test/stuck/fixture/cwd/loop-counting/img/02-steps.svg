@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="380" height="140" viewBox="0 0 380 140">
-  <rect width="380" height="140" fill="white"/>
-  <text x="20" y="30" font-size="16" fill="#111">items: n of them</text>
-  <rect x="20" y="45" width="60" height="30" fill="#9cc" stroke="#222"/>
-  <rect x="90" y="45" width="60" height="30" fill="#9cc" stroke="#222"/>
-  <rect x="160" y="45" width="60" height="30" fill="#9cc" stroke="#222"/>
-  <text x="240" y="66" font-size="16" fill="#111">... n times</text>
-  <text x="20" y="110" font-size="16" fill="#111">each box: 3 steps, so 3 x n in all</text>
-</svg>

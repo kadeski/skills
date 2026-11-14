@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- `scripts/check.sh` - run before every commit. Needs `jq` and the `claude` CLI. It checks that manifests agree on `name` and `version`, that each marketplace lists the right plugins (a plugin with only `.claude-plugin/plugin.json` is Claude-only and must be listed only in `.claude-plugin/marketplace.json`), that each `SKILL.md` `name` matches its folder, that the tutor `VERSION` matches its copies (see below), that no plugin file has a credential-like name (key, token, secret, password, auth) inside a `${...}` substitution, which the plugin directory holds under `MCP_FORWARDS_CREDENTIAL_ENV`, and runs `claude plugin validate --strict` on every plugin and the repo. It also warns, without failing, when a plugin's tracked files differ from origin/main (as last fetched) but its version does not.
+- `scripts/check.sh` - run before every commit. Needs `jq` and the `claude` CLI. It checks that manifests agree on `name` and `version`, that each marketplace lists the right plugins (a plugin with only `.claude-plugin/plugin.json` is Claude-only and must be listed only in `.claude-plugin/marketplace.json`), that each `SKILL.md` `name` matches its folder, that the tutor `VERSION` matches its copies (see below), that no plugin file has a credential-like name (key, token, secret, password, auth) inside a `${...}` substitution, which the plugin directory holds under `MCP_FORWARDS_CREDENTIAL_ENV`, and runs `claude plugin validate --strict` on every plugin and the repo. The one warning it lets through is a plugin with no `version`. It also warns, without failing, when a plugin's tracked files differ from origin/main (as last fetched) but its version does not.
 - `scripts/hooks/pre-commit` runs `scripts/check.sh` and blocks the commit if it fails. Turn it on once per clone with `git config core.hooksPath scripts/hooks` (this covers every worktree). It checks the working tree, so unstaged changes count too. `git commit --no-verify` skips it.
 - Evals (see `evals/README.md`):
   - `evals/run.py dry <skill> -v` - grade untouched fixtures, no agent or judge, free.
@@ -30,8 +30,17 @@ Rules that span these files:
 
 `demo/tutor/` is a test page for `tutor.js` (not shipped). Its README has the publish, seed and update steps.
 
+## The sdlc plugin
+
+Claude-only, with no `version` on purpose (see `AGENTS.md`). Its tests are in `tests/sdlc/`:
+
+- `stop-gate.sh` - the gate against scratch repos. No model run, free.
+- The others are real headless model runs that cost money, so run them by hand. Each file's header says what it needs. `slice-pr.sh` opens a PR, and `next-auto.sh` files an issue, in `kadeski/sdlc-scratch`.
+
+Skills read each other as files (`../verify/SKILL.md`), so keep them as siblings in `skills/`.
+
 ## Evals
 
 - Never read `evals/<skill>/test/` or `evals/results/*/test/` while editing a skill, and never put case content into a skill.
 - After changing cases or graders, make a new baseline; old scores no longer compare.
-- The tutor evals are paused until #52: the cases and `evals/tutor/lib.py` were written for the older file-based tutor (`goal.md`, lesson files, `head.html`) and do not match the artifact-based skill yet.
+- Tutor has no eval cases: the ones for the older file-based tutor were removed, and #52 tracks new ones for the artifact-based skill.
