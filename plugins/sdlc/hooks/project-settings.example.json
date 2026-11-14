@@ -1,0 +1,109 @@
+{
+  "env": {
+    "CLAUDE_CODE_ENABLE_TODO_TOOLS": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Bash(git push *--force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * -f*)",
+      "Bash(git push -uf*)",
+      "Bash(git push * -uf*)",
+      "Bash(git push -fu*)",
+      "Bash(git push * -fu*)",
+      "Bash(git push * +*)",
+      "Bash(git push *--mirror*)",
+      "Bash(git -C * push *--force*)",
+      "Bash(git -C * push -f*)",
+      "Bash(git -C * push * -f*)",
+      "Bash(git -C * push * +*)",
+      "Bash(git -C * push -uf*)",
+      "Bash(git -C * push -fu*)",
+      "Bash(git -C * push *--mirror*)",
+      "Bash(git -c * push *--force*)",
+      "Bash(git -c * push -f*)",
+      "Bash(git -c * push * -f*)",
+      "Bash(git -c * push * +*)",
+      "Bash(git -c * push -uf*)",
+      "Bash(git -c * push -fu*)",
+      "Bash(git -c * push *--mirror*)",
+      "PowerShell(git push *--force*)",
+      "PowerShell(git push -f*)",
+      "PowerShell(git push * -f*)",
+      "PowerShell(git push -uf*)",
+      "PowerShell(git push * -uf*)",
+      "PowerShell(git push -fu*)",
+      "PowerShell(git push * -fu*)",
+      "PowerShell(git push * +*)",
+      "PowerShell(git push *--mirror*)",
+      "PowerShell(git -C * push *--force*)",
+      "PowerShell(git -C * push -f*)",
+      "PowerShell(git -C * push * -f*)",
+      "PowerShell(git -C * push * +*)",
+      "PowerShell(git -C * push -uf*)",
+      "PowerShell(git -C * push -fu*)",
+      "PowerShell(git -C * push *--mirror*)",
+      "PowerShell(git -c * push *--force*)",
+      "PowerShell(git -c * push -f*)",
+      "PowerShell(git -c * push * -f*)",
+      "PowerShell(git -c * push * +*)",
+      "PowerShell(git -c * push -uf*)",
+      "PowerShell(git -c * push -fu*)",
+      "PowerShell(git -c * push *--mirror*)"
+    ],
+    "ask": [
+      "Bash(git reset *--hard*)",
+      "Bash(git clean *)",
+      "Bash(git checkout -- *)",
+      "Bash(git checkout * -- *)",
+      "Bash(git checkout .)",
+      "Bash(git checkout -f*)",
+      "Bash(git checkout * -f*)",
+      "Bash(git checkout *--force*)",
+      "Bash(git restore *)",
+      "Bash(git switch *--discard-changes*)",
+      "Bash(git switch -f*)",
+      "Bash(git switch * -f*)",
+      "Bash(git switch *--force*)",
+      "PowerShell(git reset *--hard*)",
+      "PowerShell(git clean *)",
+      "PowerShell(git checkout -- *)",
+      "PowerShell(git checkout * -- *)",
+      "PowerShell(git checkout .)",
+      "PowerShell(git checkout -f*)",
+      "PowerShell(git checkout * -f*)",
+      "PowerShell(git checkout *--force*)",
+      "PowerShell(git restore *)",
+      "PowerShell(git switch *--discard-changes*)",
+      "PowerShell(git switch -f*)",
+      "PowerShell(git switch * -f*)",
+      "PowerShell(git switch *--force*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/stop-gate.mjs"],
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/stop-gate.mjs"],
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}

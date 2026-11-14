@@ -1,6 +1,6 @@
 # AGENTS.md
 
-The repo is a marketplace, `kadeski`. Each plugin is a folder `plugins/<plugin>/` that ships on its own and is listed on its own in the Claude plugin directory. A plugin holds its skills in `skills/<name>/SKILL.md`, a `README.md` (its user doc and directory listing, at least 40 words) and a `LICENSE`. Keep anything that does not ship, such as evals and scripts, out of `plugins/`.
+The repo is a marketplace, `kadeski`. Each plugin is a folder `plugins/<plugin>/` that ships on its own and is listed on its own in the Claude plugin directory. A plugin holds its skills in `skills/<name>/SKILL.md`, a `README.md` (its user doc and directory listing, at least 40 words) and a `LICENSE`. Keep anything that does not ship, such as evals, tests and scripts, out of `plugins/`: a plugin's tests live in `tests/<plugin>/`.
 
 A plugin may live in its own repository instead: `study` is in kadeski/study, and its marketplace entry is a `url` source with that repository's `https://` address and its `release` branch. The directory follows a hook's Python script only at a repository root, which is why it moved. Use `url` with `https://` rather than a `github` source: `claude plugin update` clones a `github` source over SSH, which fails where github.com is not in `known_hosts`.
 
@@ -10,7 +10,7 @@ Each plugin has a manifest per agent:
 - Codex: `plugin.json`
 - Cursor: `.cursor-plugin/plugin.json`
 
-`name` and `version` must match in all three. Bump the version in all of them together. A plugin may ship for Claude Code only: it then has only `.claude-plugin/plugin.json` and is listed only in the Claude Code marketplace. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
+`name` and `version` must match in all three. Bump the version in all of them together. A plugin may leave `version` out of its manifests (`sdlc` does): each commit then counts as a release, so accounts that sync the marketplace pick up every push. A plugin may ship for Claude Code only: it then has only `.claude-plugin/plugin.json` and is listed only in the Claude Code marketplace. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
 
 Each plugin is listed in every marketplace at the root (a Claude Code only plugin in Claude Code's alone):
 

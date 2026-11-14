@@ -1,0 +1,29 @@
+{
+  "description": "stop-gate: refuse a finished turn (Stop) or a ticked task (TaskCompleted) while the repo's .claude/checks.json checks fail. A repo without the file is left alone.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/stop-gate/stop-gate.mjs"],
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/stop-gate/stop-gate.mjs"],
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}
