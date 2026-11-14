@@ -48,7 +48,7 @@ Each finding gets `file:line`, what is wrong, the source that shows it, and the 
 
 Make the approved fixes on a branch, then run the project's full check command from step 0. Then record the findings left unfixed where the user chose:
 
-- **Issues**: one per finding, following the project's own issue conventions (labels, priority scheme, body template) as seen in step 0. If the project has none, give each issue a title naming the file and the problem, and a body with the finding's `file:line`, source and suggested fix. With no tracker, file nothing; end with the findings written as issue drafts in that form, for the user to file.
+- **Issues**: before filing, list the open issues (`gh issue list --state open --search "<file> in:body"` or the tracker's search) and skip a finding that already has one: name that issue in the report instead. Put a marker line in each body, `<!-- doc-lint: <file>:<problem in a few words> -->`, so a later run finds it. If a create call fails with no clear answer (a timeout, a dropped connection), search for the marker before filing again: the issue may exist. One per finding, following the project's own issue conventions (labels, priority scheme, body template) as seen in step 0. If the project has none, give each issue a title naming the file and the problem, and a body with the finding's `file:line`, source and suggested fix. With no tracker, file nothing; end with the findings written as issue drafts in that form, for the user to file.
 - **A TODO file or plan**: one item per finding in that file's own format, naming the file and the problem.
 - **Nowhere**: leave them in the report.
 

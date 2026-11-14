@@ -29,7 +29,7 @@ Then propose a risk, which sets how much human review the build gets. Judge it b
 
 - **low**: docs, copy, comments. A wrong change costs a revert and nothing else. /slice reviews it with `/verify auto` and asks nobody.
 - **normal**: most code. /slice runs `/verify` and the user picks which findings to fix.
-- **high**: auth, payments, data migrations, deletes, anything hard to undo or that other people's work depends on. As normal, plus the built-in `/code-review`, and the user reads the riskiest file themselves.
+- **high**: auth, payments, data migrations, deletes, anything hard to undo or that other people's work depends on. As normal, plus the built-in `/code-review`, and the user reads the riskiest file themselves. A high-risk spec also gets an `Undo:` line (see below).
 
 ## 3. Read just enough code
 
@@ -81,6 +81,7 @@ Rules for the parts:
 - **Slices**: thin and vertical. Each one is a behavior someone can see working end to end, not a layer ("add the table"). Order them so the app works after each one. Slice 1 is the thinnest end-to-end path. Each slice names its test, or, when there's no real logic, the check that replaces the test (a screenshot, a command and its output). /slice builds without stopping to show its tests, so the test line here is the user's one look at each test before it's written. Make it specific enough to disagree with: "rejects a 51st scheduled message with a 409", not "the limit works".
 - **Decisions**: Tier 2 gets one line each. In Tier 3, a decision a future session might reopen gets an ADR: `docs/decisions/NNNN-slug.md`, one paragraph (context, decision, why, what we gave up), linked from here. Written decisions stop later sessions from relitigating them.
 - **Open questions**: must say "none" before building. If not, ask them now.
+- **Undo** (high risk only, as a line under the Goal: `Undo: <...>`): `git revert` undoes code, not a migrated table, a changed setting or a sent message. Name what the change does outside git, how the state before it gets recorded (a backup, a dump, the old value written down), and which move gets it back: restore the recorded state, compensate (a fix-up when the effect can't be taken back), or stop and ask. Where a slice runs the change, its test line includes running the undo once on test data. Nothing outside git: write `Undo: git revert`.
 
 ## 5. Hand off
 

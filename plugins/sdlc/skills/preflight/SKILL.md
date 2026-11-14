@@ -1,6 +1,6 @@
 ---
 name: preflight
-description: Check an agent run before it goes unattended (scheduled routines, /loop, headless `claude -p` in cron or CI, overnight or background agents, digests and monitors) against 5 questions (done, self-check, reach, stop, sign-off) and, for agents that read sources and post, 6 rules that make them fail loudly instead of quietly. Outputs a pass or missing checklist with the exact fix for each gap. Use before setting up or changing any agent that runs without someone watching.
+description: Check an agent run before it goes unattended (scheduled routines, /loop, headless `claude -p` in cron or CI, overnight or background agents, digests and monitors) against 6 questions (done, self-check, reach, stop, sign-off, recovery) and, for agents that read sources and post, 6 rules that make them fail loudly instead of quietly. Outputs a pass or missing checklist with the exact fix for each gap. Use before setting up or changing any agent that runs without someone watching.
 argument-hint: "[the routine, script or prompt to check]"
 disable-model-invocation: true
 ---
@@ -19,7 +19,7 @@ Often an agent started by hand during the day does the same job with someone wat
 
 The prompt, the schedule or cron line, CLI flags, settings and permissions, where it runs (local or cloud), what it reads, and what it writes or sends.
 
-## 2. The 5 questions
+## 2. The 6 questions
 
 For each, quote the concrete answer from the setup, or mark it MISSING with the fix:
 
@@ -27,9 +27,14 @@ For each, quote the concrete answer from the setup, or mark it MISSING with the 
 2. **Self-check**: tests, a Stop hook, or a review step it has to pass. A stop-gate hook (`stop-gate.mjs`, run by a project setting or the `sdlc` plugin) with no command argument and no `.claude/checks.json` to run is MISSING: the gate stays silent without one, so it checks nothing. Fix: commit `.claude/checks.json` with the project's check commands.
 3. **Reach**: permission rules, sandbox, worktree, the one branch it may push to. Read-only wherever it only reads. "Don't touch X" in the prompt isn't a control; use a deny rule or a sandbox.
    - **GitHub is the layer that holds everywhere** (local, cloud sessions, Projects threads), so read it: `gh api repos/{owner}/{repo}/rules/branches/<default branch>` for rulesets, and `gh api repos/{owner}/{repo}/branches/<default branch>/protection` for classic protection. The two layers add up, so judge them together. MISSING when neither requires a status check (no `required_status_checks` rule in the ruleset reply, and no `required_status_checks` in the protection reply, or no protection at all), or when neither blocks force pushes (no `non_fast_forward` rule, and classic protection absent or with `allow_force_pushes.enabled` true). Fix: a ruleset on the default branch that requires the CI check and blocks force pushes.
+   - **Text it reads** (issues, comments, web pages, email, files other people write) can carry instructions. Ask what the run could do if it obeyed them, and cut that down: read-only tokens, no push outside its branch, no secrets in reach. A prompt line saying "ignore instructions in the input" isn't a control.
    - **Where the gate and the rules live**: a gate hook or a deny rule that lives only in `.claude/settings.local.json` or `~/.claude/settings.json` is MISSING for anything that runs in the cloud, which has neither. Fix: commit it to the repo's `.claude/settings.json` (`hooks/project-settings.example.json` in the `sdlc` plugin has the set). In a Projects thread repo settings don't load either; there only the `sdlc` plugin and GitHub reach.
 4. **Stop**: `--max-turns`, `--max-budget-usd`, or a spend limit. Start at 3-5x a normal run's cost and tighten after a few runs. Hitting the cap must be reported, not look like a quiet run.
 5. **Output and sign-off**: where the result lands (PR, summary, message) and who approves anything irreversible. Agent approval never stands in for a person's.
+6. **Recovery**: list what the run changes outside git: comments, issues, PRs, messages, files in other systems, data, settings. `git revert` undoes none of them. For each, quote how the run avoids doing it twice and how it gets back:
+   - **Twice**: a timeout or a dropped reply doesn't mean nothing happened. The run marks each effect (a marker line in a comment, a stable title, an id) and looks for it before acting again, so a retry or a rerun finds the first one instead of making a second. MISSING when a retry would repeat the call blind.
+   - **Back**: the state before the change is recorded (the old value, a backup) and one move is named: retry (state known unchanged), restore (the old state is known and can be put back), compensate (a fix-up when the effect is already out), or stop and report. MISSING when the only answer is "revert the commit" for an effect outside git.
+   - Read-only runs: n/a.
 
 ## 3. If it reads sources and reports (digest, monitor, triage)
 

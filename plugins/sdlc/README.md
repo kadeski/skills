@@ -16,15 +16,15 @@ Every skill but `pr-receipt` is manual: type its name, for example `/sdlc:spec`.
 | Skill | What it does |
 |---|---|
 | `grill` | Questions you about a plan one decision at a time until nothing it depends on is left open. |
-| `spec` | Writes the definition of done: goal, pass-or-fail checks, out of scope and thin vertical slices. Sets a risk level that decides how much review the build gets. |
+| `spec` | Writes the definition of done: goal, pass-or-fail checks, out of scope and thin vertical slices. Sets a risk level that decides how much review the build gets, and for high risk an `Undo:` line for what a revert cannot take back. |
 | `slice` | Builds a spec test-first with nobody watching. Each slice gets a failing test shown as proof, the smallest code that passes it, the full checks and a commit. |
-| `verify` | Starts a reviewer that did not see the build. It runs the done-when checks itself and reads the diff against the spec, capped at 3 rounds. |
+| `verify` | Starts a reviewer that did not see the build. It runs the done-when checks itself, as the base commit defines them, and reads the diff against the spec, capped at 3 rounds. A change to the checks or review rules the work is judged by always goes to you. |
 | `debug` | Reproduces a bug end to end, traces it to the layer that makes the wrong value, locks it with a failing test, then fixes it. |
 | `lesson` | Turns a correction into a fix at the source: a test, a lint rule, a `REVIEW.md` or `CLAUDE.md` line, or a hook. Proves the fix catches the mistake. |
 | `next` | Works through a plan that is not a spec, such as an issue queue, one contract at a time. With `auto` it runs unattended and decides each review finding by rule. |
-| `preflight` | Checks an agent run before it goes unattended: what done means, how it checks itself, what it can reach, when it stops and who signs off. |
+| `preflight` | Checks an agent run before it goes unattended: what done means, how it checks itself, what it can reach, when it stops, who signs off, and how it avoids repeating or gets back from what it changes outside git. |
 | `pr-receipt` | Lays out a PR description: a plain-language summary, then collapsed Proof (named tests, CI, logs) and Details sections. Claude uses it on its own whenever it writes or edits a PR description. |
-| `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, and audits hooks and deny rules. Reports first and changes only what you approve. |
+| `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, audits hooks and deny rules, and reads the track record (reviewer noise, reverts and follow-up fixes per risk level) to say which checkpoints have earned dropping. Reports first and changes only what you approve. |
 
 ## The gate
 

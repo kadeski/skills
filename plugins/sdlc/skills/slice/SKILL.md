@@ -48,14 +48,15 @@ Work through ordinary trouble yourself. If the spec doesn't settle something, ch
 - **The test looks wrong** once you start making it pass. Don't change it to get green, because a test its own author edited to pass proves nothing. Say what it should assert instead.
 - **You're out of ideas**: the next attempt would repeat one you already tried. Say what you tried and what each attempt ruled out, then propose reverting to the last commit and trying a different approach, or splitting the slice smaller. Ask before discarding any work.
 - **The work would contradict the spec** or touch something it lists as out of scope.
+- **Green would need a change to the checks**: `.claude/checks.json`, `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` or `.github/workflows/`. Don't edit them to get past a failure, even when the change looks right: work that loosens the rules it is judged by proves nothing. Say what would change and why. A spec that asks for such a change can be built, and the review still puts it to the user.
 
 ## Open the PR
 
-Only where the work goes on a branch (see "Where the work lands"), when the spec's last slice or ticket is ticked and the checks pass, and before the review: push the branch (`git push -u origin <branch>`) and open a PR against the default branch, unless the branch already has one (a Projects thread's own PR): then update that PR's body. The PR body is what CI and the reviewer read, not a summary of the run:
+Only where the work goes on a branch (see "Where the work lands"), when the spec's last slice or ticket is ticked and the checks pass, and before the review: push the branch (`git push -u origin <branch>`) and open a PR against the default branch, unless the branch already has one (a Projects thread's own PR): then update that PR's body. A push or PR call that fails with no clear answer (a timeout, a dropped connection) may still have worked: check (`git ls-remote origin <branch>`, `gh pr list --head <branch>`) before trying again, so a retry doesn't open a second PR. The PR body is what CI and the reviewer read, not a summary of the run:
 
 - the spec's `Risk:` line, as written
 - each done-when check: the command and the tail of its output, run just now
-- how to undo it: revert the merge commit (`git revert -m 1 <merge commit>`), or close the PR and delete the branch before it merges
+- how to undo it: revert the merge commit (`git revert -m 1 <merge commit>`), or close the PR and delete the branch before it merges. A revert undoes only the code: if the spec has an `Undo:` line for effects outside git (data, settings, other services), copy it here
 
 Never merge it yourself, whatever the risk; a session that merges would be grading its own work. How it merges is GitHub's job: see the review for low risk. After any fix in the review, push again.
 
