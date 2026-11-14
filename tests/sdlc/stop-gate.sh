@@ -140,6 +140,17 @@ echo '{"green":"abc","turn":{"session":"s1","blocks":1}}' > "$(git rev-parse --g
 echo pass > ok.txt
 out=$(tstop 2>&1; echo "exit=$?"); expect "an old-format state file is read without error" "$out" '^exit=0$'
 
+# ---- `requires` in the checks file: a checkout without the named path is skipped
+checks "{ \"stop\": \"node $(mp "$WORK/stop.js")\", \"requires\": \"node_modules\" }"
+echo fail4 > ok.txt; s0=$(truns stop)
+out=$(tstop); expect "checks file requires a missing path: silent" "$out" '^$'
+expect "checks file requires a missing path: checks not run" "$(truns stop)" "^${s0}$"
+mkdir -p node_modules
+out=$(tstop); expect "checks file requires a present path: the gate runs" "$out" '"decision":"block".*stop check\.\.\. state=fail4'
+rmdir node_modules
+out=$(printf '{"session_id":"s3","cwd":"%s","hook_event_name":"Stop"}' "$(mp "$TREPO")" | STOP_GATE_REQUIRES=. node "$GATE")
+expect "STOP_GATE_REQUIRES wins over the checks file's requires" "$out" '"decision":"block"'
+
 # ---- Two sessions in one checkout each get their own count (#73)
 cd "$REPO"
 sstop() { # $1 = session, $2 = stop_hook_active, rest = env assignments

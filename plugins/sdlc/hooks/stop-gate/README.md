@@ -31,7 +31,7 @@ Commit the project's check commands as `.claude/checks.json`:
 }
 ```
 
-`stop` is required; `task` is optional and falls back to `stop`. A command-line argument (`stop-gate.mjs "npm test"`) wins over the file on both events. The command runs through `cmd.exe` on Windows, so use syntax that works there.
+`stop` is required; `task` is optional and falls back to `stop`. An optional `requires` names a path, relative to the checkout root, that must exist before the checks run there, such as `"requires": "node_modules"`: a fresh worktree with no dependencies installed is then skipped instead of blocked 3 times. A command-line argument (`stop-gate.mjs "npm test"`) wins over the file on both events. The command runs through `cmd.exe` on Windows, so use syntax that works there.
 
 ## Turn it on for a project
 
@@ -45,10 +45,10 @@ Commit it with the repo, so local and plain cloud sessions both get it (a cloud 
 
 In a Claude Code Projects thread, repo settings don't load. There the `sdlc` plugin brings the same gate (it reads the same `.claude/checks.json`), and CI is the check that holds regardless; see the plugin README. Don't enable the plugin in a repo that also vendors the gate: both copies would run.
 
-Optional env vars: `STOP_GATE_MAX_BLOCKS` (default 3), `STOP_GATE_TIMEOUT_SEC` (default 540), and `STOP_GATE_REQUIRES`, a path relative to the checkout root that must exist before the gate runs there. Set it to `node_modules`, for example, so a fresh worktree with no dependencies installed is skipped instead of blocked 3 times.
+Optional env vars: `STOP_GATE_MAX_BLOCKS` (default 3), `STOP_GATE_TIMEOUT_SEC` (default 540), and `STOP_GATE_REQUIRES`, which does the same as `requires` in the checks file and wins over it.
 
 Turn it off: delete the hook entries, or run `/hooks` to see what's active.
 
 ## Test
 
-`bash tests/sdlc/stop-gate.sh` (from the root of kadeski/skills) runs it against scratch repos: fail -> block, pass -> green, unchanged -> skip, changed -> rerun, cap -> warn, then quiet; and for `TaskCompleted` and the checks file: exit 2 with the tail on stderr, a green task check doesn't skip the stop check, 3 refusals per task, no checks file -> nothing; two sessions each reaching the give-up; `STOP_GATE_REQUIRES`; and edited worktrees elsewhere, from the main and a subagent transcript, but not another repo.
+`bash tests/sdlc/stop-gate.sh` (from the root of kadeski/skills) runs it against scratch repos: fail -> block, pass -> green, unchanged -> skip, changed -> rerun, cap -> warn, then quiet; and for `TaskCompleted` and the checks file: exit 2 with the tail on stderr, a green task check doesn't skip the stop check, 3 refusals per task, no checks file -> nothing; two sessions each reaching the give-up; `STOP_GATE_REQUIRES`; `requires` in the checks file; and edited worktrees elsewhere, from the main and a subagent transcript, but not another repo.

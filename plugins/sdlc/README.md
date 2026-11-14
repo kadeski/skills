@@ -39,6 +39,7 @@ Every skill is manual: type its name, for example `/sdlc:spec`. None runs on its
 - While `stop` fails, Claude is sent back to work with the last 60 lines of output.
 - While `task` fails, a task cannot be ticked. `slice` makes one task per slice, so each slice is checked by the project and not only by the agent.
 - After 3 tries it lets the turn end and warns you.
+- With `"requires": "node_modules"` (any path relative to the checkout root), a checkout without that path is skipped, so a fresh worktree with no dependencies installed isn't blocked.
 - An unchanged tree is not checked twice, and a repo with no `.claude/checks.json` is left alone, so the plugin is safe to enable everywhere.
 
 [hooks/stop-gate/README.md](hooks/stop-gate/README.md) has the details. To commit the gate to a repo without the plugin, copy the script and merge [hooks/project-settings.example.json](hooks/project-settings.example.json), which also holds deny rules for force pushes and ask rules for commands that discard work. Do not do both in one repo, or the gate runs twice.
