@@ -1,6 +1,6 @@
 # sdlc
 
-`sdlc` is a Claude Code plugin for building software with an agent without taking its word that the work is done. Nine skills cover the path from an idea to a reviewed change, and a hook refuses to let Claude finish a turn while the project's checks fail.
+`sdlc` is a Claude Code plugin for building software with an agent without taking its word that the work is done. Ten skills cover the path from an idea to a reviewed change, and a hook refuses to let Claude finish a turn while the project's checks fail.
 
 ## Install
 
@@ -11,7 +11,7 @@
 
 ## Skills
 
-Every skill is manual: type its name, for example `/sdlc:spec`. None runs on its own, apart from two hand-offs: `/sdlc:slice` runs the `verify` review when a spec is finished, and `/sdlc:next <item> auto` follows `slice`, `verify` and `lesson`.
+Every skill but `pr-receipt` is manual: type its name, for example `/sdlc:spec`. None runs on its own, apart from two hand-offs: `/sdlc:slice` runs the `verify` review when a spec is finished, and `/sdlc:next <item> auto` follows `slice`, `verify` and `lesson`.
 
 | Skill | What it does |
 |---|---|
@@ -23,6 +23,7 @@ Every skill is manual: type its name, for example `/sdlc:spec`. None runs on its
 | `lesson` | Turns a correction into a fix at the source: a test, a lint rule, a `REVIEW.md` or `CLAUDE.md` line, or a hook. Proves the fix catches the mistake. |
 | `next` | Works through a plan that is not a spec, such as an issue queue, one contract at a time. With `auto` it runs unattended and decides each review finding by rule. |
 | `preflight` | Checks an agent run before it goes unattended: what done means, how it checks itself, what it can reach, when it stops and who signs off. |
+| `pr-receipt` | Lays out a PR description: a plain-language summary, then collapsed Proof (named tests, CI, logs) and Details sections. Claude uses it on its own whenever it writes or edits a PR description. |
 | `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, and audits hooks and deny rules. Reports first and changes only what you approve. |
 
 ## The gate
