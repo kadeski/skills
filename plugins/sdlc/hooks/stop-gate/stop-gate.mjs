@@ -5,7 +5,8 @@
 //   node stop-gate.mjs                 runs the commands in the repo's .claude/checks.json
 //   node stop-gate.mjs "npm test"      runs this command instead, on both events
 //
-// .claude/checks.json: { "stop": "<full checks>", "task": "<narrower checks, optional>" }
+// .claude/checks.json: { "stop": "<full checks>", "task": "<narrower checks, optional>",
+//                        "requires": "<path the checks need, optional>" }
 // Stop runs `stop`. TaskCompleted runs `task`, or `stop` when there is no `task`.
 // No argument and no checks file: does nothing, so a hook from a plugin leaves other repos alone.
 //
@@ -17,8 +18,9 @@
 //   so chat-only turns stay fast. Fingerprint = git tree of all tracked + untracked
 //   (non-ignored) files, built in a throwaway index so the real index is untouched.
 //   Each check command keeps its own green tree, so a green `task` run never skips `stop`.
-// - STOP_GATE_REQUIRES names a path, relative to the checkout root, that must exist before the
-//   gate runs there (e.g. node_modules). A checkout without it is skipped.
+// - `requires` in the checks file, or STOP_GATE_REQUIRES (which wins), names a path relative to
+//   the checkout root that must exist before the gate runs there (e.g. node_modules). A checkout
+//   without it is skipped.
 // - On failure, Stop gets JSON `decision: "block"` with the output tail; TaskCompleted gets
 //   exit 2 with the tail on stderr.
 // - Blocks at most MAX_BLOCKS times per Stop turn of one session, or per task. Then it lets
@@ -115,13 +117,17 @@ function checkouts() {
   return roots;
 }
 
-function checkCommand(root) {
-  const arg = process.argv.slice(2).join(' ').trim();
-  if (arg) return arg;
+// The check to run in a checkout and the path it requires: the argument and STOP_GATE_REQUIRES
+// win over the checks file's command and `requires`.
+function checkOf(root) {
   let file;
-  try { file = JSON.parse(readFileSync(join(root, '.claude', 'checks.json'), 'utf8')); } catch { return ''; }
+  try { file = JSON.parse(readFileSync(join(root, '.claude', 'checks.json'), 'utf8')); } catch { file = null; }
   const pick = (v) => (typeof v === 'string' ? v.trim() : '');
-  return (isTask && pick(file?.task)) || pick(file?.stop);
+  const arg = process.argv.slice(2).join(' ').trim();
+  return {
+    cmd: arg || (isTask && pick(file?.task)) || pick(file?.stop),
+    requires: REQUIRES || pick(file?.requires),
+  };
 }
 
 function fingerprint(root) {
@@ -177,9 +183,9 @@ const gaveUpOf = (check) => (typeof check?.gaveUp === 'object' && check.gaveUp !
 
 const results = [];
 for (const root of checkouts()) {
-  const cmd = checkCommand(root);
+  const { cmd, requires } = checkOf(root);
   if (!cmd) continue;
-  if (REQUIRES && !existsSync(resolve(root, REQUIRES))) continue;
+  if (requires && !existsSync(resolve(root, requires))) continue;
   const statePath = gitPath(root, 'claude-stop-gate.json');
   const check = readState(statePath).checks[cmd];
   const fp = fingerprint(root);
