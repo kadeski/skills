@@ -3,10 +3,9 @@
 # runs in scratch repos with no remote (real model runs: minutes and a few USD each).
 #   bash tests/sdlc/slice-risk.sh
 #
-# Risk: low    -> /verify auto: a reviewer is spawned, the review log is written, and the run
-#                 ends with no question asked.
-# Risk: normal -> /verify: a reviewer is spawned and the run ends on a question about what to fix
-#                 (with no findings, as this fixture usually gives, "anything to fix?": the user signs off).
+# Risk: low and normal -> verify in its default (auto) mode: a reviewer is spawned, the review log
+#                 is written, and the run ends with no question asked. Only high risk ends on a
+#                 decision for the user, and this fixture has no high case.
 #
 #   ONLY   low or normal: run one case
 # See tests/sdlc/slice-lib.sh for MODEL, EFFORT, BUDGET and KEEP.
@@ -28,14 +27,9 @@ one_case() { # $1 = risk
   check "$1: the run read the scratch verify/SKILL.md"    has "$(tool_results)" "$mark-verify"
   check "$1: a reviewer was spawned (an Agent tool call)" has "$tools" '^(Agent|Task)$'
   check "$1: bun test passes at HEAD"                      bun test
-  if [ "$1" = low ]; then
-    check "low: the review log has round 1"                has "$(cat docs/specs/slugify.review.md 2>/dev/null)" 'Review round 1'
-    check "low: the final message asks no question"        not has "$last" '\?[^[:alnum:]]*$'
-    check "low: no AskUserQuestion call"                    not has "$tools" '^AskUserQuestion$'
-  else
-    check "normal: the run ends asking what to fix or change" has "$last" '(fix|change)[^?]*\?[^[:alnum:]]*$'
-    check "normal: the final message ends on a question"   has "$last" '\?[^[:alnum:]]*$'
-  fi
+  check "$1: the review log has round 1"                 has "$(cat docs/specs/slugify.review.md 2>/dev/null)" 'Review round 1'
+  check "$1: the final message asks no question"         not has "$last" '\?[^[:alnum:]]*$'
+  check "$1: no AskUserQuestion call"                     not has "$tools" '^AskUserQuestion$'
 }
 
 [ "$ONLY" = normal ] || one_case low

@@ -2,7 +2,6 @@
 name: debug
 description: Debug loop for a bug, crash, regression, failing test or wrong output. Reproduce it end to end first, trace it to the layer that owns the fix (where the wrong value is made, not where it shows up), lock it with a failing regression test, fix, and show before and after evidence. Use whenever the user reports something broken or behaving wrong, even if they don't say "debug".
 argument-hint: "[symptom or issue]"
-disable-model-invocation: true
 ---
 
 # debug
@@ -13,7 +12,7 @@ This loop guards against fixing the symptom instead of the cause. In a study of 
 
 ## 1. Pin the symptom
 
-Expected vs actual, the exact error text, where it shows up, and since when (a recent commit?). If something essential is missing, ask once, briefly.
+Expected vs actual, the exact error text, where it shows up, and since when (a recent commit?). If something essential is missing, ask once, briefly; with nobody to answer (a Projects thread, a headless run), take the most likely reading and say which.
 
 ## 2. Reproduce end to end, before anything else
 
@@ -35,7 +34,7 @@ Fix where the wrong thing is produced, not where it's noticed. Example: matplotl
 1. Write a regression test at the cause's level. Run it and show it fails for the right reason.
 2. Make the smallest fix. Don't change the test to make it pass.
 3. Run the regression test, the end-to-end reproduction from step 2 (now correct), and the full suite.
-4. Search for the same class of bug elsewhere (same pattern, same misuse). List the instances. Fix them if they're clearly in scope, otherwise ask.
+4. Search for the same class of bug elsewhere (same pattern, same misuse). List the instances. Fix them if they're clearly in scope, otherwise list them as follow-ups.
 
 ## 6. Report
 
@@ -47,4 +46,4 @@ Fix where the wrong thing is produced, not where it's noticed. Example: matplotl
 
 ## Stuck
 
-When a fix fails and your next attempt would repeat an idea you already tried, stop. Write a short prompt with the symptom, the reproduction, and what's ruled out, and suggest `/clear` and starting over with it. A session that starts from what's ruled out isn't anchored on the theories that failed.
+When a fix fails and your next attempt would repeat an idea you already tried, stop. Write a short prompt with the symptom, the reproduction, and what's ruled out, and put it in the report so a fresh session starts from it: a new thread in a Claude Code project, else `/clear` and the prompt. A session that starts from what's ruled out isn't anchored on the theories that failed.

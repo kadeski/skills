@@ -1,17 +1,18 @@
 ---
 name: lesson
-description: Turn a correction into a fix at the source so the same mistake stops recurring in this project. Picks the lightest place that will reliably catch it (a test or type, a lint rule, REVIEW.md, a CLAUDE.md line, or a hook or deny rule for zero-exception rules), writes it, and proves it works. With `auto` (an unattended run), it picks the place and writes the fix without asking. Use when the user corrects a mistake that could happen again, says "this keeps happening", "don't do that again" or "fix this at the source", or the same review comment shows up twice.
-argument-hint: "[the mistake, or empty for the last correction] [auto]"
-disable-model-invocation: true
+description: Turn a correction into a fix at the source so the same mistake stops recurring in this project. Picks the lightest place that will reliably catch it (a test or type, a lint rule, REVIEW.md, a CLAUDE.md line, or a hook or deny rule for zero-exception rules), writes it, and proves it works. By default (Auto) it picks the place and writes the fix without asking; with `ask`, the user approves it. Use when the user corrects a mistake that could happen again, says "this keeps happening", "don't do that again" or "fix this at the source", or the same review comment shows up twice.
+argument-hint: "[the mistake, or empty for the last correction] [ask]"
 ---
 
 # lesson
 
-Mistake: $ARGUMENTS (empty means the correction the user just made). If `auto` is among the arguments, nobody is there to answer: read "Auto" at the end first.
+Mistake: $ARGUMENTS (empty means the correction the user just made).
+
+**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the lesson runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written. The word `auto` in the arguments, from older callers, means the default.
 
 A correction in chat fixes one instance, and the next session starts without it. Put the fix where it keeps working. Pick the lightest place that will actually hold: every extra rule costs reading time, and every hook needs upkeep.
 
-This is for things about this codebase. A personal preference about how to work with the user across all projects belongs in their global CLAUDE.md or memory instead.
+This is for things about this codebase. A preference about how to work with the user belongs in memory instead: in a Claude Code project, the project memory, which the coordinator and every later thread read; elsewhere, their global CLAUDE.md or memory.
 
 ## 1. Name it
 
@@ -30,6 +31,8 @@ Go down this table and stop at the first row that fits:
 | must never happen, no exceptions, or already has a `CLAUDE.md` line that got missed again | a hook or deny rule (use the update-config skill; for "run the tests before finishing", the gate in `hooks/stop-gate` of the `sdlc` plugin, committed to the project as its README says, with the commands in `.claude/checks.json`) | the harness enforces it whatever the model decides |
 | is a multi-step procedure that keeps going wrong | a skill | steps get followed, not reinvented |
 
+In a Projects thread, repo settings, hooks and deny rules don't load, so the hook row holds only where they do: there a test, a lint rule or a CI check is the row that bites.
+
 Before adding a `CLAUDE.md` line: could the agent find this by reading the code, and would it actually go look? If both are yes, leave it out.
 
 ## 3. Check what's already there
@@ -47,10 +50,10 @@ Search `CLAUDE.md`, `REVIEW.md`, the lint config and `.claude/settings*.json` fo
 
 ## Auto
 
-`auto` in the arguments means an unattended run: the mistake is one the run itself hit (a review finding, a failed step, a wrong guess about the project), and nobody approves the fix. Steps 1 to 4 hold, with these changes:
+The default: the mistake is one the run itself hit (a review finding, a failed step, a wrong guess about the project) or a correction relayed to it, and nobody approves the fix. Steps 1 to 4 hold, with these changes:
 
 - **Name it (step 1)**: if the why isn't clear, write your best reading and mark it "(guess)". Don't ask.
-- **Pick the place (step 2)**: take the first row of the table that fits. A row that needs the user's own files (their global CLAUDE.md, their memory, a hook in their settings) is not open to an unattended run: use the next row that fits inside the project, and say in the report which row you would have picked. If no row fits inside the project, write nothing and report the mistake as a follow-up.
+- **Pick the place (step 2)**: take the first row of the table that fits. A row that needs the user's own files (their global CLAUDE.md, their personal memory, a hook in their settings) is not open to an unattended run: use the next row that fits inside the project, and say in the report which row you would have picked. Project memory, where the session has it, is open. If no row fits inside the project, write nothing and report the mistake as a follow-up.
 - **Check what's there (step 3)**: when the new rule contradicts an existing one, write neither. Report both as a follow-up; the run it is part of carries on.
 - **Write it and prove it (step 4)**: apply the change without waiting for agreement, as its own commit in the run's change, and name it in the run's report. For a test, a type, a lint rule or a hook, prove it bites as step 4 says; if you can't show it failing on the bad version, don't keep it: revert it and report the mistake as a follow-up. A `REVIEW.md` or `CLAUDE.md` line can't be shown failing, so keep it to one line. A lesson that needs a new skill is not written by an unattended run: report it as a follow-up.
 - One mistake, one fix. Don't write a lesson for something a check in the project already catches.

@@ -2,7 +2,6 @@
 name: spec
 description: Turn the current conversation or a feature request into a short spec file in the repo (goal, done-when checks, out of scope, thin vertical slices; for big changes also ordered tickets and one-paragraph ADRs) so the build can start in a fresh session. Use when the user types /spec or asks to write up, spec out, or define done for a feature before building it.
 argument-hint: "[feature, or empty to use this conversation]"
-disable-model-invocation: true
 ---
 
 # spec
@@ -14,14 +13,14 @@ A spec is the written definition of done. A fresh session builds from it without
 ## 1. Check alignment
 
 - The source is this conversation or the arguments above.
-- If something only the user can decide is still open (who it's for, what done looks like, what's out of scope), ask now: one question at a time, with your recommended answer. Look up what the code can answer instead of asking.
+- If something only the user can decide is still open (who it's for, what done looks like, what's out of scope), ask now: one question at a time, with your recommended answer. Look up what the code can answer instead of asking. With nobody to answer (a Projects thread, a headless run), write your best reading under Decisions marked "(assumed - check this)" and list it in the reply.
 - Don't invent requirements to fill gaps. Most bad output comes from misalignment, not bad code.
 
 ## 2. Size the change
 
 Say the tier in one line, with the reason. Size it by how much is undecided and how far it reaches, not by how long it takes to build:
 
-- **Tier 1, small fix** (one obvious change, nothing to decide): a spec is overhead. Say so and offer to just do it, with one rule: run the tests before claiming done. Stop here unless the user wants the spec anyway.
+- **Tier 1, small fix** (one obvious change, nothing to decide): a spec is overhead. Say so in one line and stop: /slice builds a small fix from a one-line done-when check, and the rule is to run the tests before claiming done.
 - **Tier 2, feature** (new behavior where "done" or "out of scope" could be read two ways): goal, done when, out of scope, slices.
 - **Tier 3, big change** (several features' worth, or it changes how the system is built): Tier 2 plus ordered tickets, ADRs, and a branch or worktree.
 
@@ -85,8 +84,8 @@ Rules for the parts:
 
 ## 5. Hand off
 
-Reply with the path, the done-when list, the slice or ticket list and the proposed `Risk:` with its one-line reason, and ask for corrections. Ask the user to confirm the risk in so many words: it is their call, and it decides whether anyone reads the change before it merges. Once the user agrees:
+Reply with the path, the done-when list, the slice or ticket list and the proposed `Risk:` with its one-line reason. The risk is the user's call, because it decides whether anyone reads the change before it lands: make confirming it the one decision in the reply, with your proposal as the recommended answer. Once the user confirms:
 
 1. Set `Status: building`, with the `Risk:` they confirmed.
-2. Tier 3: suggest a branch or worktree (`claude -w <slug>`).
-3. Tell the user to run `/clear`, then `/slice <path>` (`/sdlc:slice <path>` where the skills come from the `sdlc` plugin). It builds the whole spec and ends with the /verify review. A build that starts from the spec alone works from the same text /verify will check it against, so anything the spec is missing shows up early.
+2. Tier 3: build on a branch or worktree.
+3. Build in a fresh session, from the spec alone: in a Claude Code project, a new thread that runs /slice on the path; elsewhere, `/clear`, then `/slice <path>` (`/sdlc:slice <path>` from the `sdlc` plugin). It builds the whole spec and ends with the /verify review. A build that starts from the spec alone works from the same text /verify will check it against, so anything the spec is missing shows up early.

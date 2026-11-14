@@ -1,6 +1,6 @@
 ---
 name: weekly
-description: Weekly hygiene pass on a repo worked on with agents. Finds what can be deleted or simplified across the whole codebase, prunes CLAUDE.md and REVIEW.md of lines that don't earn their place, audits hooks and deny rules (promote zero-exception rules, demote preferences), and reads the track record (reviewer noise, reverts and follow-up fixes per risk level) to say which checkpoints have earned dropping and which need adding back. Reports first and changes only what the user approves. Use when the user types /weekly or asks for a cleanup, entropy or CLAUDE.md prune pass.
+description: Weekly hygiene pass on a repo worked on with agents. Finds what can be deleted or simplified across the whole codebase, prunes CLAUDE.md and REVIEW.md of lines that don't earn their place, audits hooks and deny rules (promote zero-exception rules, demote preferences), and reads the track record (reviewer noise, reverts and follow-up fixes per risk level) to say which checkpoints have earned dropping and which need adding back. Reports first and changes only what the user approves, in a later run. Use when the user types /weekly or asks for a cleanup, entropy or CLAUDE.md prune pass.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Agents speed up entropy. They add code readily and almost never suggest that 100k lines could be 10k. Instructions written for last month's model turn into constraints for this one. Schedule the cleanup or it never happens.
 
-Report first. Change nothing until the user picks what to apply.
+Report first. Change nothing until the user picks what to apply. The report is the end of the run: the user picks later (in a Claude Code project, in the coordinator chat), and the picks are applied in a separate run.
 
 ## 1. Context
 
@@ -56,11 +56,11 @@ Checkpoints are dropped when the work has earned it, and added back when it hasn
 
 - **Reviewer noise**: the `*.review.md` logs next to the specs. Count each finding's outcome: fixed, won't fix, intended. A reviewer whose findings are mostly won't-fix or intended is noise: say which kinds, and suggest a `REVIEW.md` line that drops them. Also count rounds to pass per spec.
 - **Regret-free merges**: for each spec or PR merged in the period, by its `Risk:` line, did it need a revert (`git log --grep '^Revert'`) or a follow-up fix within a week (a later commit or PR that names it, or a `fix` commit touching the same files)? A merge with neither is regret-free. Give the rate per risk level, with the count, and name each regret.
-- **What it says**: a risk level with no regrets over 10 or more merges has earned dropping one checkpoint, such as normal-risk work with no findings merging without the closing question. Propose one, name the evidence, and never apply it yourself: the user decides. A regret at a level nobody read before merge (low risk): propose adding a checkpoint back for that kind of change. Fewer than 10 merges at a level: say there is too little to judge.
+- **What it says**: a risk level with no regrets over 10 or more merges has earned dropping one checkpoint, such as high-risk work skipping the extra `/code-review` pass. Propose one, name the evidence, and never apply it yourself: the user decides. A regret at a level nobody read before merge (low risk): propose adding a checkpoint back for that kind of change. Fewer than 10 merges at a level: say there is too little to judge.
 
 ## 6. Report and apply
 
-- One table per section: item · where · action (delete, simplify, move, promote, demote) · why · risk. Then ask which to apply.
-- Apply approved items one commit each (`weekly: <what>`), running the project checks after each. Revert any that break them.
+- One table per section: item · where · action (delete, simplify, move, promote, demote) · why · risk. Number the items so the user can pick by number. End the run there.
+- When a later run is handed the picks: apply them one commit each (`weekly: <what>`), running the project checks after each. Revert any that break them.
 - Finish with: lines removed, rules removed and added, anything skipped.
 - Last line: suggest one small real task from this week's work for the user to do without an agent, so the skills they're delegating don't quietly fade.

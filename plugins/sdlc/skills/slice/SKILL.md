@@ -1,13 +1,14 @@
 ---
 name: slice
 description: Build a spec test-first without stopping for review, then have it reviewed. Each thin vertical slice gets a failing test shown as proof, the smallest code that passes it, the full checks, and a commit as a save point. A Tier 3 spec is built ticket by ticket the same way. When the spec is finished, the /verify review runs by itself. Use when the user types /slice, asks to build a spec, a ticket or the next slice, or wants something built test-first (TDD).
-argument-hint: "[spec path] [slice or ticket]"
-disable-model-invocation: true
+argument-hint: "[spec path] [slice or ticket] [ask]"
 ---
 
 # slice
 
-Build the open work in a spec, test-first. Arguments: $ARGUMENTS (both optional: the spec path, and a slice or ticket number to build only that one).
+Build the open work in a spec, test-first. Arguments: $ARGUMENTS (all optional: the spec path, a slice or ticket number to build only that one, and `ask`).
+
+**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so nothing here waits for an answer: a question only the user can decide goes in the report as one decision with your recommended default. With `ask` in the arguments, the user is in the session: stop and ask where this skill says so.
 
 The run is hands-off. The user comes back to a built and reviewed spec with the evidence for each slice, so don't stop along the way to ask for a review. Two rules make that safe:
 
@@ -19,14 +20,16 @@ The run is hands-off. The user comes back to a built and reviewed spec with the 
 - **Spec**: the path given, else the spec marked `Status: building` in `docs/specs/` (or where CLAUDE.md keeps specs).
 - **Slices** (Tier 2): every unticked slice in order, or only the one whose number was given.
 - **Tickets** (Tier 3): every unticked ticket in order, or only the one named. When a ticket starts, split it into 2-4 thin vertical slices, write them under the ticket in the spec, and build them. When they're done, run the ticket's done-when check, show its output, and tick the ticket.
-- **No spec**: build to the done-when check you were handed (a /next contract carries one). With none, ask for a one-line done-when check before starting. If the change is bigger than a small fix, suggest /spec.
+- **No spec**: build to the done-when check you were handed. With none, write a one-line done-when check yourself, mark it "(assumed)" and put it in the report (with `ask`: ask for one instead). Build without a spec only a small fix: one obvious change with nothing for the user to decide. Anything bigger, where "done" or "out of scope" could be read two ways, needs /spec first: report that and stop.
 
 ## Where the work lands
 
-A PR is worth opening only where CI checks it. Decide once, before the first edit:
+Decide once, before the first edit:
 
-- **The repo has a remote (`git remote`) and a CI workflow** (a file in `.github/workflows/`): the work goes on a branch and ends in a PR. If you are already on a branch other than the default one (a Claude Code Projects thread gets its own branch and PR), use it. Else create a branch named for the spec slug (`git switch -c <spec slug>`).
-- **Otherwise**: commit on the current branch and don't push. Without CI a PR checks nothing.
+- **The project has a git rule** (project instructions or CLAUDE.md, such as "commit and push straight to main"): follow it.
+- **No rule, and the repo has a remote and a CI workflow** (a file in `.github/workflows/`): the work goes on a branch and ends in a PR, because CI checks it there. If you are already on a branch other than the default one, use it. Else create one named for the spec slug (`git switch -c <spec slug>`).
+- **Otherwise**: commit on the current branch and don't push.
+- **High risk** never lands on the default branch before the user signs off, whatever the rule: build on a branch and push that.
 
 Before the first edit, read the code the work touches and the closest existing work the spec names, and follow its patterns. Run the project's checks once and note what already fails, so you neither blame a slice for those failures nor claim them as fixed.
 
@@ -50,25 +53,26 @@ Work through ordinary trouble yourself. If the spec doesn't settle something, ch
 - **The work would contradict the spec** or touch something it lists as out of scope.
 - **Green would need a change to the checks**: `.claude/checks.json`, `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` or `.github/workflows/`. Don't edit them to get past a failure, even when the change looks right: work that loosens the rules it is judged by proves nothing. Say what would change and why. A spec that asks for such a change can be built, and the review still puts it to the user.
 
-## Open the PR
+## Push
 
-Only where the work goes on a branch (see "Where the work lands"), when the spec's last slice or ticket is ticked and the checks pass, and before the review: push the branch (`git push -u origin <branch>`) and open a PR against the default branch, unless the branch already has one (a Projects thread's own PR): then update that PR's body. A push or PR call that fails with no clear answer (a timeout, a dropped connection) may still have worked: check (`git ls-remote origin <branch>`, `gh pr list --head <branch>`) before trying again, so a retry doesn't open a second PR. The PR body is what CI and the reviewer read, not a summary of the run:
+When the spec's last slice or ticket is ticked and the checks pass, and before the review, push where "Where the work lands" says. Make GitHub calls the way this session makes them (`gh` locally, the GitHub MCP tools in a Projects thread). A push or PR call that fails with no clear answer (a timeout, a dropped connection) may still have worked: check (`git ls-remote origin <branch>`, or list the PRs for the branch) before trying again, so a retry doesn't push twice or open a second PR.
+
+Where the work ends in a PR (one may already exist for the branch: update its body), the body is what CI and the reviewer read:
 
 - the spec's `Risk:` line, as written
 - each done-when check: the command and the tail of its output, run just now
-- how to undo it: revert the merge commit (`git revert -m 1 <merge commit>`), or close the PR and delete the branch before it merges. A revert undoes only the code: if the spec has an `Undo:` line for effects outside git (data, settings, other services), copy it here
+- how to undo it: revert the merge commit (`git revert -m 1 <merge commit>`), or close the PR before it merges. A revert undoes only the code: if the spec has an `Undo:` line for effects outside git (data, settings, other services), copy it here
 
-Never merge it yourself, whatever the risk; a session that merges would be grading its own work. How it merges is GitHub's job: see the review for low risk. After any fix in the review, push again.
+Never merge a PR yourself; a session that merges would be grading its own work. After any fix in the review, push again.
 
 ## Review
 
 When the spec's last slice or ticket is ticked and the checks pass, run the review before you report. It spawns a separate reviewer, which is worth it once per spec, so skip it when the run stopped early or left work open.
 
-Pick the review by the spec's `Risk:` line (no line: normal). The line is the user's call, judged by the change and not by who wrote it, so never change it to get a lighter review:
+Read `../verify/SKILL.md` (the verify skill, next to this skill's folder) and follow it for this spec, in its default (auto) mode unless you have `ask`. Pick what else happens by the spec's `Risk:` line (no line: normal). The line is the user's call, judged by the change and not by who wrote it, so never change it to get a lighter review:
 
-- **low** (docs, copy, comments): read `../verify/SKILL.md` (the verify skill, next to this skill's folder) and follow its Auto section for this spec. Nobody is asked anything: end the report on the review log, not a question. If there is a PR, the repo allows auto-merge, and its default branch requires a status check (`gh api repos/{owner}/{repo}/rules/branches/<default branch>` has a `required_status_checks` rule, or `gh api repos/{owner}/{repo}/branches/<default branch>/protection` has `required_status_checks`), turn on auto-merge (`gh pr merge --auto --squash`), so GitHub merges it only once CI is green. Otherwise leave it for the user or the repo's own merge job.
-- **normal**: read `../verify/SKILL.md` and follow it for this spec (not Auto). It ends by asking the user which findings to fix. With no findings, still end on a question: whether anything should change before it counts as done. At normal risk the user's answer is the sign-off, so never end without asking.
-- **high**: as normal, and also run the built-in `/code-review` on the branch's diff (with the Skill tool; if you can't, tell the user to run it). Name the riskiest file and tell the user to read it themselves. An agent's review never counts as theirs.
+- **low** (docs, copy, comments) and **normal** (most code): the review decides each finding by rule and nobody is asked. The report carries the findings and what happened to each.
+- **high**: also run the built-in `/code-review` on the diff (with the Skill tool; if you can't, say so in the report). The work stays on its branch. End the report with one decision for the user: merge it or not, naming the riskiest file for them to read first. An agent's review never counts as theirs.
 
 ## Report
 
@@ -77,5 +81,6 @@ One report at the end, for a reader who didn't watch the run:
 - each slice: the behavior, the test and the assertion it failed on before the code existed, the checks that pass now, and the commit
 - what you assumed where the spec was silent
 - follow-ups you noticed but didn't do
-- the PR link, if there is one. Outside a Projects thread (where Auto-fix is always on), say that turning on Auto-fix in the app's PR menu lets a session fix CI failures and review comments on it
-- the review: the reviewer's counts and findings. For normal and high risk, end on the question: which ones to fix, or, with none, whether anything should change. If the run stopped early, the slice it stopped on and why.
+- where the work landed: the commit on the default branch, the branch, or the PR link
+- the review: the reviewer's counts and each finding with its outcome. If the run stopped early, the slice it stopped on and why
+- at most one decision for the user, with your recommended answer: high-risk sign-off, a stop that needs them, or a check change the review left open

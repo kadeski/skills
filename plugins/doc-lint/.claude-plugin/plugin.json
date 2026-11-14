@@ -1,6 +1,6 @@
 {
   "name": "doc-lint",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Audits a project's plan and design docs for broken links, stale numbers, contradictions between files, statuses that disagree with where the work is tracked, and open work tracked nowhere, then reports the findings without fixing them.",
   "author": {
     "name": "Kaden Staker"

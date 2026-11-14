@@ -1,13 +1,14 @@
 ---
 name: verify
-description: Check that finished work meets its spec before calling it done. A fresh-context reviewer runs the done-when checks itself and reviews the diff against the spec for missing behavior, scope creep, stubs, wrong-layer fixes, weak tests and changes to the checks that judge it, with file:line evidence and a 3-round cap. With `auto` (an unattended run), each finding is fixed or rejected by rule and nobody is asked. Use when the user types /verify or asks "is it done?" or "check this against the spec". Not after every slice or commit, since it costs a separate reviewer; it runs once a whole spec or ticket is finished. For a general bug hunt on a diff with no spec, /code-review fits better.
-argument-hint: "[spec path] [auto]"
-disable-model-invocation: true
+description: Check that finished work meets its spec before calling it done. A fresh-context reviewer runs the done-when checks itself and reviews the diff against the spec for missing behavior, scope creep, stubs, wrong-layer fixes, weak tests and changes to the checks that judge it, with file:line evidence and a 3-round cap. By default (Auto) each finding is fixed or rejected by rule and nobody is asked; with `ask`, the user picks. Use when the user types /verify or asks "is it done?" or "check this against the spec". Not after every slice or commit, since it costs a separate reviewer; it runs once a whole spec or ticket is finished. For a general bug hunt on a diff with no spec, /code-review fits better.
+argument-hint: "[spec path] [ask]"
 ---
 
 # verify
 
-Check the work against: $ARGUMENTS (a spec path; empty means the spec marked `Status: building`, or the done-when checks stated in this conversation). If `auto` is among the arguments, nobody is there to answer: read "Auto" at the end first.
+Check the work against: $ARGUMENTS (a spec path; empty means the spec marked `Status: building`, or the done-when checks stated in this conversation).
+
+**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the review runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written, where they confirm the checks and pick the findings to fix. The word `auto` in the arguments, from older callers, means the default.
 
 Why a separate reviewer: the session that wrote the code has already convinced itself it works. Keep the checker apart from what it checks: a fresh agent that didn't watch the build, reads only the spec and the diff, and runs the real commands itself.
 
@@ -61,10 +62,10 @@ Already reported, don't repeat: <earlier finding titles, or none>
 
 ## Auto
 
-`auto` in the arguments means an unattended run: nobody confirms a check list, picks which findings to fix or reads a question. Steps 1 to 4 hold, with these changes:
+The default: nobody confirms a check list, picks which findings to fix or reads a question. Steps 1 to 4 hold, with these changes:
 
-- **Gather (step 1)**: with no spec, the done-when checks are the ones the run was handed (a /next contract's `Done when`). Don't confirm them. The review log goes next to the spec; with no spec it goes where the project says a run's review goes (a section of the PR body, a comment on the item's issue), and with no such rule, in a comment on the item's issue.
-- **Posting the log**: a comment or PR body is a change outside git, and a lost reply doesn't mean it wasn't made. Start the log with a marker line, `<!-- sdlc:verify <item or spec> -->`. Before posting, look for a comment or body that already holds the marker: if there is one, edit it to add this round, don't post a second. After posting, read it back. If a post fails with no clear answer (a timeout, a dropped connection), look for the marker before trying again.
+- **Gather (step 1)**: with no spec, the done-when checks are the ones the run was handed. Don't confirm them. The review log goes next to the spec; with no spec it goes where the project says a run's review goes (a section of the PR body, a comment on the item's issue), and with no such rule, in a comment on the item's issue.
+- **Posting the log**: make GitHub calls the way this session makes them (`gh` locally, the GitHub MCP tools in a Projects thread). A comment or PR body is a change outside git, and a lost reply doesn't mean it wasn't made. Start the log with a marker line, `<!-- sdlc:verify <item or spec> -->`. Before posting, look for a comment or body that already holds the marker: if there is one, edit it to add this round, don't post a second. After posting, read it back. If a post fails with no clear answer (a timeout, a dropped connection), look for the marker before trying again.
 - **Decide each finding by rule (step 3)**, without asking. Take the rules in this order and stop at the first that fits:
   0. A change to a policy file (step 1): **leave it open**, with no fix and no reject. Only a person can accept a change to the rules the work is judged by. See "Left open".
   1. The reviewer shows a done-when check or a project check (tests, types, lint, build) failing: **fix** it. It is a blocker, whatever it was filed as.
@@ -76,5 +77,5 @@ Already reported, don't repeat: <earlier finding titles, or none>
 - **Log and loop (step 4)**: write each round to the log as `Review round <N>`, with the reviewer's counts line as given, then each finding with its outcome. If the round fixed a blocker or a should-fix, run the next round on the new diff only. If it fixed none (no findings, all rejected, or only one-line minors fixed), the review ends there.
 - **Fixes nobody reviews**: after any fix that gets no further round (a one-line minor in the last round, or a round 3 fix), run the done-when checks and the project checks again yourself, and log their result.
 - **The cap**: round 3 is the last review. If round 3 fixed a blocker or a should-fix, write "round 3 fixes not reviewed" in the log with each one.
-- **Left open**: in any round, if a blocker or should-fix is one you could not fix, or a check still fails after your fix, don't call the work done and don't close the item out. The review ends at that round, even if the round fixed other findings. Report it the way the project says an unattended run reports a stop (a park, a comment on the issue), with the open findings.
-- **Done**: set a spec's `Status: done` when its checks pass and no blocker or should-fix is left open. Put the list of what you assumed, and what the checks can't prove, in the log, not in a question.
+- **Left open**: in any round, if a blocker or should-fix is one you could not fix, or a check still fails after your fix, don't call the work done and don't close the item out. The review ends at that round, even if the round fixed other findings. Report it the way the project says a run reports a stop (in a Projects thread, the thread's reply; else a comment on the issue), with the open findings and one decision for the user with your recommended answer. A policy-file change left open by rule 0 is reported the same way.
+- **Done**: set a spec's `Status: done` when its checks pass and no blocker or should-fix is left open. Put the list of what you assumed, and what the checks can't prove, in the log and the report, not in a question.
