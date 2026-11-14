@@ -3,8 +3,7 @@
 # should, and every skill is well formed. A plugin with only .claude-plugin/plugin.json
 # is Claude-only: it is listed in the Claude Code marketplace and no other. A plugin in its
 # own repository (study) is listed with a github or url source and has no folder here. Also checks
-# that the tutor.js VERSION moves with the copies of it and that no plugin substitutes a
-# credential-like name, and warns when a plugin changed but its version did not.
+# that no plugin substitutes a credential-like name, and warns when a plugin changed but its version did not.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -76,15 +75,6 @@ for p in $plugins; do
 
   validate "$dir" || fail=1
 done
-
-# The page runtime's VERSION, the demo seed's goal/main.tutorJs and the SKILL.md example
-# must be bumped together.
-tutor=plugins/tutor/skills/tutor
-js=$(sed -n 's/^ *const VERSION = \([0-9][0-9]*\);.*/\1/p' "$tutor/tutor.js")
-seed=$(jq -r '.[] | select(.collection == "goal" and .doc_id == "main") | .data.tutorJs' demo/tutor/seed.json) || seed=
-example=$(sed -n 's/.*"tutorJs": *\([0-9][0-9]*\).*/\1/p' "$tutor/SKILL.md" | sort -u)
-[ -n "$js" ] && [ "$seed" = "$js" ] && [ "$example" = "$js" ] \
-  || err "tutor.js VERSION is '$js' in $tutor/tutor.js, goal/main.tutorJs is '$seed' in demo/tutor/seed.json and the example tutorJs is '$(echo $example)' in $tutor/SKILL.md; bump them together"
 
 # A plugin whose files changed since this branch left origin/main needs a version bump to
 # ship. Compares the working tree's tracked files with origin/main as last fetched.

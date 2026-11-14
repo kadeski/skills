@@ -22,10 +22,6 @@
         "url": "https://github.com/kadeski/study.git",
         "ref": "release"
       }
-    },
-    {
-      "name": "tutor",
-      "source": "./plugins/tutor"
     }
   ]
 }

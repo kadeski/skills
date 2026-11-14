@@ -2,7 +2,7 @@
 
 Scored test cases for the skills in this repo, and the tools to improve a skill against them without fooling yourself. The method follows Anthropic's post on [automating eval design and hillclimbing](https://claude.dev/blog/automating-eval-design-and-hillclimbing/): cases drawn from real use, hard for a reason you can name, graded by checks where possible and by a judge on checkable claims where not, and split into a train set you may study and a test set you may not.
 
-doc-lint and verify have cases today. verify's (5: 3 train, 2 test) cover the spec review, including work that changes the checks or review rules it is judged by; each fixture builds a base commit and one slice commit (`evals/verify/setup_repo.sh`). The other sdlc skills have none yet; their real-model tests are in `tests/sdlc/`. The tutor cases were written for the older file-based tutor and were removed; #52 tracks new ones for the artifact-based skill.
+doc-lint and verify have cases today. verify's (5: 3 train, 2 test) cover the spec review, including work that changes the checks or review rules it is judged by; each fixture builds a base commit and one slice commit (`evals/verify/setup_repo.sh`). The other sdlc skills have none yet; their real-model tests are in `tests/sdlc/`.
 
 ## Run
 
