@@ -20,7 +20,7 @@ All four are Claude Code only. Each README has the usage.
 
 ## How they are built
 
-**A gate the model cannot skip.** A line in `CLAUDE.md` that says "run the tests before finishing" is a suggestion. [stop-gate.mjs](plugins/sdlc/hooks/stop-gate/stop-gate.mjs) is a hook: it runs the project's checks when Claude tries to end a turn or tick a task, and sends it back to work with the failing output. It skips an unchanged tree, gives up after 3 tries with a warning, and does nothing in a repo that has not opted in. [41 cases](tests/sdlc/stop-gate.sh) cover it with no model run.
+**A gate the model cannot skip.** A line in `CLAUDE.md` that says "run the tests before finishing" is a suggestion. [stop-gate.mjs](plugins/sdlc/hooks/stop-gate/stop-gate.mjs) is a hook: it runs the project's checks when Claude tries to end a turn or tick a task, and sends it back to work with the failing output. It skips an unchanged tree, gives up after 3 tries with a warning, and does nothing in a repo that has not opted in. [59 cases](tests/sdlc/stop-gate.sh) cover it with no model run.
 
 **The checker is kept apart from the author.** In `sdlc`, the session that wrote the code never grades it. [verify](plugins/sdlc/skills/verify/SKILL.md) starts a reviewer that reads only the spec and the diff and runs the done-when checks itself. [slice](plugins/sdlc/skills/slice/SKILL.md) shows a failing test before any code exists, and never merges its own PR.
 
