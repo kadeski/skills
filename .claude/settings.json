@@ -4,5 +4,17 @@
       "Bash(git commit --amend:*)",
       "Bash(git push --force-with-lease:*)"
     ]
+  },
+  "extraKnownMarketplaces": {
+    "kadeski": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/kadeski/skills.git"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "sdlc@kadeski": true,
+    "doc-lint@kadeski": true
   }
 }
