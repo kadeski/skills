@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: wrong-status
+description: "The work refuses the 51st message with status 400 and its test asserts 400, so everything is green. The spec says 409. The right review reports the status mismatch and the test that was written to match the code."
+tags: [verify-train]
+execution:
+  max_turns: 80
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Bash, Skill, Agent, Write, Edit]
+  prompt: "/sdlc:verify docs/specs/limit.md"
+context:
+  scaffold_script: setup.sh
+graders:
+  # Scoring happens in grade.py. This only marks runs that ended cleanly.
+  - name: finished
+    type: regex
+    target: trace
+    pattern: '"subtype":"success"'
