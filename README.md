@@ -1,6 +1,6 @@
 # skills
 
-Plugins for Claude Code by Kaden Staker, and the tooling that checks them: scored evals with a held-out test set, a hook that blocks "done" while checks fail, and a pre-commit check over every manifest.
+Plugins for Claude Code by Kaden Staker, and the tooling that checks them: scored evals with a held-out test set, and one check over every manifest that runs before each commit and in CI.
 
 ```
 /plugin marketplace add kadeski/skills
@@ -11,7 +11,7 @@ Plugins for Claude Code by Kaden Staker, and the tooling that checks them: score
 
 | Plugin | What it does |
 |---|---|
-| [sdlc](plugins/sdlc/README.md) | Nine skills for building with an agent, from questioning an idea to a reviewed change: spec, test-first build, separate-reviewer verify, debug, lessons, PR descriptions. A hook refuses a finished turn or a ticked task while the repo's checks fail. |
+| [sdlc](plugins/sdlc/README.md) | Nine skills for building with an agent, from questioning an idea to a reviewed change: spec, test-first build, separate-reviewer verify, debug, lessons, PR descriptions. Built to run unattended, as in a Projects thread. |
 | [study](https://github.com/kadeski/study) | Teaches one goal across sessions in the chat. It finds where your understanding ends, plans the shortest path, checks after each step and keeps a knowledge graph of what you were taught. Lives in its own repository. |
 | [doc-lint](plugins/doc-lint/README.md) | Audits a project's plan and design docs for broken links, stale numbers, contradictions between files and open work tracked nowhere. Reports first and fixes only what you approve. |
 
@@ -19,7 +19,7 @@ All three are Claude Code only. Each README has the usage.
 
 ## How they are built
 
-**A gate the model cannot skip.** A line in `CLAUDE.md` that says "run the tests before finishing" is a suggestion. [stop-gate.mjs](plugins/sdlc/hooks/stop-gate/stop-gate.mjs) is a hook: it runs the project's checks when Claude tries to end a turn or tick a task, and sends it back to work with the failing output. It skips an unchanged tree, gives up after 3 tries with a warning, and does nothing in a repo that has not opted in. [59 cases](tests/sdlc/stop-gate.sh) cover it with no model run.
+**Skills in Projects threads.** A Claude Code Projects thread loads no plugins, but it loads each cloned repo's `.claude/skills/`. Here those are symlinks to the skills in `plugins/`, so a project that lists this repo gets the same skills, never a stale copy.
 
 **The checker is kept apart from the author.** In `sdlc`, the session that wrote the code never grades it. [verify](plugins/sdlc/skills/verify/SKILL.md) starts a reviewer that reads only the spec and the diff and runs the done-when checks itself. [slice](plugins/sdlc/skills/slice/SKILL.md) shows a failing test before any code exists, and never merges its own PR.
 
@@ -32,7 +32,8 @@ All three are Claude Code only. Each README has the usage.
 ## Layout
 
 ```
-plugins/<name>/     what ships: skills, hooks, README, LICENSE
+plugins/<name>/     what ships: skills, README, LICENSE
+.claude/skills/     symlinks to the shipped skills, for Projects threads
 evals/              eval runner and cases per skill
 tests/<name>/       tests for a plugin
 scripts/check.sh    the pre-commit and CI check

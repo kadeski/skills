@@ -1,6 +1,6 @@
 # sdlc
 
-`sdlc` is a Claude Code plugin for building software with an agent without taking its word that the work is done. Nine skills cover the path from an idea to a reviewed change, and a hook refuses to let Claude finish a turn while the project's checks fail.
+`sdlc` is a Claude Code plugin for building software with an agent without taking its word that the work is done. Nine skills cover the path from an idea to a reviewed change. The project's CI is what checks the work.
 
 ## Install
 
@@ -27,24 +27,13 @@ The skills assume nobody is there to answer, which is how a Projects thread or a
 | `pr-receipt` | Lays out a PR description: a plain-language summary, then collapsed Proof (named tests, CI, logs) and Details sections. Claude uses it on its own whenever it writes or edits a PR description. |
 | `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, audits hooks and deny rules, and reads the track record (reviewer noise, reverts and follow-up fixes per risk level) to say which checkpoints have earned dropping. Reports first; a later run applies what you pick. |
 
-## The gate
+## Checks
 
-`hooks/stop-gate/stop-gate.mjs` runs on `Stop` and `TaskCompleted`. Commit your check commands as `.claude/checks.json`:
+The plugin has no hook. A Claude Code Projects thread loads neither plugins nor repo settings, so a hook there checks nothing. Put the project's checks in CI and make them required on the default branch: that holds for every session, however it was started. An earlier stop-gate hook lives in this repo's history.
 
-```json
-{
-  "stop": "npm run typecheck && npm test",
-  "task": "npm test"
-}
-```
+## Use in a Projects thread
 
-- While `stop` fails, Claude is sent back to work with the last 60 lines of output.
-- While `task` fails, a task cannot be ticked. `slice` makes one task per slice, so each slice is checked by the project and not only by the agent.
-- After 3 tries it lets the turn end and warns you.
-- With `"requires": "node_modules"` (any path relative to the checkout root), a checkout without that path is skipped, so a fresh worktree with no dependencies installed isn't blocked.
-- An unchanged tree is not checked twice, and a repo with no `.claude/checks.json` is left alone, so the plugin is safe to enable everywhere.
-
-[hooks/stop-gate/README.md](hooks/stop-gate/README.md) has the details. To commit the gate to a repo without the plugin, copy the script and merge [hooks/project-settings.example.json](hooks/project-settings.example.json), which also holds deny rules for force pushes and ask rules for commands that discard work. Do not do both in one repo, or the gate runs twice.
+Threads don't load plugins, but they do load the `.claude/skills/` folder of each repo they clone. `kadeski/skills` keeps symlinks there to every skill in this plugin and `doc-lint`, so adding `kadeski/skills` to a project's repositories makes the skills available in its threads, always matching `plugins/`.
 
 ## Version
 

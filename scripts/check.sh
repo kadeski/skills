@@ -61,6 +61,17 @@ for p in $plugins; do
   validate "$dir" || fail=1
 done
 
+# Projects threads load a cloned repo's .claude/skills/ but no plugins, so every shipped skill has a
+# symlink there, and every symlink points at a shipped skill.
+for skill in plugins/*/skills/*/; do
+  name=$(basename "$skill")
+  [ "$(readlink ".claude/skills/$name")" = "../../${skill%/}" ] || err ".claude/skills/$name is not a symlink to ${skill%/}"
+done
+for link in .claude/skills/*; do
+  [ -L "$link" ] || continue
+  [ -f "$link/SKILL.md" ] || err "$link points at no skill"
+done
+
 # A plugin whose files changed since this branch left origin/main needs a version bump to
 # ship. Compares the working tree's tracked files with origin/main as last fetched.
 if base=$(git merge-base HEAD origin/main 2>/dev/null); then

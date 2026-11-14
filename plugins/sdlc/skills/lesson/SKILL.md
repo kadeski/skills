@@ -28,7 +28,7 @@ Go down this table and stop at the first row that fits:
 | is a mechanical pattern (an import, a banned call, formatting) | a lint rule or formatter config | runs on every change for free |
 | is something a reviewer should catch (what "broken" looks like here) | `REVIEW.md` | feeds /verify and /code-review |
 | is a fact the agent couldn't get from the code, or wouldn't go look for | one `CLAUDE.md` line: "do Y, not X, because Z" | loads every session |
-| must never happen, no exceptions, or already has a `CLAUDE.md` line that got missed again | a hook or deny rule (use the update-config skill; for "run the tests before finishing", the gate in `hooks/stop-gate` of the `sdlc` plugin, committed to the project as its README says, with the commands in `.claude/checks.json`) | the harness enforces it whatever the model decides |
+| must never happen, no exceptions, or already has a `CLAUDE.md` line that got missed again | a CI check, or a hook or deny rule (use the update-config skill; for "run the tests before finishing", a required CI check) | the harness enforces it whatever the model decides |
 | is a multi-step procedure that keeps going wrong | a skill | steps get followed, not reinvented |
 
 In a Projects thread, repo settings, hooks and deny rules don't load, so the hook row holds only where they do: there a test, a lint rule or a CI check is the row that bites.

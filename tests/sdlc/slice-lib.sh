@@ -1,7 +1,6 @@
-# Shared setup for the headless /slice tests (slice-gate.sh, slice-pr.sh, slice-risk.sh). Source it.
-# Each test makes a scratch repo with one passing bun test, the gate and rules from
-# hooks/project-settings.example.json, a one-slice spec, and copies of the skills under test,
-# then runs `claude -p "/slice ..."` there and checks the transcript, the gate state and git.
+# Shared setup for the headless /slice tests (slice-pr.sh, slice-risk.sh). Source it.
+# Each test makes a scratch repo with one passing bun test, a one-slice spec, and copies of the
+# skills under test, then runs `claude -p "/slice ..."` there and checks the transcript and git.
 #
 #   MODEL, EFFORT, BUDGET   passed to claude (default opus, medium, 5 USD)
 #   KEEP                    directory for the scratch repo and the transcript (default: a new temp dir)
@@ -19,8 +18,7 @@ pass=0; fail=0
 need() { for c in "$@"; do command -v "$c" >/dev/null || { echo "$(basename "$0"): $c not found"; exit 2; }; done; }
 need claude git bun jq node
 
-# scratch_repo <dir> <risk>: a git repo on main with clamp() and its test, the gate, the example
-# settings, a CLAUDE.md naming `bun test` as the checks, and docs/specs/slugify.md with one slice.
+# scratch_repo <dir> <risk>: a git repo on main with clamp() and its test, a CLAUDE.md naming `bun test` as the checks, and docs/specs/slugify.md with one slice.
 # If <dir> is already a clone, its files are replaced and the caller commits the result.
 scratch_repo() {
   local dir="$1" risk="$2"
@@ -29,7 +27,7 @@ scratch_repo() {
   else
     mkdir -p "$dir" && (cd "$dir" && git init -q -b main)
   fi
-  mkdir -p "$dir/src" "$dir/docs/specs" "$dir/.claude/hooks" "$dir/.claude/skills" && cd "$dir" || exit 2
+  mkdir -p "$dir/src" "$dir/docs/specs" "$dir/.claude/skills" && cd "$dir" || exit 2
   git config user.email t@t && git config user.name t
   cat > CLAUDE.md <<'EOF'
 # sdlc-scratch
@@ -86,9 +84,6 @@ Tier: 2 · Status: building · Risk: $risk
 
 - [ ] 1. \`slugify(title: string): string\` in \`src/slugify.ts\` lowercases the title, turns each run of characters other than a-z and 0-9 into one dash, and drops a dash at either end - test: the two examples in Done when - copy: \`src/clamp.ts\`
 EOF
-  cp "$SKILLS/hooks/project-settings.example.json" .claude/settings.json
-  cp "$SKILLS/hooks/stop-gate/stop-gate.mjs" .claude/hooks/stop-gate.mjs
-  printf '{ "stop": "bun test" }\n' > .claude/checks.json
   # Each skill copy ends in a marker line, so a tool result that holds the marker read that copy.
   local s
   for s in slice verify lesson; do

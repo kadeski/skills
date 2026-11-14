@@ -21,10 +21,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## The sdlc plugin
 
-Claude-only, with no `version` on purpose (see `AGENTS.md`). Its tests are in `tests/sdlc/`:
+Claude-only, with no `version` on purpose (see `AGENTS.md`). Its tests in `tests/sdlc/` are real headless model runs that cost money, so run them by hand. Each file's header says what it needs. `slice-pr.sh` opens a PR in `kadeski/sdlc-scratch`.
 
-- `stop-gate.sh` - the gate against scratch repos. No model run, free.
-- The others are real headless model runs that cost money, so run them by hand. Each file's header says what it needs. `slice-pr.sh` opens a PR in `kadeski/sdlc-scratch`.
+`.claude/skills/` holds symlinks to every skill in `plugins/sdlc/skills/` and `plugins/doc-lint/skills/`, because Projects threads load a cloned repo's `.claude/skills/` but no plugins. A new skill gets a symlink too (`ln -s ../../plugins/<plugin>/skills/<name> .claude/skills/<name>`); `scripts/check.sh` fails when one is missing.
 
 Skills read each other as files (`../verify/SKILL.md`), so keep them as siblings in `skills/`.
 

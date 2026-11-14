@@ -33,14 +33,13 @@ Decide once, before the first edit:
 
 Before the first edit, read the code the work touches and the closest existing work the spec names, and follow its patterns. Run the project's checks once and note what already fails, so you neither blame a slice for those failures nor claim them as fixed.
 
-**One task per slice.** The TaskCreate and TaskUpdate tools may be deferred: if they aren't in your tool list, search for them (ToolSearch) before deciding you have none. If you have them, create one task per slice before building it, named `<spec slug>: slice <N> <behavior>` (for a Tier 3 ticket, when you have written its slices). Mark it in progress when the slice starts and completed in step 4. A project's `TaskCompleted` hook runs its checks when a task is completed and refuses the completion while they fail, so the slice is checked by the project and not only by you. Without the task tools, skip this; the steps are the same.
 
 ## Each slice
 
 1. **Write the failing test.** It asserts what the spec's slice line says, at the level that owns the behavior: a producer's job gets a producer test, not a check on the screen that displays it. Run it. It must fail on the assertion, not on an import error, a typo or a missing fixture. Show the test and its failing output as proof, then keep going. If the project asks for a red commit (its CLAUDE.md or rules say to commit the failing test before the code), commit the test now, with any empty stub it needs to fail on its assertion, as `<spec slug>: slice <N> red`.
 2. **Make it pass** with the smallest code that does, without editing the test.
 3. **Run the checks**: the new test, then the project's full checks (tests, types, lint, build, as CLAUDE.md lists them). Show each command and the tail of its output. "All tests pass" without output is not evidence.
-4. **Save**: mark the slice's task completed. If a hook refuses it, the refusal carries the failing output: fix the cause the way step 2 does (never by editing the test), run the checks again, and mark it completed again. Then tick the slice in the spec and commit locally as `<spec slug>: slice <N> <behavior>` (with the ticket ID in front of `slice` in a Tier 3 spec). After a red commit, this one holds the code. Don't push yet.
+4. **Save**: tick the slice in the spec and commit locally as `<spec slug>: slice <N> <behavior>` (with the ticket ID in front of `slice` in a Tier 3 spec). After a red commit, this one holds the code. Don't push yet.
 
 A slice with no real logic (copy text, config, pure layout) gets no test. Say so and name the check that replaces it.
 
@@ -51,7 +50,7 @@ Work through ordinary trouble yourself. If the spec doesn't settle something, ch
 - **The test looks wrong** once you start making it pass. Don't change it to get green, because a test its own author edited to pass proves nothing. Say what it should assert instead.
 - **You're out of ideas**: the next attempt would repeat one you already tried. Say what you tried and what each attempt ruled out, then propose reverting to the last commit and trying a different approach, or splitting the slice smaller. Ask before discarding any work.
 - **The work would contradict the spec** or touch something it lists as out of scope.
-- **Green would need a change to the checks**: `.claude/checks.json`, `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` or `.github/workflows/`. Don't edit them to get past a failure, even when the change looks right: work that loosens the rules it is judged by proves nothing. Say what would change and why. A spec that asks for such a change can be built, and the review still puts it to the user.
+- **Green would need a change to the checks**: `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` or `.github/workflows/`. Don't edit them to get past a failure, even when the change looks right: work that loosens the rules it is judged by proves nothing. Say what would change and why. A spec that asks for such a change can be built, and the review still puts it to the user.
 
 ## Push
 

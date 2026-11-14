@@ -1,7 +1,7 @@
 {
   "name": "sdlc",
   "displayName": "SDLC",
-  "description": "Spec, build test-first, verify, debug and keep lessons, with a gate that refuses a finished turn or a ticked task while the repo's .claude/checks.json checks fail.",
+  "description": "Spec, build test-first, verify with a separate reviewer, debug and keep lessons, built to run unattended.",
   "author": {
     "name": "Kaden Staker"
   },
@@ -11,6 +11,6 @@
     "spec",
     "tdd",
     "review",
-    "hooks"
+    "agents"
   ]
 }
