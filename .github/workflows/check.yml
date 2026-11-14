@@ -1,0 +1,20 @@
+name: check
+
+# Runs scripts/check.sh on every push and PR. The pre-commit hook is off in a fresh
+# clone (core.hooksPath is per clone), so this is the copy that always runs.
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install -g @anthropic-ai/claude-code
+      - run: bash scripts/check.sh

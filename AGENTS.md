@@ -4,21 +4,9 @@ The repo is a marketplace, `kadeski`. Each plugin is a folder `plugins/<plugin>/
 
 A plugin may live in its own repository instead: `study` is in kadeski/study, and its marketplace entry is a `url` source with that repository's `https://` address and its `release` branch. The directory follows a hook's Python script only at a repository root, which is why it moved. Use `url` with `https://` rather than a `github` source: `claude plugin update` clones a `github` source over SSH, which fails where github.com is not in `known_hosts`.
 
-Each plugin has a manifest per agent:
+Each plugin has one manifest, `.claude-plugin/plugin.json` (Grok Build reads it too), and is listed in one marketplace, `.claude-plugin/marketplace.json` (Grok Build and `npx skills` read it too). The plugins ship for Claude Code only. A plugin may leave `version` out of its manifest (`sdlc` does): each commit then counts as a release, so accounts that sync the marketplace pick up every push. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
 
-- Claude Code: `.claude-plugin/plugin.json` (Grok Build reads it too)
-- Codex: `plugin.json`
-- Cursor: `.cursor-plugin/plugin.json`
-
-`name` and `version` must match in all three. Bump the version in all of them together. A plugin may leave `version` out of its manifests (`sdlc` does): each commit then counts as a release, so accounts that sync the marketplace pick up every push. A plugin may ship for Claude Code only: it then has only `.claude-plugin/plugin.json` and is listed only in the Claude Code marketplace. Gemini CLI has no plugin manifest: users install a skill with `gemini skills install <repo url> --path plugins/<plugin>/skills/<name>`.
-
-Each plugin is listed in every marketplace at the root (a Claude Code only plugin in Claude Code's alone):
-
-- Claude Code: `.claude-plugin/marketplace.json` (Grok Build and `npx skills` read it too)
-- Codex: `.agents/plugins/marketplace.json`
-- Cursor: `.cursor-plugin/marketplace.json`
-
-To add a plugin, create its folder, add it to the marketplaces it ships in (all three, or only Claude Code's) and to the list in `README.md`.
+To add a plugin, create its folder, add it to the marketplace and to the list in `README.md`.
 
 Before committing, run `scripts/check.sh`.
 

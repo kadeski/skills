@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# Checks that every plugin's manifests agree, every marketplace lists every plugin it
-# should, and every skill is well formed. A plugin with only .claude-plugin/plugin.json
-# is Claude-only: it is listed in the Claude Code marketplace and no other. A plugin in its
-# own repository (study) is listed with a github or url source and has no folder here. Also checks
+# Checks that every plugin's manifest is valid, the marketplace lists every plugin, and
+# every skill is well formed. A plugin in its own repository (study) is listed with a
+# github or url source and has no folder here. Also checks
 # that no plugin substitutes a credential-like name, and warns when a plugin changed but its version did not.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -11,7 +10,7 @@ for cmd in jq claude; do
   command -v "$cmd" >/dev/null || { echo "FAIL: $cmd is not on PATH"; exit 1; }
 done
 
-marketplaces=(.claude-plugin/marketplace.json .agents/plugins/marketplace.json .cursor-plugin/marketplace.json)
+marketplace=.claude-plugin/marketplace.json
 fail=0
 err() { echo "FAIL: $*"; fail=1; }
 warn() { echo "WARN: $*"; }
@@ -26,36 +25,22 @@ validate() {
   ! echo "$out" | grep -F '❯' | grep -v -F -e 'version: No version specified' -e 'ICON_MISSING' | grep -q .
 }
 
-for f in "${marketplaces[@]}"; do
-  jq -e . "$f" >/dev/null || err "$f is not valid JSON"
-done
+m=$marketplace
+jq -e . "$m" >/dev/null || err "$m is not valid JSON"
 
 plugins=$(ls plugins)
-claude_only() { [ ! -e "plugins/$1/plugin.json" ] && [ ! -e "plugins/$1/.cursor-plugin/plugin.json" ]; }
-multi_agent=$(for p in $plugins; do claude_only "$p" || echo "$p"; done)
-for m in "${marketplaces[@]}"; do
-  expected=$plugins
-  [ "$m" = .claude-plugin/marketplace.json ] || expected=$multi_agent
-  listed=$(jq -r '.plugins[] | select((.source | type) != "object" or (.source.source | IN("github", "url") | not)) | .name' "$m" | sort)
-  [ "$listed" = "$expected" ] || err "$m lists '$(echo $listed)', expected '$(echo $expected)'"
-  for p in $expected; do
-    src=$(jq -r --arg p "$p" '.plugins[] | select(.name == $p) | .source | if type == "object" then .path else . end' "$m")
-    [ "${src#./}" = "plugins/$p" ] || err "$m: $p source is '$src', not plugins/$p"
-  done
+listed=$(jq -r '.plugins[] | select((.source | type) != "object" or (.source.source | IN("github", "url") | not)) | .name' "$m" | sort)
+[ "$listed" = "$plugins" ] || err "$m lists '$(echo $listed)', expected '$(echo $plugins)'"
+for p in $plugins; do
+  src=$(jq -r --arg p "$p" '.plugins[] | select(.name == $p) | .source | if type == "object" then .path else . end' "$m")
+  [ "${src#./}" = "plugins/$p" ] || err "$m: $p source is '$src', not plugins/$p"
 done
 
 for p in $plugins; do
   dir=plugins/$p
-  manifests=("$dir/.claude-plugin/plugin.json")
-  claude_only "$p" || manifests+=("$dir/plugin.json" "$dir/.cursor-plugin/plugin.json")
-  for f in "${manifests[@]}"; do
-    jq -e . "$f" >/dev/null || err "$f is missing or not valid JSON"
-  done
-  [ "$(jq -r .name "$dir/.claude-plugin/plugin.json")" = "$p" ] || err "$dir: name does not match folder '$p'"
-  for key in name version; do
-    values=$(for f in "${manifests[@]}"; do jq -r ".$key" "$f"; done | sort -u)
-    [ "$(echo "$values" | wc -l)" -eq 1 ] || err "$dir: $key differs across manifests: $(echo $values)"
-  done
+  manifest=$dir/.claude-plugin/plugin.json
+  jq -e . "$manifest" >/dev/null || err "$manifest is missing or not valid JSON"
+  [ "$(jq -r .name "$manifest")" = "$p" ] || err "$dir: name does not match folder '$p'"
   [ -f "$dir/LICENSE" ] || err "$dir: missing LICENSE"
   words=$(sed '/^```/,/^```/d' "$dir/README.md" 2>/dev/null | wc -w)
   [ "$words" -ge 40 ] || err "$dir: README.md missing or under 40 words"
