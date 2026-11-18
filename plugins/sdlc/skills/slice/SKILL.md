@@ -84,4 +84,4 @@ One report at the end, for a reader who didn't watch the run:
 - the review: the reviewer's counts and each finding with its outcome. If the run stopped early, the slice it stopped on and why
 - at most one decision for the user, with your recommended answer: high-risk sign-off, a stop that needs them, or a check change the review left open
 
-End with the Evidence block in `../evidence/SKILL.md`; a PR link goes on its Commit line.
+End with the block in `../evidence/SKILL.md`.

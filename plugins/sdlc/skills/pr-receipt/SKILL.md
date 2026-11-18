@@ -26,9 +26,8 @@ Closes #N
 <details><summary>Proof</summary>
 
 - `<test file or name>`: failed before the fix, passes after.
-- `<check command>`: passed (tail of the output, or a link to the run).
-- CI: <passing / pending / failing, with a link>.
-- <Run log, screenshot or measurement: what it shows, with numbers.>
+- <Commit, CI and checks lines from ../evidence/SKILL.md>
+- <Run log, screenshot or measurement, with numbers.>
 
 </details>
 
@@ -45,7 +44,7 @@ Closes #N
 ## Rules
 
 - **The summary is honest.** If part of the work is unverified, partial or behind a flag, the summary says so. Don't leave the only mention inside a collapsed section.
-- **Proof is evidence, not claims.** Never write "tests pass" without naming which tests or which command. Give the command, the result and where to see it. For a bug fix, say the test failed before the fix and passes after. If there is no proof for something, say that plainly instead of leaving it out.
+- **Proof is evidence, not claims**, by the lines of `../evidence/SKILL.md`. For a bug fix, the test failed before the fix and passes after.
 - **Spacing.** Put a blank line after each `<summary>` line and before each `</details>`. Without them GitHub shows the Markdown inside as raw text.
 - **Editing keeps the structure.** When updating a description, keep the order and both sections. Update Proof whenever new commits land, so it describes the code as it is now, not as it was.
 - **Repo templates win on layout.** If the repo has a PR template (`.github/pull_request_template.md` or a file in `.github/PULL_REQUEST_TEMPLATE/`), fill in its headings and nest this format inside them: the summary under its description heading, and the Proof and Details blocks under the closest matching headings. Skip any template section that asks for credentials or secrets.
