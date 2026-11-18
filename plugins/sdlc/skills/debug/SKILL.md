@@ -40,7 +40,7 @@ Fix where the wrong thing is produced, not where it's noticed. Example: matplotl
 
 - **Cause** (file:line) and why it happened, in plain words and short enough that the user could explain this bug without the agent.
 - **Fix**, and why that layer.
-- **Evidence**: the reproduction before and after, and the test output.
+- **Evidence**: the reproduction before and after, then the block in `../evidence/SKILL.md`.
 - **Other instances** found.
 - If the bug came from a mistake that could recur (a misread convention, a missing check), suggest /lesson.
 

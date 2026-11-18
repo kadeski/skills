@@ -81,6 +81,7 @@ One report at the end, for a reader who didn't watch the run:
 - each slice: the behavior, the test and the assertion it failed on before the code existed, the checks that pass now, and the commit
 - what you assumed where the spec was silent
 - follow-ups you noticed but didn't do
-- where the work landed: the commit on the default branch, the branch, or the PR link
 - the review: the reviewer's counts and each finding with its outcome. If the run stopped early, the slice it stopped on and why
 - at most one decision for the user, with your recommended answer: high-risk sign-off, a stop that needs them, or a check change the review left open
+
+End with the Evidence block in `../evidence/SKILL.md`; a PR link goes on its Commit line.
