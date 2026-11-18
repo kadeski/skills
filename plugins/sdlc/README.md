@@ -26,7 +26,7 @@ The skills assume nobody is there to answer, which is how a Projects thread or a
 | `preflight` | Checks an agent run before it goes unattended: what done means, how it checks itself, what it can reach, when it stops, who signs off, and how it avoids repeating or gets back from what it changes outside git. |
 | `pr-receipt` | Lays out a PR description: a plain-language summary, then collapsed Proof (named tests, CI, logs) and Details sections. Claude uses it on its own whenever it writes or edits a PR description. |
 | `evidence` | Ends a thread's or unattended run's final reply with a fixed block: the commit pushed, the CI result read back from GitHub, each check run and what was not checked, so a summary of the run carries proof. `slice` and `debug` end with it. |
-| `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, audits hooks and deny rules, and reads the track record (reviewer noise, reverts and follow-up fixes per risk level) to say which checkpoints have earned dropping. Reports first; a later run applies what you pick. |
+| `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, audits hooks and deny rules, and reads the track record (reviewer noise, reverts and follow-up fixes per risk level, or per kind of commit where work goes straight to main) to say which checkpoints have earned dropping. Reports first; a later run applies what you pick. |
 
 ## Checks
 

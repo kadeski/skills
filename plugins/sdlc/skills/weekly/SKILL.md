@@ -6,13 +6,11 @@ disable-model-invocation: true
 
 # weekly
 
-Agents speed up entropy. They add code readily and almost never suggest that 100k lines could be 10k. Instructions written for last month's model turn into constraints for this one. Schedule the cleanup or it never happens.
-
-Report first. Change nothing until the user picks what to apply. The report is the end of the run: the user picks later (in a Claude Code project, in the coordinator chat), and the picks are applied in a separate run.
+Report first and change nothing: the user picks later (in a Claude Code project, in the coordinator chat), and a separate run applies the picks.
 
 ## 1. Context
 
-- `git log --since="1 week ago" --stat` (or since the last `weekly:` commit): where did most of the change land? Entropy collects there.
+- `git log --since="1 week ago" --stat` (or since the last `weekly:` commit): where did most of the change land?
 - Read `CLAUDE.md`, `REVIEW.md`, `.claude/settings.json` and `.claude/settings.local.json`.
 
 ## 2. Delete and simplify
@@ -22,8 +20,7 @@ Whole repo, starting with this week's hot spots (/simplify only covers changed c
 - dead code, unused exports, flags that are always on, old migration shims
 - two helpers doing one job, abstractions with one caller, config nobody sets
 - defensive checks on trusted internal input, try/catch blocks that swallow errors
-- scaffolding built around an older model's limits (extra prompts, retries, wrappers). Ask: what's the actual reason to keep this?
-- files that grew a lot this week
+- scaffolding built around an older model's limits (extra prompts, retries, wrappers).
 
 For each hot spot, ask once: if we rebuilt this today, what would it look like at a tenth of the size?
 
@@ -55,8 +52,8 @@ For each one: is it a zero-exception rule (keep) or a preference (demote to a `C
 Checkpoints are dropped when the work has earned it, and added back when it hasn't. Read the evidence since the last `weekly:` commit (or the last 4 weeks the first time):
 
 - **Reviewer noise**: the `*.review.md` logs next to the specs. Count each finding's outcome: fixed, won't fix, intended. A reviewer whose findings are mostly won't-fix or intended is noise: say which kinds, and suggest a `REVIEW.md` line that drops them. Also count rounds to pass per spec.
-- **Regret-free merges**: for each spec or PR merged in the period, by its `Risk:` line, did it need a revert (`git log --grep '^Revert'`) or a follow-up fix within a week (a later commit or PR that names it, or a `fix` commit touching the same files)? A merge with neither is regret-free. Give the rate per risk level, with the count, and name each regret.
-- **What it says**: a risk level with no regrets over 10 or more merges has earned dropping one checkpoint, such as high-risk work skipping the extra `/code-review` pass. Propose one, name the evidence, and never apply it yourself: the user decides. A regret at a level nobody read before merge (low risk): propose adding a checkpoint back for that kind of change. Fewer than 10 merges at a level: say there is too little to judge.
+- **Regret-free landings**: the units landed on the default branch in the period: a merged PR, or the direct commits naming one spec (`<slug>: slice <N>`), each with its `Risk:`; any other direct commit, grouped by message prefix (`ingest:`, `edit:`) or top folder. Skip merges and commits a tool made (backups, bot bumps). A unit regrets when it needed a revert (`git log --grep '^Revert'`) or a follow-up fix within a week: a later commit naming it, or correcting lines it added (not building on them). Read each candidate's diff (`git log <sha>.. --until=<+7 days> -- <its files>`): a shared file (an index, a log) is not enough. A backup commit can be the fix: hand edits arrive that way. Give the rate per risk level and kind, with the count, and name each regret.
+- **What it says**: a risk level or kind with no regrets over 10 or more units has earned dropping one checkpoint, such as high-risk work skipping the extra `/code-review` pass. Propose one, name the evidence, and never apply it yourself: the user decides. A regret nobody read before it landed (low risk, a direct commit): propose adding a checkpoint back for that kind of change. Fewer than 10 units: too little to judge.
 
 ## 6. Report and apply
 
