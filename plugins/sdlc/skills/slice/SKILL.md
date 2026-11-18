@@ -26,9 +26,9 @@ The run is hands-off. The user comes back to a built and reviewed spec with the 
 
 Decide once, before the first edit:
 
-- **The project has a git rule** (project instructions or CLAUDE.md, such as "commit and push straight to main"): follow it.
-- **No rule, a solo repo, and an ungated default branch**: commit there and push at the end. Solo: nobody but the user (bots aside) committed in 90 days (`git log --since=90.days --format=%an | sort -u`). Ungated: `gh api repos/<owner>/<repo>/branches/<branch>` shows `protected: false` and `.../rules/branches/<branch>` has no `pull_request` or `required_status_checks` rule. If the push is rejected, move the commits to a branch and open a PR.
-- **No rule, a remote, anything else** (others commit, the branch is gated, or you can't tell): work on a branch and end in a PR, where required checks run and reviewers get a gate. Use the current branch if it isn't the default one, else `git switch -c <spec slug>`.
+- **The project has a git rule** (project instructions or CLAUDE.md, such as "push straight to main"): follow it.
+- **No rule, a solo repo, and an ungated default branch**: commit there, push at the end. Solo: only the user (and bots) committed in 90 days (`git log --since=90.days --format=%an | sort -u`). Ungated: `gh api repos/<owner>/<repo>/branches/<b>` shows `protected: false` and `.../rules/branches/<b>` has no `pull_request` or `required_status_checks` rule. A rejected push falls back to a PR.
+- **No rule, a remote, anything else** (others commit, the branch is gated, or you can't tell): work on a branch and end in a PR. Use a non-default current branch, else `git switch -c <spec slug>`.
 - **No remote**: commit on the current branch and don't push.
 - **High risk** never lands on the default branch before the user signs off, whatever the rule: build on a branch and push that.
 
@@ -51,25 +51,25 @@ Work through ordinary trouble yourself. If the spec doesn't settle something, ch
 - **The test looks wrong** once you start making it pass. Don't change it to get green, because a test its own author edited to pass proves nothing. Say what it should assert instead.
 - **You're out of ideas**: the next attempt would repeat one you already tried. Say what you tried and what each attempt ruled out, then propose reverting to the last commit and trying a different approach, or splitting the slice smaller. Ask before discarding any work.
 - **The work would contradict the spec** or touch something it lists as out of scope.
-- **Green would need a change to the checks**: `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` or `.github/workflows/`. Don't edit them to get past a failure, even when the change looks right: work that loosens the rules it is judged by proves nothing. Say what would change and why. A spec that asks for such a change can be built, and the review still puts it to the user.
+- **Green would need a change to the checks**: `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` or `.github/workflows/`. Don't edit them to get past a failure: work that loosens the rules it is judged by proves nothing. Say what would change and why. A spec that asks for such a change can be built, and the review still puts it to the user.
 
 ## Push
 
-When the spec's last slice or ticket is ticked and the checks pass, and before the review, push where "Where the work lands" says. Make GitHub calls the way this session makes them (`gh` locally, the GitHub MCP tools in a Projects thread). A push or PR call that fails with no clear answer (a timeout, a dropped connection) may still have worked: check (`git ls-remote origin <branch>`, or list the PRs for the branch) before trying again, so a retry doesn't push twice or open a second PR.
+When the spec's last slice or ticket is ticked and the checks pass, and before the review, push where "Where the work lands" says. Make GitHub calls with `gh` locally, the GitHub MCP tools in a thread. A push or PR call that fails with no clear answer (a timeout, a dropped connection) may still have worked: check (`git ls-remote origin <branch>`, or list the PRs for the branch) before trying again, so a retry doesn't push twice or open a second PR.
 
-Where the work ends in a PR (one may already exist for the branch: update its body), the body is what CI and the reviewer read. Lay it out with `../pr-receipt/SKILL.md`, and put in it:
+A PR (or the branch's existing one: update it) gets a body laid out with `../pr-receipt/SKILL.md`, holding:
 
 - the spec's `Risk:` line, as written
 - each done-when check: the command and the tail of its output, run just now
-- how to undo it: revert the merge commit (`git revert -m 1 <merge commit>`), or close the PR before it merges. A revert undoes only the code: if the spec has an `Undo:` line for effects outside git (data, settings, other services), copy it here
+- how to undo: `git revert -m 1 <merge commit>`, or close the PR unmerged, plus the spec's `Undo:` line, if any, for effects outside git
 
 Never merge a PR yourself; a session that merges would be grading its own work. After any fix in the review, push again.
 
 ## Review
 
-When the spec's last slice or ticket is ticked and the checks pass, run the review before you report. It spawns a separate reviewer, which is worth it once per spec, so skip it when the run stopped early or left work open.
+When the spec's last slice or ticket is ticked and the checks pass, run the review before you report. It spawns a separate reviewer, so skip it when the run stopped early or left work open.
 
-Read `../verify/SKILL.md` (the verify skill, next to this skill's folder) and follow it for this spec, in its default (auto) mode unless you have `ask`. Pick what else happens by the spec's `Risk:` line (no line: normal). The line is the user's call, judged by the change and not by who wrote it, so never change it to get a lighter review:
+Read `../verify/SKILL.md` and follow it for this spec, in its default (auto) mode unless you have `ask`. Pick what else happens by the spec's `Risk:` line (no line: normal). The line is the user's call, judged by the change and not by who wrote it, so never change it to get a lighter review:
 
 - **low** (docs, copy, comments) and **normal** (most code): the review decides each finding by rule and nobody is asked. The report carries the findings and what happened to each.
 - **high**: also run the built-in `/code-review` on the diff (with the Skill tool; if you can't, say so in the report). The work stays on its branch. End the report with one decision for the user: merge it or not, naming the riskiest file for them to read first. An agent's review never counts as theirs.
