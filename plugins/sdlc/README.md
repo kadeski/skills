@@ -19,7 +19,7 @@ The skills assume nobody is there to answer, which is how a Projects thread or a
 |---|---|
 | `grill` | Questions you about a plan one decision at a time until nothing it depends on is left open. |
 | `spec` | Writes the definition of done: goal, pass-or-fail checks, out of scope and thin vertical slices. Sets a risk level that decides how much review the build gets, and for high risk an `Undo:` line for what a revert cannot take back. |
-| `slice` | Builds a spec test-first with nobody watching. Each slice gets a failing test shown as proof, the smallest code that passes it, the full checks and a commit. It lands the work the way the project's git rule says, and keeps high-risk work on a branch until you sign off. |
+| `slice` | Builds a spec test-first with nobody watching. Each slice gets a failing test shown as proof, the smallest code that passes it, the full checks and a commit. It lands the work the way the project's git rule says; with no rule, a solo repo with nothing gating main gets a push to main and anything else gets a PR. It keeps high-risk work on a branch until you sign off. |
 | `verify` | Starts a reviewer that did not see the build. It runs the done-when checks itself, as the base commit defines them, and reads the diff against the spec, capped at 3 rounds. Each finding is fixed or rejected by rule. A change to the checks or review rules the work is judged by always goes to you. |
 | `debug` | Reproduces a bug end to end, traces it to the layer that makes the wrong value, locks it with a failing test, then fixes it. |
 | `lesson` | Turns a correction into a fix at the source: a test, a lint rule, a `REVIEW.md` or `CLAUDE.md` line, or a hook. Proves the fix catches the mistake. |

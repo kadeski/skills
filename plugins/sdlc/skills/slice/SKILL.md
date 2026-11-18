@@ -27,8 +27,9 @@ The run is hands-off. The user comes back to a built and reviewed spec with the 
 Decide once, before the first edit:
 
 - **The project has a git rule** (project instructions or CLAUDE.md, such as "commit and push straight to main"): follow it.
-- **No rule, and the repo has a remote and a CI workflow** (a file in `.github/workflows/`): the work goes on a branch and ends in a PR, because CI checks it there. If you are already on a branch other than the default one, use it. Else create one named for the spec slug (`git switch -c <spec slug>`).
-- **Otherwise**: commit on the current branch and don't push.
+- **No rule, and the repo is solo with nothing gating its default branch**: commit on the default branch and push there at the end. A PR would only add a wait. Solo means no one but the user (bots aside) has committed in the last 90 days (`git log --since=90.days --format='%an' | sort -u`), and no other collaborators where you can list them. Nothing gating means the default branch requires no PR, review or status check: `gh api repos/<owner>/<repo>/branches/<branch> --jq .protected` is `false` and `gh api repos/<owner>/<repo>/rules/branches/<branch>` has no `pull_request` or `required_status_checks` rule. If the push is still rejected, move the commits to a branch and open a PR.
+- **No rule, a remote, and anything else** (other people commit, the branch is gated, or you can't tell): the work goes on a branch and ends in a PR, because that is where the required checks run and reviewers get their say. If you are already on a branch other than the default one, use it. Else create one named for the spec slug (`git switch -c <spec slug>`).
+- **No remote**: commit on the current branch and don't push.
 - **High risk** never lands on the default branch before the user signs off, whatever the rule: build on a branch and push that.
 
 Before the first edit, read the code the work touches and the closest existing work the spec names, and follow its patterns. Run the project's checks once and note what already fails, so you neither blame a slice for those failures nor claim them as fixed.
@@ -56,7 +57,7 @@ Work through ordinary trouble yourself. If the spec doesn't settle something, ch
 
 When the spec's last slice or ticket is ticked and the checks pass, and before the review, push where "Where the work lands" says. Make GitHub calls the way this session makes them (`gh` locally, the GitHub MCP tools in a Projects thread). A push or PR call that fails with no clear answer (a timeout, a dropped connection) may still have worked: check (`git ls-remote origin <branch>`, or list the PRs for the branch) before trying again, so a retry doesn't push twice or open a second PR.
 
-Where the work ends in a PR (one may already exist for the branch: update its body), the body is what CI and the reviewer read:
+Where the work ends in a PR (one may already exist for the branch: update its body), the body is what CI and the reviewer read. Lay it out with `../pr-receipt/SKILL.md`, and put in it:
 
 - the spec's `Risk:` line, as written
 - each done-when check: the command and the tail of its output, run just now
