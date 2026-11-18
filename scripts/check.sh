@@ -22,7 +22,10 @@ validate() {
   out=$(claude plugin validate "$1" --strict 2>&1) && { echo "$out"; return 0; }
   echo "$out"
   echo "$out" | grep -q -F 'version: No version specified' || return 1
-  ! echo "$out" | grep -F '❯' | grep -v -F -e 'version: No version specified' -e 'ICON_MISSING' | grep -q .
+  # Only ❯ lines under a "Found N warning/error" heading count; newer CLIs also list a plugin's
+  # contents under "Provides:" with the same marker.
+  ! echo "$out" | awk '/Found [0-9]+ /{on=1} /^Provides:/{on=0} on && /❯/' \
+    | grep -v -F -e 'version: No version specified' -e 'ICON_MISSING' | grep -q .
 }
 
 m=$marketplace
