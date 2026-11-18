@@ -1,0 +1,172 @@
+# Atoms of plugins/sdlc/skills/slice/SKILL.md for evals/novelty.py. Format: see evals/verify/atoms.yaml.
+stem: >-
+  Situation: you are a coding agent running unattended in a cloud thread; nobody will read or answer a
+  question until the run ends. Your task: build the open work in the spec docs/specs/export.md test-first.
+  The spec has a goal, "Done when" checks, an out-of-scope list, a Risk line and three numbered thin
+  vertical slices, none built yet. The repo is a git repo whose CLAUDE.md names its checks (tests, types, lint).
+atoms:
+  - id: question-in-report
+    kind: contract
+    lines: "**Who answers.** Nobody, by default"
+    q: "Midway, you hit a choice only the user can really make (whether to keep a deprecated flag working). What do you do?"
+    a: "Don't stop or wait for an answer: carry on with a sensible default and put the choice in the final report as one decision with a recommended answer."
+  - id: no-midway-review
+    kind: contract
+    lines: "The run is hands-off"
+    q: "Slice 1 is done and its checks pass. Do you pause for the user to look at it before slice 2?"
+    a: "No: don't stop for a review along the way; keep building and let the user review the finished, reviewed spec with the evidence for each slice."
+  - id: test-first
+    kind: contract
+    lines: "The test exists and fails before the code does"
+    q: "In what order do you write a slice's test and code, and why?"
+    a: "The test first, and it must be run and seen failing before the code exists; code and test written in one step don't check each other."
+  - id: commit-per-slice
+    kind: contract
+    lines: "Every slice ends in a commit"
+    q: "Slice 2 turns into a mess halfway through. How do you recover?"
+    a: "Slice 1's commit is the save point. Work through ordinary trouble; once the next attempt would only repeat one already tried, stop and report what was tried and ruled out, recommending a revert to the slice 1 commit or a smaller slice, without discarding the work unasked."
+  - id: which-spec
+    kind: contract
+    lines: "**Spec**: the path given, else the spec marked"
+    q: "Variation: the run was given no spec path. Which spec do you build?"
+    a: "The spec marked `Status: building` in docs/specs/ (or where CLAUDE.md says specs live)."
+  - id: tier3-ticket
+    kind: contract
+    lines: "**Tickets** (Tier 3)"
+    q: "Variation: the spec is split into tickets rather than slices. How do you build a ticket?"
+    a: "Split it into 2-4 thin vertical slices written under the ticket in the spec, build them one by one, then run the ticket's own done-when check, show its output, and tick the ticket."
+  - id: no-spec-small
+    kind: contract
+    lines: "**No spec**: build to the done-when check"
+    q: "Variation: there is no spec at all and no done-when check was given; the ask is a one-line typo fix in an error message. How do you define done?"
+    a: "Write a one-line done-when check yourself, mark it \"(assumed)\", and put it in the report."
+  - id: no-spec-big
+    kind: contract
+    lines: "Anything bigger, where \"done\" or \"out of scope\" could be read two ways"
+    q: "Variation: there is no spec, and the ask is \"add CSV export\", which could be read several ways. What do you do?"
+    a: "Don't build it: it needs a spec first (/spec), so report that and stop."
+  - id: git-rule
+    kind: contract
+    lines: "**The project has a git rule**"
+    q: "CLAUDE.md says \"commit and push straight to main\", and the repo also has a CI workflow. Where does the work land?"
+    a: "Follow the project's rule: commit and push to main (no branch or PR), unless the spec is high risk."
+  - id: ci-branch-pr
+    kind: contract
+    lines: "**No rule, and the repo has a remote and a CI workflow**"
+    q: "Variation: no git rule anywhere; the repo has a GitHub remote and .github/workflows/ci.yml, and you are on main. Where does the work land?"
+    a: "On a new branch named for the spec slug (export), ending in a pull request so CI checks it."
+  - id: no-ci-local
+    kind: contract
+    lines: "**Otherwise**: commit on the current branch and don't push"
+    q: "Variation: no git rule, and the repo has no CI workflow. Where does the work land?"
+    a: "Commit on the current branch and don't push."
+  - id: high-risk-branch
+    kind: contract
+    lines: "**High risk** never lands on the default branch"
+    q: "The spec says `Risk: high` and CLAUDE.md says to commit straight to main. Where does the work land?"
+    a: "On a branch, pushed, not on main: high-risk work never lands on the default branch before the user signs off, whatever the project's rule."
+  - id: read-first
+    kind: idea
+    lines: "Before the first edit, read the code the work touches"
+    q: "What do you look at before your first edit?"
+    a: "The code the work touches and the closest existing similar work, so the new code follows its patterns."
+  - id: baseline-checks
+    kind: contract
+    lines: "Run the project's checks once and note what already fails"
+    q: "Before the first edit, what do you do with the project's checks, and why?"
+    a: "Run them once and note what already fails, so pre-existing failures are neither blamed on a slice nor claimed as fixed."
+  - id: test-level
+    kind: idea
+    lines: "at the level that owns the behavior"
+    q: "Slice 1 is \"the exporter writes one row per order\". The exporter's output is shown on a web page. Where does the test go?"
+    a: "On the exporter itself (the producer that owns the behavior), not on the page that displays it."
+  - id: fail-on-assertion
+    kind: contract
+    lines: "It must fail on the assertion"
+    q: "You run the new test and it fails with \"ModuleNotFoundError: exporter\". Can you move on to writing the code?"
+    a: "No: the test must fail on its assertion, not on an import error, typo or missing fixture; fix that (e.g. with a stub) until it fails on the assertion first."
+  - id: red-commit
+    kind: contract
+    lines: "If the project asks for a red commit"
+    q: "CLAUDE.md says to commit failing tests before the code. What exactly do you commit and with what message?"
+    a: "The failing test (plus any empty stub it needs to fail on its assertion), committed as `export: slice 1 red`, before writing the code."
+  - id: smallest-code
+    kind: contract
+    lines: "**Make it pass** with the smallest code"
+    q: "How much code do you write to make the slice's test pass, and may you touch the test?"
+    a: "The smallest code that makes it pass, without editing the test."
+  - id: show-output
+    kind: contract
+    lines: "3. **Run the checks**"
+    q: "Which checks do you run after the code passes, and how do you show it?"
+    a: "The new test, then the project's full checks (tests, types, lint, build); show each command and the tail of its output, since \"all tests pass\" without output is not evidence."
+  - id: tick-commit
+    kind: contract
+    lines: "4. **Save**: tick the slice in the spec"
+    q: "Slice 1's checks pass. What do you do to save it, and with what commit message?"
+    a: "Tick slice 1 in the spec and commit locally as `export: slice 1 <behavior>`, without pushing yet."
+  - id: no-logic-slice
+    kind: contract
+    lines: "A slice with no real logic"
+    q: "Slice 3 only changes the help text of a command. Does it get a test?"
+    a: "No test: say so, and name the check that replaces it."
+  - id: assume-decision
+    kind: contract
+    lines: "If the spec doesn't settle something"
+    q: "The spec doesn't say whether the export should include cancelled orders. What do you do?"
+    a: "Choose what fits the spec's goal, add it to the spec's Decisions marked \"(assumed during build)\", and carry on without stopping."
+  - id: stop-test-wrong
+    kind: contract
+    lines: "**The test looks wrong**"
+    q: "While making slice 2 pass, you realise the test you wrote asserts the wrong date format. What do you do?"
+    a: "Don't edit the test to get green: stop the run and report what the test should assert instead."
+  - id: stop-out-of-ideas
+    kind: contract
+    lines: "**You're out of ideas**"
+    q: "You've tried three approaches to make slice 2 pass, and the next idea repeats one of them. What do you do?"
+    a: "Stop and report what each attempt tried and ruled out, propose reverting to the last commit and trying a different approach or splitting the slice smaller, and don't discard any work without asking."
+  - id: stop-scope
+    kind: contract
+    lines: "**The work would contradict the spec**"
+    q: "Making slice 3 pass would require changing the import command, which the spec lists as out of scope. What do you do?"
+    a: "Stop the run and report it; don't touch what the spec lists as out of scope."
+  - id: stop-policy
+    kind: contract
+    lines: "**Green would need a change to the checks**"
+    q: "The only way to get lint green is to disable one rule in the lint config referenced by .github/workflows/ci.yml. The change looks right. What do you do?"
+    a: "Don't change the checks or the workflow to get past a failure, even if it looks right: stop and report what would change and why."
+  - id: push-when
+    kind: contract
+    lines: "When the spec's last slice or ticket is ticked and the checks pass, and before the review, push"
+    q: "When do you push the work?"
+    a: "Once, when the last slice is ticked and the checks pass, before the review (not after each slice)."
+  - id: push-timeout
+    kind: contract
+    lines: "A push or PR call that fails with no clear answer"
+    q: "Creating the pull request times out with no response. What do you do next?"
+    a: "Check whether it worked (list PRs for the branch, or git ls-remote for a push) before trying again, so a retry doesn't open a second PR or push twice."
+  - id: pr-body
+    kind: contract
+    lines: "the spec's `Risk:` line, as written"
+    q: "Variation: the work ends in a pull request. What goes in its body?"
+    a: "The spec's Risk line as written; each done-when check's command and output tail, run just now; and how to undo it (git revert -m 1 <merge commit>, or close the PR), plus the spec's Undo: line if it has one for effects outside git."
+  - id: never-merge
+    kind: contract
+    lines: "Never merge a PR yourself"
+    q: "The PR is open, CI is green and the review passed. Do you merge it?"
+    a: "No: never merge the PR yourself; a session that merges would be grading its own work."
+  - id: review-once
+    kind: contract
+    lines: "When the spec's last slice or ticket is ticked and the checks pass, run the review"
+    q: "When, and how often, is the work reviewed against the spec by a separate reviewer?"
+    a: "Once, after the last slice is ticked and checks pass, before reporting (by following the verify skill); skipped if the run stopped early or left work open."
+  - id: risk-line
+    kind: contract
+    lines: "The line is the user's call"
+    q: "The spec says `Risk: high`, but you think the change is actually low risk. What do you do with the Risk line and the review?"
+    a: "Never change the Risk line; run the high-risk review: the verify review plus /code-review on the diff, the work stays on its branch, and the report ends with one merge decision for the user naming the riskiest file to read first."
+  - id: report
+    kind: contract
+    lines: "One report at the end"
+    q: "What does your final report contain?"
+    a: "Per slice: the behavior, the test and the assertion it failed on before the code, the checks passing now and the commit; what was assumed; follow-ups not done; where the work landed; the review's counts and each finding's outcome (or where and why the run stopped); and at most one decision for the user with a recommended answer."

@@ -243,7 +243,7 @@ def remove_tree(path):
     for p in [path, *path.rglob("*")]:
         try:
             os.chmod(p, 0o700, follow_symlinks=False)
-        except OSError:
+        except (OSError, NotImplementedError):  # Linux has no lchmod
             pass
     shutil.rmtree(path, ignore_errors=True)
 

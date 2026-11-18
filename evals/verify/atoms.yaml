@@ -1,0 +1,195 @@
+# Atoms of plugins/sdlc/skills/verify/SKILL.md for evals/novelty.py.
+# One rule each: a situation question that doesn't give the answer away, and the exact answer the skill expects.
+# kind: contract = an exact rule (a condition, a stop, a name, a number); idea = a general practice.
+# lines: the start of the SKILL.md text the atom covers, so a result maps back to the file.
+stem: >-
+  Situation: you are a coding agent running unattended in a cloud thread; nobody will read or answer a
+  question until the run ends. You just finished building a feature from the spec docs/specs/export.md
+  (goal, "Done when" checks, out of scope) in a git repo with a GitHub remote and a CI workflow, in
+  several commits. Your task now: check that the finished work meets its spec before calling it done.
+atoms:
+  - id: nobody-asked
+    kind: contract
+    lines: "**Who answers.** Nobody, by default"
+    q: "The review turns up five findings of mixed severity. How do you decide which ones get fixed?"
+    a: "It does not ask the user or wait for anyone: it decides each finding itself by fixed rules (fix or reject), and records each decision."
+  - id: fresh-reviewer
+    kind: idea
+    lines: "Why a separate reviewer"
+    q: "Who should do the review of the work, and with what context?"
+    a: "A separate, fresh-context agent that did not build the work (not the author's own session), given the spec and the diff, running the real check commands itself."
+  - id: range
+    kind: idea
+    lines: "**Range**: from the commit before the work started"
+    q: "Exactly which changes does the review cover?"
+    a: "Everything from the commit before the work started (the parent of the first commit of the work, or the merge-base with the main branch) up to HEAD, plus uncommitted changes."
+  - id: policy-base
+    kind: contract
+    lines: "**Policy files**: the files that decide how this work is judged"
+    q: "The diff includes an edit to .github/workflows/ci.yml and to REVIEW.md. Which versions of those files is the rest of the work judged by?"
+    a: "By the base versions (as they were before the work), not the changed ones, because the work can't loosen the rules it is judged by."
+  - id: policy-to-user
+    kind: contract
+    lines: "0. A change to a policy file (step 1): **leave it open**"
+    q: "The reviewer flags that the work changed .github/workflows/ci.yml (it removed a lint step). What do you do with that finding?"
+    a: "Neither fix nor reject it: leave it open as a blocker for a person to decide, report it with what the change loosens, and don't call the work done."
+  - id: review-log
+    kind: contract
+    lines: "**Review log**: `<spec name>.review.md` next to the spec"
+    q: "Where do you record the review's rounds and findings, and what do you read from it before starting?"
+    a: "In docs/specs/export.review.md (the spec name plus .review.md, next to the spec); before starting, read its last round number, last reviewed commit and earlier findings."
+  - id: round-4
+    kind: contract
+    lines: "**Round 4 or later**: don't review again"
+    q: "The review log shows three rounds already done on this spec, and you are about to start another. What do you do?"
+    a: "Do not run a fourth review round. Stop and say that after three rounds the approach itself may be wrong, so it needs rethinking (with the user) rather than more review."
+  - id: reviewer-model
+    kind: contract
+    lines: "Use the Agent tool with `subagent_type: reviewer`"
+    q: "You spawn the reviewer as a subagent. Which agent type and which model do you give it?"
+    a: "The `reviewer` agent type if one is available, else general-purpose; with the model left unset so it runs on the session's own model, since the reviewer must be at least as capable as the author (no cheaper model)."
+  - id: reviewer-no-edit
+    kind: contract
+    lines: "You did not write it. Do not edit any files."
+    q: "What does the reviewer subagent's prompt tell it about changing files?"
+    a: "The reviewer must not edit any files; it only reports."
+  - id: round-2-diff
+    kind: contract
+    lines: "Round 2 and later: review only"
+    q: "This is round 2: round 1's fixes are committed. What diff does the reviewer review, and what does it get told about round 1?"
+    a: "Only the diff since the last reviewed commit (round 1's fixes), not the whole work again, and it is given round 1's finding titles so it doesn't repeat them."
+  - id: checks-at-base
+    kind: contract
+    lines: "Project checks: <test, type, lint, build commands"
+    q: "Where do the project check commands you give the reviewer come from?"
+    a: "From CLAUDE.md and .claude/checks.json as they were at the base commit (read with git show <base>:<path>), not their current versions."
+  - id: run-checks-itself
+    kind: idea
+    lines: "1. Run every \"Done when\" check in the spec"
+    q: "How does the reviewer establish whether the spec's done-when checks hold?"
+    a: "It runs every done-when check and the project checks itself, and for each reports the command, the tail of its output, and pass, fail or can't check (with why)."
+  - id: look-list
+    kind: idea
+    lines: "2. Read the diff against the spec. Look for:"
+    q: "Besides running the checks, what kinds of problems does the reviewer look for when it reads the diff against the spec? List them."
+    a: "All of: spec behavior missing or half done (stubs, TODOs, hard-coded values, happy path only); behavior the spec didn't ask for or out-of-scope things touched; fixes in the wrong layer (where the symptom shows instead of where the wrong value is made); tests that check the wrong level, assert little or were edited to pass; and changes to the policy files that judge the work."
+  - id: look-stubs
+    kind: idea
+    lines: "spec behavior that's missing or only half there"
+    q: "The feature's export works for the sample input, but the code returns a hard-coded header row and has a TODO for the empty-file case. Is that a finding, and what kind?"
+    a: "Yes: behavior that is only half there (hard-coded value, TODO, happy path only) is a finding against the spec, to be fixed, not accepted."
+  - id: look-scope
+    kind: idea
+    lines: "behavior the spec didn't ask for"
+    q: "The diff also renames a CLI flag that the spec lists under Out of scope. Is that a finding?"
+    a: "Yes: touching something listed as out of scope (and adding behavior the spec didn't ask for) is a finding."
+  - id: look-layer
+    kind: idea
+    lines: "fixes in the wrong layer"
+    q: "A wrong total was fixed by adjusting the number in the function that formats it for display, not where it is computed. Is that a finding?"
+    a: "Yes: a fix in the wrong layer; it should be fixed where the wrong value is produced, not where it shows up."
+  - id: look-tests
+    kind: idea
+    lines: "tests that check the wrong level, assert very little"
+    q: "In the diff, an existing test's expected value was changed to match the new output, and a new test only asserts that the function doesn't throw. Are those findings?"
+    a: "Yes, both: a test edited to pass, and a test that asserts very little (or checks the wrong level)."
+  - id: finding-shape
+    kind: contract
+    lines: "3. For each finding: severity (blocker, should-fix, minor)"
+    q: "What does each finding in the review contain?"
+    a: "A severity from blocker / should-fix / minor, a file:line, evidence (quoted code or command output), why it matters, and a suggested fix."
+  - id: finding-class
+    kind: contract
+    lines: "If one mistake shows up in several places"
+    q: "The same missing null check appears in four files. How is it reported?"
+    a: "Once, as one class of finding that lists every instance (all four places)."
+  - id: no-nitpicks
+    kind: idea
+    lines: "4. Skip style, naming and formatting"
+    q: "The reviewer also notices inconsistent variable naming and a function that doesn't validate input from a trusted internal caller. Does it report them?"
+    a: "No: skip style and naming (unless house rules ask), and don't ask for defensive checks against cases that can't happen."
+  - id: counts-line
+    kind: contract
+    lines: "5. Start your reply with counts"
+    q: "How does the reviewer's reply start and end?"
+    a: "It starts with a counts line in the form \"Done when: X/Y pass · blockers N · should-fix N · minor N\" and ends with one line on what the checks prove and what they don't."
+  - id: report-as-given
+    kind: contract
+    lines: "Show the reviewer's counts and findings as given"
+    q: "You think two of the reviewer's findings are overblown. How do you pass the review on?"
+    a: "Show every finding as the reviewer gave it, without dropping or softening any; at most add a note to a finding."
+  - id: author-assumptions
+    kind: idea
+    lines: "Add your own short list: decisions and assumptions"
+    q: "Besides the reviewer's findings, what do you add to the review's output yourself?"
+    a: "A short list of the decisions and assumptions made while building that the spec didn't settle."
+  - id: no-spec
+    kind: contract
+    lines: "**Gather (step 1)**: with no spec"
+    q: "Variation: there is no spec file; the run was handed three done-when checks, and the project says nothing about where a review goes. What are the checks and where does the review log go?"
+    a: "Use the done-when checks it was handed without asking to confirm them; the review log goes in a comment on the work item's issue."
+  - id: post-once
+    kind: contract
+    lines: "Start the log with a marker line"
+    q: "You post the review log as a GitHub comment, and later post round 2. How do you avoid a duplicate comment?"
+    a: "Start the comment with a marker line (<!-- sdlc:verify <item or spec> -->), look for a comment holding that marker before posting and edit it to add the round instead of posting a second one, then read it back after posting."
+  - id: post-timeout
+    kind: contract
+    lines: "If a post fails with no clear answer"
+    q: "Posting the review comment times out with no response. What do you do next?"
+    a: "Don't blindly retry: first check whether the comment was actually posted (look for its marker), and only post again if it isn't there."
+  - id: rule-failing-check
+    kind: contract
+    lines: "1. The reviewer shows a done-when check or a project check"
+    q: "The reviewer filed a lint failure as \"minor\". How do you treat it?"
+    a: "As a blocker, whatever it was filed as, because a check is failing: fix it."
+  - id: rule-reject
+    kind: contract
+    lines: "2. The finding asks for a new feature"
+    q: "One finding asks for a new --format=xml option the spec doesn't mention. Another repeats a finding round 1 rejected. What do you do with each?"
+    a: "Reject both, each with a one-line reason (new feature; repeat of a rejected finding)."
+  - id: rule-work-not-rejected
+    kind: contract
+    lines: "A finding about the work itself"
+    q: "A finding says a test was weakened to make it pass, and you think it is a matter of taste. Can you reject it?"
+    a: "No: a finding about the work itself (a stub, hard-coded value, weak or edited test, wrong-layer fix) is never rejected as out of scope, a new feature or taste; it is fixed if it is a blocker or should-fix (a minor follows the one-line rule)."
+  - id: rule-fix
+    kind: contract
+    lines: "3. A blocker or a should-fix: **fix** it"
+    q: "How do you handle a should-fix finding about missing error handling, and what if the same finding comes back next round because your fix didn't work?"
+    a: "Fix it, writing a failing test first where the fix has logic; if it comes back because the fix didn't work, fix it again rather than rejecting it."
+  - id: rule-minor
+    kind: contract
+    lines: "4. A minor: **fix** it when it is a one-line change"
+    q: "There are two minor findings: one is a one-line fix, the other would take a 30-line refactor. What do you do with each?"
+    a: "Fix the one-line minor; reject the other with the reason \"minor, more than one line\"."
+  - id: never-drop
+    kind: contract
+    lines: "Never drop a finding"
+    q: "Some findings you neither fixed nor want to discuss. What happens to them in the log?"
+    a: "No finding is dropped: every finding is logged as fixed or rejected, with its reason."
+  - id: loop-stop
+    kind: contract
+    lines: "If the round fixed a blocker or a should-fix, run the next round"
+    q: "Round 1 ends having fixed only one-line minors and rejected the rest. Is there a round 2?"
+    a: "No. The next round runs only if a round fixed a blocker or a should-fix; this one didn't, so the review ends."
+  - id: unreviewed-fixes
+    kind: contract
+    lines: "**Fixes nobody reviews**"
+    q: "You fixed a one-line minor in what is the review's last round. What do you do before finishing?"
+    a: "Run the done-when checks and project checks again yourself (no reviewer will see the fix) and log their result."
+  - id: round-3-cap
+    kind: contract
+    lines: "**The cap**: round 3 is the last review"
+    q: "Round 3 fixed a should-fix finding. Does a round 4 review it?"
+    a: "No: round 3 is the last review; the log says \"round 3 fixes not reviewed\" and lists each one."
+  - id: left-open
+    kind: contract
+    lines: "**Left open**"
+    q: "A blocker finding needs an API key you don't have, so you can't fix it. The same round fixed two other findings. What now?"
+    a: "Don't call the work done or close the item; end the review at this round (no further round), and report the open finding with one decision for the user and your recommended answer."
+  - id: done-status
+    kind: contract
+    lines: "**Done**: set a spec's `Status: done`"
+    q: "All done-when checks pass and no blocker or should-fix is left open. What do you change, and where do your assumptions go?"
+    a: "Set the spec's `Status: done`; put the assumptions and what the checks can't prove in the log and the report, not in a question to the user."

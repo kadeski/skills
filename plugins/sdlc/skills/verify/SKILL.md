@@ -10,15 +10,13 @@ Check the work against: $ARGUMENTS (a spec path; empty means the spec marked `St
 
 **Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the review runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written, where they confirm the checks and pick the findings to fix. The word `auto` in the arguments, from older callers, means the default.
 
-Why a separate reviewer: the session that wrote the code has already convinced itself it works. Keep the checker apart from what it checks: a fresh agent that didn't watch the build, reads only the spec and the diff, and runs the real commands itself.
-
 ## 1. Gather (you, the author)
 
 - **Spec**: the path. No spec: write the done-when checks from the conversation or ticket as a short list and confirm it with the user first.
 - **Range**: from the commit before the work started (the parent of the first slice commit, or the merge-base with the main branch) to HEAD, plus uncommitted changes.
 - **Policy files**: the files that decide how this work is judged: `.claude/checks.json`, `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` and `.github/workflows/`. List any the range changes (`git diff --stat <base> -- <those paths>`). The work can't loosen the rules it is judged by, so the reviewer judges it by the base versions of these files, and each change to them goes to the user.
 - **Review log**: `<spec name>.review.md` next to the spec. If it exists, read the last round number, the last reviewed commit and the earlier findings.
-- **Round 4 or later**: don't review again. Tell the user that after 3 rounds a reviewer mostly finds old code and noise, or the approach itself is wrong, and step back with them to rethink it.
+- **Round 4 or later**: don't review again, and don't set `Status: done`. After 3 rounds a reviewer mostly finds old code and noise, or the approach itself is wrong: say so, and that the approach needs rethinking (with `ask`, step back with the user; else it is the report's one decision).
 
 ## 2. Spawn the reviewer
 
@@ -49,8 +47,7 @@ Already reported, don't repeat: <earlier finding titles, or none>
 
 ## 3. Report to the user
 
-- Show the reviewer's counts and findings as given. You may add a note to a finding ("intended: <reason>", "already fixed"), but don't drop or soften any. You're the author, so your read is the biased one.
-- Add your own short list: decisions and assumptions you made while building that the spec didn't settle. These are what the user is least likely to have checked.
+- Show the reviewer's counts and findings as given. You may add a note to a finding ("intended: <reason>", "already fixed"), but don't drop or soften any.
 - Each policy-file blocker is the user's call, not a fix you make: say what the change does and ask whether to keep it. The spec may name the change; it still goes to the user.
 - Ask which findings to fix.
 
@@ -78,4 +75,4 @@ The default: nobody confirms a check list, picks which findings to fix or reads 
 - **Fixes nobody reviews**: after any fix that gets no further round (a one-line minor in the last round, or a round 3 fix), run the done-when checks and the project checks again yourself, and log their result.
 - **The cap**: round 3 is the last review. If round 3 fixed a blocker or a should-fix, write "round 3 fixes not reviewed" in the log with each one.
 - **Left open**: in any round, if a blocker or should-fix is one you could not fix, or a check still fails after your fix, don't call the work done and don't close the item out. The review ends at that round, even if the round fixed other findings. Report it the way the project says a run reports a stop (in a Projects thread, the thread's reply; else a comment on the issue), with the open findings and one decision for the user with your recommended answer. A policy-file change left open by rule 0 is reported the same way.
-- **Done**: set a spec's `Status: done` when its checks pass and no blocker or should-fix is left open. Put the list of what you assumed, and what the checks can't prove, in the log and the report, not in a question.
+- **Done**: set a spec's `Status: done` when its checks pass and no blocker or should-fix is left open. Put the decisions you made that the spec didn't settle, and what the checks can't prove, in the log and the report, not in a question.

@@ -63,3 +63,15 @@ After adding or changing cases or graders, make a new baseline: old scores no lo
 ## Improve a skill
 
 In Claude Code in this repo, `/hillclimb doc-lint` runs the loop: read train failures, make one change to the skill, rerun, keep it only if it beats the noise. The rules are in `.claude/skills/hillclimb/SKILL.md`.
+
+## Prune a skill
+
+Task evals say whether a skill helps, not which lines do the work. `evals/novelty.py <skill>` finds the lines the model already follows without the skill (the method is from Nikolay Petrov's "Your SKILL.md is 70% of Things the Model Already Knows", AI Engineer CODE 2026).
+
+1. **Atoms.** `evals/<skill>/atoms.yaml` splits SKILL.md into one rule per atom: a situation question that doesn't give the answer away, and the exact answer the skill expects. Ask for recall ("what do you look for in the diff?"), not recognition ("is this wrong-layer fix a finding?"): a pointed question makes the model look like it knows a rule it would not think of in a real run. verify's reviewer checklist was "known" asked one item at a time and "added" asked as a list.
+2. **Probe.** Each question goes to sonnet with and without SKILL.md, 3 times each, and opus grades every answer strictly: the full rule with its conditions, or it fails. Probe the smaller model: a rule sonnet follows unaided, the opus a thread runs on follows too, so a cut is safe in that direction. A run of 35 atoms costs about $3.
+3. **Sort.** `known` (right without the skill), `added` (right only with it), `hurts` (right only without it: fix first, often two parts of the skill that disagree), `missed` (wrong both ways: rewrite, or fix the atom's expected answer).
+4. **Cut** an atom's lines only when it was `known` 3/3 on recall in two separate probes, and it doesn't guard a step that can't be taken back (a push, a merge, a post, a duplicate after a timeout). A single probe is noisy: one atom went from 3/3 to 0/3 without the skill between runs.
+5. **Confirm.** Probe the cut atoms again with the edited skill (the with-skill arm must still pass), then rerun the task evals before and after (`evals/run.py run <skill> --runs 5`, `tests/<plugin>/`). Keep the cuts only if scores hold within noise.
+
+Running as root in a cloud container: `apt-get install -y bubblewrap socat` first.
