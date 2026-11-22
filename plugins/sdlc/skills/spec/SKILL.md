@@ -26,9 +26,9 @@ Say the tier in one line, with the reason. Size it by how much is undecided and 
 
 Then propose a risk, which sets how much human review the build gets. Judge it by what the change could break, not by who will write it:
 
-- **low**: docs, copy, comments. A wrong change costs a revert and nothing else. /slice reviews it with `/verify auto` and asks nobody.
-- **normal**: most code. /slice runs `/verify` and the user picks which findings to fix.
-- **high**: auth, payments, data migrations, deletes, anything hard to undo or that other people's work depends on. As normal, plus the built-in `/code-review`, and the user reads the riskiest file themselves. A high-risk spec also gets an `Undo:` line (see below).
+- **low**: docs, copy, comments. A wrong change costs a revert and nothing else.
+- **normal**: most code. At low and normal, /slice runs `/verify`, which fixes or rejects each finding by rule and asks nobody.
+- **high**: auth, payments, data migrations, deletes, anything hard to undo or that other people's work depends on. /slice also runs the built-in `/code-review`, keeps the work on a branch and ends on one decision: the user reads the riskiest file and signs off. A high-risk spec also gets an `Undo:` line (see below).
 
 ## 3. Read just enough code
 
