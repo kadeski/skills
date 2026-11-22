@@ -8,7 +8,7 @@ argument-hint: "[the mistake, or empty for the last correction] [ask]"
 
 Mistake: $ARGUMENTS (empty means the correction the user just made).
 
-**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the lesson runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written. The word `auto` in the arguments, from older callers, means the default.
+**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the lesson runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written.
 
 A correction in chat fixes one instance, and the next session starts without it. Put the fix where it keeps working. Pick the lightest place that will actually hold: every extra rule costs reading time, and every hook needs upkeep.
 

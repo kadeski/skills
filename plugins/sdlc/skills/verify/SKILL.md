@@ -8,7 +8,7 @@ argument-hint: "[spec path] [ask]"
 
 Check the work against: $ARGUMENTS (a spec path; empty means the spec marked `Status: building`, or the done-when checks stated in this conversation).
 
-**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the review runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written, where they confirm the checks and pick the findings to fix. The word `auto` in the arguments, from older callers, means the default.
+**Who answers.** Nobody, by default. A Projects thread, a headless run or a loop has no one to read a question, so the review runs as Auto (the section at the end): read it first. With `ask` in the arguments, the user is in the session: follow steps 1 to 4 as written, where they confirm the checks and pick the findings to fix.
 
 ## 1. Gather (you, the author)
 

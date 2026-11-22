@@ -14,8 +14,8 @@
 #   GH_REPO   the scratch GitHub repo (default kadeski/sdlc-scratch). It must exist; the test
 #             doesn't create it. `gh repo create kadeski/sdlc-scratch --private --add-readme`
 #   ONLY      ci or noci: run one case
-# See tests/sdlc/slice-lib.sh for MODEL, EFFORT, BUDGET and KEEP. The spec is Risk: low, so the review
-# is /verify auto and neither run ends on a question.
+# See tests/sdlc/slice-lib.sh for MODEL, EFFORT, BUDGET and KEEP. The spec is Risk: low, so /verify
+# decides by rule and neither run ends on a question.
 set -u
 source "$(dirname "$0")/slice-lib.sh"
 need gh
