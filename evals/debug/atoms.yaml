@@ -1,0 +1,22 @@
+# Atoms of plugins/sdlc/skills/debug/SKILL.md for evals/novelty.py. Format: see evals/verify/atoms.yaml.
+stem: >-
+  Situation: you are a coding agent running unattended in a cloud thread; nobody will read or answer a
+  question until the run ends. A user reports that invoice totals show one cent too high on the billing
+  page. The repo has an API that computes totals, a serializer that turns them into JSON, and a React
+  page that displays them, each with its own tests.
+atoms:
+  - id: layer
+    kind: contract
+    lines: "Fix where the wrong thing is produced"
+    q: "You trace it: the API's rounding produces 10.01 where it should produce 10.00, and the page shows what it gets. The page also formats numbers, so you could fix it there too. Where do you fix it, and what do you do if you can't fix it there?"
+    a: "In the API, where the wrong value is first produced, not in the page or serializer where it shows up; if the fix has to go downstream (the producer isn't yours, a hotfix), say so and why."
+  - id: test-level
+    kind: contract
+    lines: "Write a regression test at the cause's level"
+    q: "Before the fix, you write a regression test. What does it test, and what must you see before fixing?"
+    a: "A test at the cause's level (the API's total computation, not the page's display), run and shown failing for the right reason before the fix."
+  - id: cause-line
+    kind: contract
+    lines: "No edits until you can state the cause in one line"
+    q: "When are you allowed to start editing code to fix it?"
+    a: "Only after reproducing it end to end and being able to state the cause in one line with where it is produced (file:line) and where it shows up (file:line)."

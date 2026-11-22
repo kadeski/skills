@@ -8,7 +8,7 @@ argument-hint: "[symptom or issue]"
 
 Bug: $ARGUMENTS
 
-This loop guards against fixing the symptom instead of the cause. In a study of 19 coding agents, 12 bugs that were easy for humans beat every agent, and in 10 of them the best agent found the right file but patched the caller, consumer or display instead of the callee, producer or serializer. Its own tests passed because they checked the wrong level.
+This loop guards against fixing the symptom instead of the cause.
 
 ## 1. Pin the symptom
 
