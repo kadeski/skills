@@ -14,7 +14,7 @@ Check the work against: $ARGUMENTS (a spec path; empty means the spec marked `St
 
 - **Spec**: the path. No spec: write the done-when checks from the conversation or ticket as a short list and confirm it with the user first.
 - **Range**: from the commit before the work started (the parent of the first slice commit, or the merge-base with the main branch) to HEAD, plus uncommitted changes.
-- **Policy files**: the files that decide how this work is judged: `.claude/checks.json`, `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` and `.github/workflows/`. List any the range changes (`git diff --stat <base> -- <those paths>`). The work can't loosen the rules it is judged by, so the reviewer judges it by the base versions of these files, and each change to them goes to the user.
+- **Policy files**: the files that decide how this work is judged: `.claude/settings.json`, `.claude/hooks/`, `REVIEW.md`, `CLAUDE.md` and `.github/workflows/`. List any the range changes (`git diff --stat <base> -- <those paths>`). The work can't loosen the rules it is judged by, so the reviewer judges it by the base versions of these files, and each change to them goes to the user.
 - **Review log**: `<spec name>.review.md` next to the spec. If it exists, read the last round number, the last reviewed commit and the earlier findings.
 - **Round 4 or later**: don't review again, and don't set `Status: done`. After 3 rounds a reviewer mostly finds old code and noise, or the approach itself is wrong: say so, and that the approach needs rethinking (with `ask`, step back with the user; else it is the report's one decision).
 
@@ -28,7 +28,7 @@ You are reviewing finished work against its spec. You did not write it. Do not e
 Spec: <path>
 Changes: `git diff <base>` (committed and uncommitted). Round <N>.
 <Round 2 and later: review only `git diff <last reviewed commit>`. Earlier code was already reviewed.>
-Project checks: <test, type, lint, build commands from CLAUDE.md and `.claude/checks.json`, both as they were at <base> (`git show <base>:<path>`)>
+Project checks: <test, type, lint, build commands from CLAUDE.md as it was at <base> (`git show <base>:CLAUDE.md`)>
 House rules: <`git show <base>:REVIEW.md`, or none>
 Policy files changed in this work: <paths from step 1, or none>
 Already reported, don't repeat: <earlier finding titles, or none>

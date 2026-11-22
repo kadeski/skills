@@ -62,7 +62,7 @@ atoms:
     kind: contract
     lines: "Project checks: <test, type, lint, build commands"
     q: "Where do the project check commands you give the reviewer come from?"
-    a: "From CLAUDE.md and .claude/checks.json as they were at the base commit (read with git show <base>:<path>), not their current versions."
+    a: "From CLAUDE.md as it was at the base commit (read with git show <base>:CLAUDE.md), not its current version."
   - id: run-checks-itself
     kind: idea
     lines: "1. Run every \"Done when\" check in the spec"
