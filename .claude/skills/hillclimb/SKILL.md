@@ -6,12 +6,12 @@ argument-hint: "<skill> [goal: score | cost] [rounds: N]"
 
 # Hillclimb
 
-Improve `plugins/<plugin>/skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.md` first for how runs and grading work. If it says the skill's evals are paused, stop and say so: a run would cost money and grade nothing.
+Improve `plugins/<plugin>/skills/<skill>/SKILL.md` against `evals/<skill>/`. Read `evals/README.md` first for how runs and grading work.
 
 ## Rules that keep the score honest
 
 - **Never read the test set.** Not `evals/<skill>/test/`, not `evals/results/*/test/`. `run.py` prints only the test aggregate; that is all you get.
-- **Never put eval content into the skill.** No case topics, numbers, file names, wording or answers in SKILL.md. A change must be a general rule a new learner on a new topic would benefit from.
+- **Never put eval content into the skill.** No case topics, numbers, file names, wording or answers in SKILL.md. A change must be a general rule that would help on cases nobody has written yet.
 - **One change per round,** aimed at a root cause, so a score change can be traced to it. Rewording without a reason is not a change.
 - **Do not edit cases or graders mid-climb.** If one is wrong, stop and say so: changing the ruler resets the baseline.
 - Prefer making an existing instruction clearer or removing one over adding text. SKILL.md length is a cost every run pays.
@@ -39,4 +39,4 @@ Stop after the round limit (default 5), or after 3 rounds in a row with nothing 
 
 ## Finish
 
-Report the start and end scores for train and test with their bands, and each kept edit. Recommend merging only if test rose beyond noise. Merging a SKILL.md change means bumping the version in each of the plugin's manifests and running `scripts/check.sh`. Do not commit unless asked.
+Report the start and end scores for train and test with their bands, and each kept edit. Recommend merging only if test rose beyond noise. Merging a SKILL.md change means bumping the plugin's `version`, if its manifest has one, and running `scripts/check.sh`. Do not commit unless asked.
