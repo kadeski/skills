@@ -65,8 +65,8 @@ for p in $plugins; do
 done
 
 # Skills load into the model's context, so the sdlc skills share a size budget and cannot grow
-# quietly. Set at about their size on 2026-11-18 (50,652 bytes); lower it as skills are pruned.
-budget=52000
+# quietly. Set at about their size on 2026-11-22 (44,573 bytes); lower it as skills are pruned.
+budget=46000
 size=$(find plugins/sdlc/skills -type f -exec cat {} + | wc -c)
 echo "sdlc skills: $size of $budget bytes"
 [ "$size" -le "$budget" ] || err "plugins/sdlc/skills is $size bytes, over the $budget-byte budget; cut before adding"
