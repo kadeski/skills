@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Runs scripts/check.sh before a push and blocks the push if it fails. A push comes after any
+# rebase, so this checks what lands, even two changes that each pass alone but not together.
+# Turn it on once per clone with `git config core.hooksPath scripts/hooks`. It checks the working
+# tree, so unstaged changes count too. `git push --no-verify` skips it.
+exec scripts/check.sh </dev/null

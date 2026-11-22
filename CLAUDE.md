@@ -4,8 +4,8 @@
 
 ## Commands
 
-- `scripts/check.sh` - run before every commit. Needs `jq` and the `claude` CLI. It checks that each manifest is valid and named for its folder, that the marketplace lists every plugin, that each `SKILL.md` `name` matches its folder, that the sdlc skills stay under their size budget (`budget=` in the script, lowered as skills are pruned), that no plugin file has a credential-like name (key, token, secret, password, auth) inside a `${...}` substitution, which the plugin directory holds under `MCP_FORWARDS_CREDENTIAL_ENV`, and runs `claude plugin validate --strict` on every plugin and the repo. The one warning it lets through is a plugin with no `version`. It also warns, without failing, when a plugin's tracked files differ from origin/main (as last fetched) but its version does not.
-- `scripts/hooks/pre-commit` runs `scripts/check.sh` and blocks the commit if it fails. Turn it on once per clone with `git config core.hooksPath scripts/hooks` (this covers every worktree). It checks the working tree, so unstaged changes count too. `git commit --no-verify` skips it.
+- `scripts/check.sh` - run before every commit, and again after a rebase, before pushing. Needs `jq` and the `claude` CLI.
+- `scripts/hooks/pre-push` runs `scripts/check.sh` and blocks a push that fails it. Turn it on once per clone, a thread's included: `git config core.hooksPath scripts/hooks`. `git push --no-verify` skips it.
 - Evals (see `evals/README.md`):
   - `evals/run.py dry <skill> -v` - grade untouched fixtures, no agent or judge, free.
   - `evals/run.py run <skill> --split train --case <glob> --runs 1` - one case.

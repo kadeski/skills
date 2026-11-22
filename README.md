@@ -27,7 +27,7 @@ All three are Claude Code only. Each README has the usage.
 
 **Headless end-to-end tests.** The scripts in [tests/sdlc/](tests/sdlc) run the skills for real in scratch repos with `claude -p`, then check the transcript, the git log and the PR the run left behind.
 
-**One check before every commit, and on every push.** [scripts/check.sh](scripts/check.sh) runs as a pre-commit hook and in [CI](.github/workflows/check.yml). The marketplace must list every plugin, each skill's name must match its folder, and every plugin must pass `claude plugin validate --strict` (a plugin may leave out its version; nothing else is let through).
+**One check on every push, local and in CI.** [scripts/check.sh](scripts/check.sh) runs as a pre-push hook and in [CI](.github/workflows/check.yml). The marketplace must list every plugin, each skill's name must match its folder, and every plugin must pass `claude plugin validate --strict` (a plugin may leave out its version; nothing else is let through).
 
 ## Layout
 
@@ -36,7 +36,7 @@ plugins/<name>/     what ships: skills, README, LICENSE
 .claude/skills/     symlinks to the shipped skills, for Projects threads
 evals/              eval runner and cases per skill
 tests/<name>/       tests for a plugin
-scripts/check.sh    the pre-commit and CI check
+scripts/check.sh    the pre-push and CI check
 ```
 
 [AGENTS.md](AGENTS.md) has the manifest and marketplace rules.

@@ -1,6 +1,6 @@
 name: check
 
-# Runs scripts/check.sh on every push and PR. The pre-commit hook is off in a fresh
+# Runs scripts/check.sh on every push and PR. The pre-push hook is off in a fresh
 # clone (core.hooksPath is per clone), so this is the copy that always runs.
 on:
   push:
