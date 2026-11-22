@@ -11,7 +11,7 @@ Plugins for Claude Code by Kaden Staker, and the tooling that checks them: score
 
 | Plugin | What it does |
 |---|---|
-| [sdlc](plugins/sdlc/README.md) | Ten skills for building with an agent, from questioning an idea to a reviewed change: spec, test-first build, separate-reviewer verify, debug, lessons, PR descriptions, report evidence. Built to run unattended, as in a Projects thread. |
+| [sdlc](plugins/sdlc/README.md) | Nine skills for building with an agent, from questioning an idea to a reviewed change: spec, test-first build, separate-reviewer verify, debug, lessons, PR descriptions, report evidence. Built to run unattended, as in a Projects thread. |
 | [study](https://github.com/kadeski/study) | Teaches one goal across sessions in the chat. It finds where your understanding ends, plans the shortest path, checks after each step and keeps a knowledge graph of what you were taught. Lives in its own repository. |
 | [doc-lint](plugins/doc-lint/README.md) | Audits a project's plan and design docs for broken links, stale numbers, contradictions between files and open work tracked nowhere. Reports first and fixes only what you approve. |
 

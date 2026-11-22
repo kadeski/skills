@@ -1,6 +1,6 @@
 # sdlc
 
-`sdlc` is a Claude Code plugin for building software with an agent without taking its word that the work is done. Ten skills cover the path from an idea to a reviewed change. The project's CI is what checks the work.
+`sdlc` is a Claude Code plugin for building software with an agent without taking its word that the work is done. Nine skills cover the path from an idea to a reviewed change. The project's CI is what checks the work.
 
 ## Install
 
@@ -11,7 +11,7 @@
 
 ## Skills
 
-Type a skill's name to run it, for example `/sdlc:spec`, or ask for it by name: Claude can load every skill but `weekly` and `preflight` on its own, so a Claude Code Projects thread, where nobody types slash commands, can run them. `pr-receipt` runs on its own whenever Claude writes a PR description, and `/sdlc:slice` runs the `verify` review when a spec is finished.
+Type a skill's name to run it, for example `/sdlc:spec`, or ask for it by name: Claude can load every skill but `weekly` on its own, so a Claude Code Projects thread, where nobody types slash commands, can run them. `pr-receipt` runs on its own whenever Claude writes a PR description, and `/sdlc:slice` runs the `verify` review when a spec is finished.
 
 The skills assume nobody is there to answer, which is how a Projects thread or a headless run works: `slice`, `verify` and `lesson` decide by rule, and anything only you can decide comes back in the report as one decision with a recommended answer. Add `ask` to the arguments when you are in the session and want to be asked along the way. `grill` and `spec` are conversations, so run them where you can answer (in a project, the coordinator chat). GitHub calls go through `gh` locally and the GitHub MCP tools in a thread.
 
@@ -23,7 +23,6 @@ The skills assume nobody is there to answer, which is how a Projects thread or a
 | `verify` | Starts a reviewer that did not see the build. It runs the done-when checks itself, as the base commit defines them, and reads the diff against the spec, capped at 3 rounds. Each finding is fixed or rejected by rule. A change to the checks or review rules the work is judged by always goes to you. |
 | `debug` | Reproduces a bug end to end, traces it to the layer that makes the wrong value, locks it with a failing test, then fixes it. |
 | `lesson` | Turns a correction into a fix at the source: a test, a lint rule, a `REVIEW.md` or `CLAUDE.md` line, or a hook. Proves the fix catches the mistake. |
-| `preflight` | Checks an agent run before it goes unattended: what done means, how it checks itself, what it can reach, when it stops, who signs off, and how it avoids repeating or gets back from what it changes outside git. |
 | `pr-receipt` | Lays out a PR description: a plain-language summary, then collapsed Proof (named tests, CI, logs) and Details sections. Claude uses it on its own whenever it writes or edits a PR description. |
 | `evidence` | Ends a thread's or unattended run's final reply with a fixed block: the commit pushed, the CI result read back from GitHub, each check run and what was not checked, so a summary of the run carries proof. `slice` and `debug` end with it. |
 | `weekly` | Finds code to delete, prunes `CLAUDE.md` and `REVIEW.md`, audits hooks and deny rules, and reads the track record (reviewer noise, reverts and follow-up fixes per risk level, or per kind of commit where work goes straight to main) to say which checkpoints have earned dropping. Reports first; a later run applies what you pick. |
