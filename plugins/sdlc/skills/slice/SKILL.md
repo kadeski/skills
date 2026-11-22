@@ -12,7 +12,7 @@ Build the open work in a spec, test-first. Arguments: $ARGUMENTS (all optional: 
 
 The run is hands-off. The user comes back to a built and reviewed spec with the evidence for each slice, so don't stop along the way to ask for a review. Two rules make that safe:
 
-- The test exists and fails before the code does. When code and its test come out of one step, neither checks the other (MathWorks: a test passed because the code just copied the baseline file to the output).
+- The test exists and fails before the code does. When code and its test come out of one step, neither checks the other.
 - Every slice ends in a commit: a save point to go back to.
 
 ## What to build
