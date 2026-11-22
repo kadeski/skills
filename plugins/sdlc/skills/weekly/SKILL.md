@@ -10,7 +10,7 @@ Report first and change nothing: the user picks later (in a Claude Code project,
 
 ## 1. Context
 
-- `git log --since="1 week ago" --stat` (or since the last `weekly:` commit): where did most of the change land?
+- `git log --since="1 week ago" --stat` (or since the last `weekly run:` commit): where did most of the change land?
 - Read `CLAUDE.md`, `REVIEW.md`, `.claude/settings.json` and `.claude/settings.local.json`.
 
 ## 2. Delete and simplify
@@ -39,7 +39,7 @@ For each line:
 - Exact rules stay even when the model "knows the idea": "ask the user", "and wait", a named command or key. Big models know concepts and still miss exact conditions and steps.
 - Prune by measuring, not by reading. Where an eval or a test covers the line (or the skill: a repo of skills with evals in `evals/`), delete it on a branch and run them; keep the deletion only if the scores hold. Where nothing measures it, mark it "try deleting" as above, never delete it outright.
 
-A correction line is a guess about one model: it fixed what that model got wrong, and the next model may not get it wrong. Check which model the sessions ran on (`/status`, or the model named in recent transcripts) against the one the last `weekly:` commit names. If it changed, or no weekly names one, say so first and tell the user to run `/doctor prompt-audit` on `CLAUDE.md` and the repo's skills, then apply or reject each finding (it needs a recent Claude Code: check `claude --version`). Name the model in this week's `weekly:` commit, so the next pass can compare.
+A correction line is a guess about one model: it fixed what that model got wrong, and the next model may not get it wrong. Check which model the sessions ran on (`/status`, or the model named in recent transcripts) against the one the last weekly report names. If it changed, or no report names one, say so first and tell the user to run `/doctor prompt-audit` on `CLAUDE.md` and the repo's skills, then apply or reject each finding (it needs a recent Claude Code: check `claude --version`). Name the model in this week's report, so the next pass can compare. Keep it out of commits: some projects forbid AI attribution there.
 
 What belongs: commands, project vocabulary, corrections ("you got X wrong, do Y"). Give `REVIEW.md` the same pass, and drop nits nobody acts on.
 
@@ -49,7 +49,7 @@ For each one: is it a zero-exception rule (keep) or a preference (demote to a `C
 
 ## 5. Track record
 
-Checkpoints are dropped when the work has earned it, and added back when it hasn't. Read the evidence since the last `weekly:` commit (or the last 4 weeks the first time):
+Checkpoints are dropped when the work has earned it, and added back when it hasn't. Read the evidence since the last `weekly run:` commit (or the last 4 weeks the first time):
 
 - **Reviewer noise**: the `*.review.md` logs next to the specs. Count each finding's outcome: fixed, won't fix, intended. A reviewer whose findings are mostly won't-fix or intended is noise: say which kinds, and suggest a `REVIEW.md` line that drops them. Also count rounds to pass per spec.
 - **Regret-free landings**: the units landed on the default branch in the period: a merged PR, or the direct commits naming one spec (`<slug>: slice <N>`), each with its `Risk:`; any other direct commit, grouped by message prefix (`ingest:`, `edit:`) or top folder. Skip merges and commits a tool made (backups, bot bumps). A unit regrets when it needed a revert (`git log --grep '^Revert'`) or a follow-up fix within a week: a later commit naming it, or correcting lines it added (not building on them). Read each candidate's diff (`git log <sha>.. --until=<+7 days> -- <its files>`): a shared file (an index, a log) is not enough. A backup commit can be the fix: hand edits arrive that way. Give the rate per risk level and kind, with the count, and name each regret.
@@ -58,6 +58,6 @@ Checkpoints are dropped when the work has earned it, and added back when it hasn
 ## 6. Report and apply
 
 - One table per section: item · where · action (delete, simplify, move, promote, demote) · why · risk. Number the items so the user can pick by number. End the run there.
-- When a later run is handed the picks: apply them one commit each (`weekly: <what>`), running the project checks after each. Revert any that break them.
+- When a later run is handed the picks: apply them one commit each (`weekly run: <what>`; edits to this skill use `weekly:`, so the two never mix), running the project checks after each. Revert any that break them.
 - Finish with: lines removed, rules removed and added, anything skipped.
 - Last line: suggest one small real task from this week's work for the user to do without an agent, so the skills they're delegating don't quietly fade.
