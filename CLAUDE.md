@@ -15,10 +15,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `evals/run.py compare <old results> <new results>` - only compare runs made with the same `--model` and `--judge-model`.
 - `/hillclimb <skill>` is a project skill in `.claude/skills/hillclimb/`.
 
-## Archive
-
-`archive/` holds retired plugins (`archive/tutor/`, replaced by `study` in kadeski/study). Nothing there ships or is listed in a marketplace, and `scripts/check.sh` skips it. Don't edit it; to bring a plugin back, move it to `plugins/` and list it again.
-
 ## The sdlc plugin
 
 Claude-only, with no `version` on purpose (see `AGENTS.md`). Its tests in `tests/sdlc/` are real headless model runs that cost money, so run them by hand. Each file's header says what it needs. `slice-pr.sh` opens a PR in `kadeski/sdlc-scratch`.

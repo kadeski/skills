@@ -37,7 +37,6 @@ plugins/<name>/     what ships: skills, README, LICENSE
 evals/              eval runner and cases per skill
 tests/<name>/       tests for a plugin
 scripts/check.sh    the pre-commit and CI check
-archive/            retired plugins, not shipped or listed
 ```
 
 [AGENTS.md](AGENTS.md) has the manifest and marketplace rules.
